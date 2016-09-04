@@ -12,4 +12,6 @@ impl Graph {
   pub fn is_empty(&self) -> bool {
     self.triples.is_empty()
   }
+
+
 }
