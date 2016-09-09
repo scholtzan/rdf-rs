@@ -1,6 +1,8 @@
 use uri::Uri;
 use triple::TripleStore;
 use namespace::*;
+use node::{Node};
+
 
 pub struct Graph {
   base_uri: Uri,
@@ -14,4 +16,10 @@ impl Graph {
   }
 
 
+  pub fn create_literal_node(&self, literal: String, namespace: &Namespace) -> Node {
+    Node::LiteralNode {
+      literal: literal,
+      prefix: namespace.prefix().clone()
+    }
+  }
 }
