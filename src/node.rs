@@ -1,19 +1,12 @@
 use uri::Uri;
 
-#[derive(Clone)]
-pub enum LiteralNodeType {
-  PlainLiteral,
-  StringLiteral,
-  DecimalLiteral,
-  BooleanLiteral
-}
 
 
 #[derive(Clone)]
 pub enum Node {
   UriNode { uri: Uri },
-  LiteralNode { literal: String, prefix: String, nodeType: LiteralNodeType },
-  BlankNode { id: i64 }
+  LiteralNode { literal: String, prefix: Option<String>, data_type: Option<Uri>, language: Option<String> },
+  BlankNode { id: String }
 }
 
 
@@ -29,12 +22,13 @@ mod tests {
   fn access_literal_node() {
     let node = Node::LiteralNode {
       literal: "abcd".to_string(),
-      prefix: "resat".to_string(),
-      nodeType: LiteralNodeType::PlainLiteral
+      prefix: Some("resat".to_string()),
+      data_type: None,
+      language: None
     };
 
     match node {
-      Node::LiteralNode { literal: lit, prefix: _, nodeType: _ } => assert_eq!(lit, "abcd".to_string()),
+      Node::LiteralNode { literal: lit, prefix: _, data_type: _, language: _ } => assert_eq!(lit, "abcd".to_string()),
       _ => assert!(false)
     }
   }

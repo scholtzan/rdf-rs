@@ -17,11 +17,13 @@ impl Graph {
   }
 
 
-  pub fn create_literal_node(&self, literal: String, namespace: &Namespace, nodeType: LiteralNodeType) -> Node {
+  // todo: with language and/or data type and optional namespace
+  pub fn create_literal_node(&self, literal: String, namespace: &Namespace) -> Node {
     Node::LiteralNode {
       literal: literal,
-      prefix: namespace.prefix().clone(),
-      nodeType: nodeType
+      prefix: Some(namespace.prefix().clone()),
+      data_type: None,
+      language: None
     }
   }
 

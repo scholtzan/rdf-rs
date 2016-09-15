@@ -112,9 +112,9 @@ mod tests {
   fn count_triples_in_triple_store() {
     let mut store = TripleStore::new();
 
-    let subject = Node::LiteralNode { literal: "abcd".to_string(), prefix: "saf".to_string(), nodeType: LiteralNodeType::PlainLiteral };
-    let predicate = Node::LiteralNode { literal: "d".to_string(), prefix: "asdf".to_string(), nodeType: LiteralNodeType::PlainLiteral };
-    let object = Node::LiteralNode { literal: "s".to_string(), prefix: "asdf".to_string(), nodeType: LiteralNodeType::PlainLiteral };
+    let subject = Node::LiteralNode { literal: "abcd".to_string(), prefix: None, data_type: None, language: None };
+    let predicate = Node::LiteralNode { literal: "d".to_string(), prefix: None, data_type: None, language: None };
+    let object = Node::LiteralNode { literal: "s".to_string(), prefix: None, data_type: None, language: None };
 
     let trip = Triple::new(subject, predicate, object);
 

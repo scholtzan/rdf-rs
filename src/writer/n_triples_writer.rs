@@ -64,8 +64,9 @@ impl NTriplesWriter {
 
 
   pub fn node_to_n_triples(&self, node: &Node, segment: TripleSegment) -> Result<String> {
+    // todo: literal node either data type or language
     match node {
-      &Node::BlankNode { id } =>
+      &Node::BlankNode { id: _ } =>
         if segment == TripleSegment::Predicate {
           return Err(Error::InvalidWriterOutput)
         },
@@ -75,5 +76,33 @@ impl NTriplesWriter {
     let formatter = NTriplesFormatter::new();
 
     Ok(formatter.format_node(node))
+  }
+}
+
+
+#[cfg(test)]
+mod tests {
+  use node::Node;
+  use triple::*;
+  use writer::formatter::n_triples_formatter::NTriplesFormatter;
+  use uri::Uri;
+  use writer::n_triples_writer::NTriplesWriter;
+
+  #[test]
+  fn test_n_triples_writer() {
+
+    let subject = Node::BlankNode { id: "blank".to_string() };
+    let object = Node::LiteralNode { literal: "literal".to_string(), prefix: None, data_type: None, language: Some("en".to_string()) };
+    let predicate = Node::UriNode { uri: Uri::new("http://example.org/show/localName".to_string()) };
+
+    let trip = Triple::new(subject, predicate, object);
+
+    let result = "_:blank <http://example.org/show/localName> \"literal\"@en .".to_string();
+
+    let writer = NTriplesWriter::new();
+    match writer.triple_to_n_triples(&trip) {
+      Ok(str) => assert_eq!(result, str),
+      Err(err) => assert!(false)
+    }
   }
 }
