@@ -1,7 +1,8 @@
 use uri::Uri;
-use triple::TripleStore;
+use triple::*;
 use namespace::*;
-use node::{Node};
+use node::*;
+use std::slice::Iter;
 
 
 pub struct Graph {
@@ -16,10 +17,15 @@ impl Graph {
   }
 
 
-  pub fn create_literal_node(&self, literal: String, namespace: &Namespace) -> Node {
+  pub fn create_literal_node(&self, literal: String, namespace: &Namespace, nodeType: LiteralNodeType) -> Node {
     Node::LiteralNode {
       literal: literal,
-      prefix: namespace.prefix().clone()
+      prefix: namespace.prefix().clone(),
+      nodeType: nodeType
     }
+  }
+
+  pub fn triples_iter(&self) -> Iter<Triple> {
+    self.triples.iter()
   }
 }

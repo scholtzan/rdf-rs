@@ -1,4 +1,13 @@
 use node::{Node};
+use std::slice::Iter;
+use std::vec::IntoIter;
+
+#[derive(PartialEq)]
+pub enum TripleSegment {
+  Subject,
+  Predicate,
+  Object
+}
 
 
 /// Triple representation.
@@ -18,7 +27,21 @@ impl Triple {
       object: object.clone()
     }
   }
+
+
+  pub fn subject(&self) -> &Node {
+    &self.subject
+  }
+
+  pub fn predicate(&self) -> &Node {
+    &self.predicate
+  }
+
+  pub fn object(&self) -> &Node {
+    &self.object
+  }
 }
+
 
 
 
@@ -50,6 +73,24 @@ impl TripleStore {
   pub fn add_triple(&mut self, triple: Triple) {
     self.triples.push(triple.clone());
   }
+
+  pub fn into_vec(self) -> Vec<Triple> {
+    self.triples
+  }
+
+  pub fn iter(&self) -> Iter<Triple> {
+    self.triples.iter()
+  }
+}
+
+
+impl IntoIterator for TripleStore {
+  type Item = Triple;
+  type IntoIter = IntoIter<Triple>;
+
+  fn into_iter(self) -> Self::IntoIter {
+    self.into_iter()
+  }
 }
 
 
@@ -71,9 +112,9 @@ mod tests {
   fn count_triples_in_triple_store() {
     let mut store = TripleStore::new();
 
-    let subject = Node::LiteralNode { literal: "abcd".to_string(), prefix: "saf".to_string() };
-    let predicate = Node::LiteralNode { literal: "d".to_string(), prefix: "asdf".to_string() };
-    let object = Node::LiteralNode { literal: "s".to_string(), prefix: "asdf".to_string() };
+    let subject = Node::LiteralNode { literal: "abcd".to_string(), prefix: "saf".to_string(), nodeType: LiteralNodeType::PlainLiteral };
+    let predicate = Node::LiteralNode { literal: "d".to_string(), prefix: "asdf".to_string(), nodeType: LiteralNodeType::PlainLiteral };
+    let object = Node::LiteralNode { literal: "s".to_string(), prefix: "asdf".to_string(), nodeType: LiteralNodeType::PlainLiteral };
 
     let trip = Triple::new(subject, predicate, object);
 
