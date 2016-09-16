@@ -1,3 +1,13 @@
+//! # rdf-rs
+//!
+//! A crate for the Resource Description Framework (RDF) and SPARQL.
+//!
+//! todo
+//!
+//! ## Usage
+//!
+//! todo
+
 use std::result;
 
 pub mod uri;

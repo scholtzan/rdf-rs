@@ -1,15 +1,22 @@
 use uri::Uri;
 
 
-
+/// Node representation.
 #[derive(Clone)]
 pub enum Node {
+  /// Node for representing a URI.
   UriNode { uri: Uri },
-  LiteralNode { literal: String, prefix: Option<String>, data_type: Option<Uri>, language: Option<String> },
+
+  /// Node for representing literals.
+  LiteralNode { literal: String,
+    prefix: Option<String>,
+    data_type: Option<Uri>,
+    language: Option<String>
+  },
+
+  /// Node for representing blanks.
   BlankNode { id: String }
 }
-
-
 
 
 
@@ -28,7 +35,8 @@ mod tests {
     };
 
     match node {
-      Node::LiteralNode { literal: lit, prefix: _, data_type: _, language: _ } => assert_eq!(lit, "abcd".to_string()),
+      Node::LiteralNode { literal: lit, prefix: _, data_type: _, language: _ } =>
+        assert_eq!(lit, "abcd".to_string()),
       _ => assert!(false)
     }
   }

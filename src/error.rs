@@ -1,6 +1,8 @@
 use std::fmt;
 use std::error::Error as StdError;
 
+
+/// An error related to the rdf-rs module.
 #[derive(Debug)]
 pub enum Error {
   InvalidWriterOutput

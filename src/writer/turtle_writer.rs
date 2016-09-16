@@ -5,6 +5,7 @@ use node::Node;
 use triple::Triple;
 use Result;
 
+// todo
 pub struct TurtleWriter {
   formatter: TurtleFormatter
 }
