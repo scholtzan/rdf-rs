@@ -38,7 +38,28 @@ impl Graph {
     self.triples.is_empty()
   }
 
+  /// Returns the number of triples that are stored in the graph.
+  pub fn count(&self) -> usize {
+    self.triples.count()
+  }
+
   /// Returns a literal node of the specified namespace.
+  ///
+  /// # Example
+  /// ```
+  /// use rdf_rs::graph::Graph;
+  /// use rdf_rs::node::Node;
+  ///
+  /// let graph = Graph::new();
+  /// let literal_node = graph.create_literal_node("literal".to_string(), None);
+  ///
+  /// assert_eq!(literal_node, Node::LiteralNode {
+  ///   literal: "literal".to_string(),
+  ///   prefix: None,
+  ///   data_type: None,
+  ///   language: None
+  /// });
+  /// ```
   pub fn create_literal_node(&self, literal: String, namespace: Option<&Namespace>) -> Node {
     Node::LiteralNode {
       literal: literal,
@@ -52,6 +73,23 @@ impl Graph {
   }
 
   /// Returns a literal node with a specified data type.
+  ///
+  /// # Example
+  /// ```
+  /// use rdf_rs::graph::Graph;
+  /// use rdf_rs::node::Node;
+  /// use rdf_rs::uri::Uri;
+  ///
+  /// let graph = Graph::new();
+  /// let literal_node = graph.create_literal_node_with_data_type("literal".to_string(), &Uri::new("http://example.org/show/localName".to_string()), None);
+  ///
+  /// assert_eq!(literal_node, Node::LiteralNode {
+  ///   literal: "literal".to_string(),
+  ///   prefix: None,
+  ///   data_type: Some(Uri::new("http://example.org/show/localName".to_string())),
+  ///   language: None
+  /// });
+  /// ```
   pub fn create_literal_node_with_data_type(&self, literal: String, data_type: &Uri, namespace: Option<&Namespace>) -> Node {
     Node::LiteralNode {
       literal: literal,
@@ -65,6 +103,22 @@ impl Graph {
   }
 
   /// Returns a literal node with a specified language.
+  ///
+  /// # Example
+  /// ```
+  /// use rdf_rs::graph::Graph;
+  /// use rdf_rs::node::Node;
+  ///
+  /// let graph = Graph::new();
+  /// let literal_node = graph.create_literal_node_with_language("literal".to_string(), "en".to_string(), None);
+  ///
+  /// assert_eq!(literal_node, Node::LiteralNode {
+  ///   literal: "literal".to_string(),
+  ///   prefix: None,
+  ///   data_type: None,
+  ///   language: Some("en".to_string())
+  /// });
+  /// ```
   pub fn create_literal_node_with_language(&self, literal: String, language: String, namespace: Option<&Namespace>) -> Node {
     Node::LiteralNode {
       literal: literal,
@@ -83,6 +137,19 @@ impl Graph {
   }
 
   /// Creates a blank node with a unique ID.
+  ///
+  /// # Example
+  /// ```
+  /// use rdf_rs::graph::Graph;
+  /// use rdf_rs::node::Node;
+  ///
+  /// let mut graph = Graph::new();
+  /// let blank_node = graph.create_blank_node();
+  ///
+  /// assert_eq!(blank_node, Node::BlankNode {
+  ///   id: "auto0".to_string()
+  /// });
+  /// ```
   pub fn create_blank_node(&mut self) -> Node {
     let id = self.get_next_id();
 
@@ -94,6 +161,19 @@ impl Graph {
   }
 
   /// Creates a blank node with the specified ID.
+  ///
+  /// # Example
+  /// ```
+  /// use rdf_rs::graph::Graph;
+  /// use rdf_rs::node::Node;
+  ///
+  /// let graph = Graph::new();
+  /// let blank_node = graph.create_blank_node_with_id("foobar".to_string());
+  ///
+  /// assert_eq!(blank_node, Node::BlankNode {
+  ///   id: "foobar".to_string()
+  /// });
+  /// ```
   pub fn create_blank_node_with_id(&self, id: String) -> Node {
     Node::BlankNode {
       id: id
@@ -101,6 +181,20 @@ impl Graph {
   }
 
   /// Creates a new URI node.
+  ///
+  /// # Example
+  /// ```
+  /// use rdf_rs::graph::Graph;
+  /// use rdf_rs::node::Node;
+  /// use rdf_rs::uri::Uri;
+  ///
+  /// let graph = Graph::new();
+  /// let uri_node = graph.create_uri_node(&Uri::new("http://example.org/show/localName".to_string()));
+  ///
+  /// assert_eq!(uri_node, Node::UriNode {
+  ///   uri: Uri::new("http://example.org/show/localName".to_string())
+  /// });
+  /// ```
   pub fn create_uri_node(&self, uri: &Uri) -> Node {
     Node::UriNode {
       uri: uri.clone()
@@ -108,12 +202,49 @@ impl Graph {
   }
 
   /// Adds a triple to the graph.
-  pub fn add_triple(&mut self, triple: Triple) {
+  ///
+  /// # Example
+  /// ```
+  /// use rdf_rs::graph::Graph;
+  /// use rdf_rs::uri::Uri;
+  /// use rdf_rs::triple::Triple;
+  ///
+  /// let mut graph = Graph::new();
+  ///
+  /// let subject = graph.create_blank_node();
+  /// let predicate = graph.create_uri_node(&Uri::new("http://example.org/show/localName".to_string()));
+  /// let object = graph.create_blank_node();
+  /// let triple = Triple::new(subject, predicate, object);
+  ///
+  /// graph.add_triple(&triple);
+  ///
+  /// assert_eq!(graph.count(), 1);
+  /// ```
+  pub fn add_triple(&mut self, triple: &Triple) {
     self.triples.add_triple(triple);
   }
 
   /// Deletes the triple from the graph.
-  pub fn remove_triple(&mut self, triple: Triple) {
+  ///
+  /// # Example
+  /// ```
+  /// use rdf_rs::graph::Graph;
+  /// use rdf_rs::uri::Uri;
+  /// use rdf_rs::triple::Triple;
+  ///
+  /// let mut graph = Graph::new();
+  ///
+  /// let subject = graph.create_blank_node();
+  /// let predicate = graph.create_uri_node(&Uri::new("http://example.org/show/localName".to_string()));
+  /// let object = graph.create_blank_node();
+  /// let triple = Triple::new(subject, predicate, object);
+  ///
+  /// graph.add_triple(&triple);
+  /// graph.remove_triple(&triple);
+  ///
+  /// assert_eq!(graph.count(), 0);
+  /// ```
+  pub fn remove_triple(&mut self, triple: &Triple) {
     self.triples.remove_triple(triple);
   }
 
@@ -150,5 +281,48 @@ impl Graph {
   /// Returns an iterator over the triples of the graph.
   pub fn triples_iter(&self) -> Iter<Triple> {
     self.triples.iter()
+  }
+}
+
+
+#[cfg(test)]
+mod tests {
+  use graph::Graph;
+  use node::*;
+  use namespace::Namespace;
+
+  #[test]
+  fn empty_graph() {
+    let graph = Graph::new();
+    assert_eq!(graph.is_empty(), true);
+  }
+
+  #[test]
+  fn create_literal_node() {
+    let graph = Graph::new();
+    let literal_node = graph.create_literal_node("literal".to_string(), None);
+
+    assert_eq!(literal_node, Node::LiteralNode {
+      literal: "literal".to_string(),
+      prefix: None,
+      data_type: None,
+      language: None
+    });
+  }
+
+  #[test]
+  fn create_multiple_blank_nodes() {
+    let mut graph = Graph::new();
+
+    let blank_node_0 = graph.create_blank_node();
+    let blank_node_1 = graph.create_blank_node();
+
+    assert_eq!(blank_node_0, Node::BlankNode {
+      id: "auto0".to_string()
+    });
+
+    assert_eq!(blank_node_1, Node::BlankNode {
+      id: "auto1".to_string()
+    });
   }
 }

@@ -95,14 +95,14 @@ impl TripleStore {
   }
 
   /// Adds a new triple to the store.
-  pub fn add_triple(&mut self, triple: Triple) {
+  pub fn add_triple(&mut self, triple: &Triple) {
     self.triples.push(triple.clone());
   }
 
   /// Deletes the triple from the store.
-  pub fn remove_triple(&mut self, triple: Triple) {
+  pub fn remove_triple(&mut self, triple: &Triple) {
     self.triples.retain(|ref t| {
-      **t != triple
+      *t != triple
     });
   }
 
@@ -256,7 +256,7 @@ mod tests {
 
     let trip = Triple::new(subject, predicate, object);
 
-    store.add_triple(trip);
+    store.add_triple(&trip);
 
     assert_eq!(store.count(), 1);
   }
