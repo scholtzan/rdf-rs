@@ -117,6 +117,36 @@ impl Graph {
     self.triples.remove_triple(triple);
   }
 
+  /// Returns all triples from the store that have the specified subject node.
+  pub fn get_triples_with_subject(&self, node: &Node) -> Vec<&Triple> {
+    self.triples.get_triples_with_subject(node)
+  }
+
+  /// Returns all triples from the store that have the specified predicate node.
+  pub fn get_triples_with_predicate(&self, node: &Node) -> Vec<&Triple> {
+    self.triples.get_triples_with_predicate(node)
+  }
+
+  /// Returns all triples from the store that have the specified object node.
+  pub fn get_triples_with_object(&self, node: &Node) -> Vec<&Triple> {
+    self.triples.get_triples_with_object(node)
+  }
+
+  /// Returns all triples from the triple store where the subject and object nodes match the provided nodes.
+  pub fn get_triples_with_subject_and_object(&self, subject_node: &Node, object_node: &Node) -> Vec<&Triple> {
+    self.triples.get_triples_with_subject_and_object(subject_node, object_node)
+  }
+
+  /// Returns all triples from the triple store where the subject and predicate nodes match the provided nodes.
+  pub fn get_triples_with_subject_and_predicate(&self, subject_node: &Node, predicate_node: &Node) -> Vec<&Triple> {
+    self.triples.get_triples_with_subject_and_predicate(subject_node, predicate_node)
+  }
+
+  /// Returns all triples from the triple store where the predicate and object nodes match the provided nodes.
+  pub fn get_triples_with_predicate_and_object(&self, predicate_node: &Node, object_node: &Node) -> Vec<&Triple> {
+    self.triples.get_triples_with_predicate_and_object(predicate_node, object_node)
+  }
+
   /// Returns an iterator over the triples of the graph.
   pub fn triples_iter(&self) -> Iter<Triple> {
     self.triples.iter()

@@ -136,27 +136,61 @@ impl TripleStore {
     self.triples.iter().filter(|t| t.object() == node).collect::<Vec<_>>()
   }
 
+  /// Returns all triples where the subject and object nodes match the provided nodes.
+  ///
+  /// # Example
+  ///
+  /// todo
+  ///
+  pub fn get_triples_with_subject_and_object(&self, subject_node: &Node, object_node: &Node) -> Vec<&Triple> {
+    self.triples.iter().filter(|t|
+      t.object() == object_node && t.subject() == subject_node
+    ).collect::<Vec<_>>()
+  }
+
+  /// Returns all triples where the subject and predicate nodes match the provided nodes.
+  ///
+  /// # Example
+  ///
+  /// todo
+  ///
+  pub fn get_triples_with_subject_and_predicate(&self, subject_node: &Node, predicate_node: &Node) -> Vec<&Triple> {
+    self.triples.iter().filter(|t|
+      t.predicate() == predicate_node && t.subject() == subject_node
+    ).collect::<Vec<_>>()
+  }
+
+  /// Returns all triples where the predicate and object nodes match the provided nodes.
+  ///
+  /// # Example
+  ///
+  /// todo
+  ///
+  pub fn get_triples_with_predicate_and_object(&self, predicate_node: &Node, object_node: &Node) -> Vec<&Triple> {
+    self.triples.iter().filter(|t|
+      t.predicate() == predicate_node && t.object() == object_node
+    ).collect::<Vec<_>>()
+  }
+
   /// Returns all blank nodes of the store.
   pub fn get_blank_nodes(&self) -> Vec<&Node> {
-    let mut blank_subject_nodes = self.triples.iter().filter_map(|t| {
-      match t {
+    let mut blank_nodes = Vec::new();
+
+    for triple in self.triples.iter() {
+      match triple {
+        &Triple { subject: Node::BlankNode {id : _}, predicate: _, object: Node::BlankNode {id : _} } => {
+          blank_nodes.push(triple.subject());
+          blank_nodes.push(triple.object());
+        },
         &Triple { subject: Node::BlankNode {id : _}, predicate: _, object: _ } =>
-          Some(t.subject()),
-        _ => None // does not contain a blank node
-      }
-    }).collect::<Vec<&Node>>();
-
-    let mut blank_object_nodes = self.triples.iter().filter_map(|t| {
-      match t {
+          blank_nodes.push(triple.subject()),
         &Triple { subject: _, predicate: _, object: Node::BlankNode {id : _} } =>
-          Some(t.object()),
-        _ => None // does not contain a blank node
+          blank_nodes.push(triple.object()),
+        _ => { }
       }
-    });
+    }
 
-    blank_subject_nodes.extend(blank_object_nodes);
-
-    blank_subject_nodes
+    blank_nodes
   }
 
   /// Returns the stored triples as vector.
