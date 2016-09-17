@@ -1,6 +1,6 @@
 // todo: implement
 
-#[derive(Clone)]
+#[derive(Clone, PartialEq, Debug)]
 pub struct Uri {
   uri: String
 }

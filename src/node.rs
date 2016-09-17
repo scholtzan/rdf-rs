@@ -2,13 +2,14 @@ use uri::Uri;
 
 
 /// Node representation.
-#[derive(Clone)]
+#[derive(Clone, PartialEq, Debug)]
 pub enum Node {
   /// Node for representing a URI.
   UriNode { uri: Uri },
 
   /// Node for representing literals.
-  LiteralNode { literal: String,
+  LiteralNode {
+    literal: String,
     prefix: Option<String>,
     data_type: Option<Uri>,
     language: Option<String>
@@ -17,7 +18,6 @@ pub enum Node {
   /// Node for representing blanks.
   BlankNode { id: String }
 }
-
 
 
 

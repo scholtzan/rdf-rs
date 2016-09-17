@@ -1,10 +1,11 @@
 use node::{Node};
 use std::slice::Iter;
 use std::vec::IntoIter;
-
+use std::cmp::PartialEq;
+use std::fmt;
 
 /// Triple segment.
-#[derive(PartialEq)]
+#[derive(PartialEq, Debug)]
 pub enum TripleSegment {
   Subject,
   Predicate,
@@ -13,7 +14,7 @@ pub enum TripleSegment {
 
 
 /// Triple representation.
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct Triple {
   subject: Node,
   predicate: Node,
@@ -55,9 +56,21 @@ impl Triple {
 }
 
 
+impl PartialEq for Triple {
+  fn eq(&self, other: &Triple) -> bool {
+    self.subject() == other.subject() &&
+    self.predicate() == other.predicate() &&
+    self.object() == other.object()
+  }
+}
+
+impl Eq for Triple { }
+
+
 
 
 /// Storage for triples.
+#[derive(Debug)]
 pub struct TripleStore {
   triples: Vec<Triple>
 }
@@ -84,6 +97,66 @@ impl TripleStore {
   /// Adds a new triple to the store.
   pub fn add_triple(&mut self, triple: Triple) {
     self.triples.push(triple.clone());
+  }
+
+  /// Deletes the triple from the store.
+  pub fn remove_triple(&mut self, triple: Triple) {
+    self.triples.retain(|ref t| {
+      **t != triple
+    });
+  }
+
+  /// Returns all triples where the subject node matches the provided node.
+  ///
+  /// # Example
+  ///
+  /// todo
+  ///
+  pub fn get_triples_with_subject(&self, node: &Node) -> Vec<&Triple> {
+    self.triples.iter().filter(|t| t.subject() == node).collect::<Vec<_>>()
+  }
+
+  /// Returns all triples where the predicate node matches the provided node.
+  ///
+  /// # Example
+  ///
+  /// todo
+  ///
+  pub fn get_triples_with_predicate(&self, node: &Node) -> Vec<&Triple> {
+    self.triples.iter().filter(|t| t.predicate() == node).collect::<Vec<_>>()
+  }
+
+  /// Returns all triples where the object node matches the provided node.
+  ///
+  /// # Example
+  ///
+  /// todo
+  ///
+  pub fn get_triples_with_object(&self, node: &Node) -> Vec<&Triple> {
+    self.triples.iter().filter(|t| t.object() == node).collect::<Vec<_>>()
+  }
+
+  /// Returns all blank nodes of the store.
+  pub fn get_blank_nodes(&self) -> Vec<&Node> {
+    let mut blank_subject_nodes = self.triples.iter().filter_map(|t| {
+      match t {
+        &Triple { subject: Node::BlankNode {id : _}, predicate: _, object: _ } =>
+          Some(t.subject()),
+        _ => None // does not contain a blank node
+      }
+    }).collect::<Vec<&Node>>();
+
+    let mut blank_object_nodes = self.triples.iter().filter_map(|t| {
+      match t {
+        &Triple { subject: _, predicate: _, object: Node::BlankNode {id : _} } =>
+          Some(t.object()),
+        _ => None // does not contain a blank node
+      }
+    });
+
+    blank_subject_nodes.extend(blank_object_nodes);
+
+    blank_subject_nodes
   }
 
   /// Returns the stored triples as vector.

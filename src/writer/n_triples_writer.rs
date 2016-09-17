@@ -28,7 +28,10 @@ impl RdfWriter for NTriplesWriter {
     for triple in graph.triples_iter() {
       // convert each triple of the graph to N-Triple syntax
       match self.triple_to_n_triples(&triple) {
-        Ok(str) => output_string.push_str(&str),
+        Ok(str) => {
+          output_string.push_str(&str);
+          output_string.push_str("\n");
+        },
         Err(error) => return Err(error),
       }
     }
