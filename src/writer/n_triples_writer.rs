@@ -18,10 +18,6 @@ impl RdfWriter for NTriplesWriter {
   ///
   /// Returns an error if invalid N-Triple syntax would be generated.
   ///
-  /// # Example
-  ///
-  /// todo
-  ///
   fn write_to_string(&self, graph: &Graph) -> Result<String> {
     let mut output_string = "".to_string();
 
@@ -43,11 +39,6 @@ impl RdfWriter for NTriplesWriter {
 
 impl NTriplesWriter {
   /// Constructor of `NTriplesWriter`.
-  ///
-  /// # Example
-  ///
-  /// todo
-  ///
   pub fn new() -> NTriplesWriter {
     NTriplesWriter {
       formatter: NTriplesFormatter::new()
@@ -55,11 +46,6 @@ impl NTriplesWriter {
   }
 
   /// Generates the corresponding N-Triples syntax of the provided triple.
-  ///
-  /// # Example
-  ///
-  /// todo
-  ///
   pub fn triple_to_n_triples(&self, triple: &Triple) -> Result<String> {
     let mut output_string = "".to_string();
 
@@ -93,10 +79,6 @@ impl NTriplesWriter {
   /// Converts a single node to its corresponding N-Triples representation.
   ///
   /// Checks if the node type is valid considering the triple segment.
-  ///
-  /// # Example
-  ///
-  /// todo
   ///
   pub fn node_to_n_triples(&self, node: &Node, segment: TripleSegment) -> Result<String> {
     // todo: literal node either data type or language

@@ -9,11 +9,6 @@ pub struct NTriplesFormatter { }
 
 impl NTriplesFormatter {
   /// Constructor of `NTriplesFormatter`.
-  ///
-  /// # Example
-  ///
-  /// todo
-  ///
   pub fn new() -> NTriplesFormatter {
     NTriplesFormatter { }
   }
@@ -25,11 +20,6 @@ impl RdfFormatter for NTriplesFormatter {
   ///
   /// Determines the node type, extracts its content and calls the
   /// right function for formatting this content.
-  ///
-  /// # Example
-  ///
-  /// todo
-  ///
   fn format_node(&self, node: &Node) -> String {
     match node {
       &Node::BlankNode { ref id } => self.format_blank(&id),
@@ -43,10 +33,6 @@ impl RdfFormatter for NTriplesFormatter {
   /// Formats a literal to the corresponding N-Triples syntax.
   ///
   /// Also considers the data type and language of the literal.
-  ///
-  /// # Example
-  ///
-  /// todo
   ///
   fn format_literal(&self, literal: &String, data_type: &Option<Uri>, language: &Option<String>) -> String {
     let mut output_string = "\"".to_string();
@@ -74,21 +60,11 @@ impl RdfFormatter for NTriplesFormatter {
   }
 
   /// Formats the content of a blank node to the corresponding N-Triples syntax.
-  ///
-  /// # Example
-  ///
-  /// todo
-  ///
   fn format_blank(&self, id: &String) -> String {
     "_:".to_string() + &id.to_string()
   }
 
   /// Formats a URI to N-Triples syntax.
-  ///
-  /// # Example
-  ///
-  /// todo
-  ///
   fn format_uri(&self, uri: &Uri) -> String {
     let mut output_string = "<".to_string();
     output_string.push_str(uri.uri());

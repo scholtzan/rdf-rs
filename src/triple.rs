@@ -29,15 +29,17 @@ impl Triple {
   ///
   /// # Examples
   ///
-  /// use rdf_sr::triple::Triple;
+  /// ```
+  /// use rdf_rs::triple::Triple;
   /// use rdf_rs::node::Node;
+  /// use rdf_rs::uri::Uri;
   ///
-  /// let subject = graph.create_blank_node();
-  /// let predicate = graph.create_uri_node(&Uri::new("http://example.org/show/localName".to_string()));
-  /// let object = graph.create_blank_node();
+  /// let subject = Node::BlankNode { id: "a".to_string() };
+  /// let predicate = Node::UriNode { uri: Uri::new("http://example.org/show/localName".to_string()) } ;
+  /// let object = Node::BlankNode { id: "b".to_string() };
   ///
-  /// let triple = Triple::new(subject, predicate, object);
-  ///
+  /// Triple::new(subject, predicate, object);
+  /// ```
   pub fn new(subject: Node, predicate: Node, object: Node) -> Triple {
     Triple {
       subject: subject.clone(),
