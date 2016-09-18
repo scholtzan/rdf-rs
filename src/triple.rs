@@ -29,7 +29,14 @@ impl Triple {
   ///
   /// # Examples
   ///
-  /// todo
+  /// use rdf_sr::triple::Triple;
+  /// use rdf_rs::node::Node;
+  ///
+  /// let subject = graph.create_blank_node();
+  /// let predicate = graph.create_uri_node(&Uri::new("http://example.org/show/localName".to_string()));
+  /// let object = graph.create_blank_node();
+  ///
+  /// let triple = Triple::new(subject, predicate, object);
   ///
   pub fn new(subject: Node, predicate: Node, object: Node) -> Triple {
     Triple {
@@ -107,41 +114,21 @@ impl TripleStore {
   }
 
   /// Returns all triples where the subject node matches the provided node.
-  ///
-  /// # Example
-  ///
-  /// todo
-  ///
   pub fn get_triples_with_subject(&self, node: &Node) -> Vec<&Triple> {
     self.triples.iter().filter(|t| t.subject() == node).collect::<Vec<_>>()
   }
 
   /// Returns all triples where the predicate node matches the provided node.
-  ///
-  /// # Example
-  ///
-  /// todo
-  ///
   pub fn get_triples_with_predicate(&self, node: &Node) -> Vec<&Triple> {
     self.triples.iter().filter(|t| t.predicate() == node).collect::<Vec<_>>()
   }
 
   /// Returns all triples where the object node matches the provided node.
-  ///
-  /// # Example
-  ///
-  /// todo
-  ///
   pub fn get_triples_with_object(&self, node: &Node) -> Vec<&Triple> {
     self.triples.iter().filter(|t| t.object() == node).collect::<Vec<_>>()
   }
 
   /// Returns all triples where the subject and object nodes match the provided nodes.
-  ///
-  /// # Example
-  ///
-  /// todo
-  ///
   pub fn get_triples_with_subject_and_object(&self, subject_node: &Node, object_node: &Node) -> Vec<&Triple> {
     self.triples.iter().filter(|t|
       t.object() == object_node && t.subject() == subject_node
@@ -149,11 +136,6 @@ impl TripleStore {
   }
 
   /// Returns all triples where the subject and predicate nodes match the provided nodes.
-  ///
-  /// # Example
-  ///
-  /// todo
-  ///
   pub fn get_triples_with_subject_and_predicate(&self, subject_node: &Node, predicate_node: &Node) -> Vec<&Triple> {
     self.triples.iter().filter(|t|
       t.predicate() == predicate_node && t.subject() == subject_node
@@ -161,11 +143,6 @@ impl TripleStore {
   }
 
   /// Returns all triples where the predicate and object nodes match the provided nodes.
-  ///
-  /// # Example
-  ///
-  /// todo
-  ///
   pub fn get_triples_with_predicate_and_object(&self, predicate_node: &Node, object_node: &Node) -> Vec<&Triple> {
     self.triples.iter().filter(|t|
       t.predicate() == predicate_node && t.object() == object_node
