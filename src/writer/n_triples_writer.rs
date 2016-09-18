@@ -81,20 +81,28 @@ impl NTriplesWriter {
   /// Checks if the node type is valid considering the triple segment.
   ///
   pub fn node_to_n_triples(&self, node: &Node, segment: TripleSegment) -> Result<String> {
-    // todo: literal node either data type or language
     match node {
       &Node::BlankNode { id: _ } =>
         // blank nodes are not allowed as predicates
         if segment == TripleSegment::Predicate {
           return Err(Error::InvalidWriterOutput)
         },
+      &Node::LiteralNode { literal: _, prefix: _, data_type: ref dt, language: ref lang } => {
+        // literal nodes are only allowed as objects
+        if segment != TripleSegment::Object {
+          return Err(Error::InvalidWriterOutput)
+        }
+
+        // either language or data type could be defined, but not both
+        if *lang != None && *dt != None {
+          return Err(Error::InvalidWriterOutput)
+        }
+      },
       _ => {},
     }
 
-    let formatter = NTriplesFormatter::new();
-
     // use the formatter to get the corresponding N-Triple syntax
-    Ok(formatter.format_node(node))
+    Ok(self.formatter.format_node(node))
   }
 }
 
@@ -103,7 +111,6 @@ impl NTriplesWriter {
 mod tests {
   use node::Node;
   use triple::*;
-  use writer::formatter::n_triples_formatter::NTriplesFormatter;
   use uri::Uri;
   use writer::n_triples_writer::NTriplesWriter;
 
@@ -120,7 +127,7 @@ mod tests {
     let writer = NTriplesWriter::new();
     match writer.triple_to_n_triples(&trip) {
       Ok(str) => assert_eq!(result, str),
-      Err(err) => assert!(false)
+      Err(_) => assert!(false)
     }
   }
 }

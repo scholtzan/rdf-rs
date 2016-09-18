@@ -2,7 +2,6 @@ use node::{Node};
 use std::slice::Iter;
 use std::vec::IntoIter;
 use std::cmp::PartialEq;
-use std::fmt;
 
 /// Triple segment.
 #[derive(PartialEq, Debug)]
