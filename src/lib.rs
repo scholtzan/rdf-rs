@@ -16,6 +16,7 @@ pub mod node;
 pub mod triple;
 pub mod graph;
 pub mod error;
+pub mod helper;
 
 pub type Result<T> = result::Result<T, error::Error>;
 

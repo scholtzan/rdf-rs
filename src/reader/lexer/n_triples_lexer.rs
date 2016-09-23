@@ -2,6 +2,7 @@ use reader::lexer::rdf_lexer::RdfLexer;
 use reader::lexer::token::Token;
 use std::io::Read;
 
+
 pub struct NTriplesLexer<R: Read> {
   input: R
 }
