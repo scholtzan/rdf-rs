@@ -31,6 +31,17 @@ pub mod writer {
   pub mod n_triples_writer;
 }
 
+pub mod reader {
+  pub mod lexer {
+    pub mod token;
+    pub mod rdf_lexer;
+    pub mod n_triples_lexer;
+  }
+
+  pub mod rdf_reader;
+  pub mod n_triples_reader;
+}
+
 #[cfg(test)]
 mod tests {
     #[test]
