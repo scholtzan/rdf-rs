@@ -1,7 +1,12 @@
 
 // todo
+#[derive(Debug, PartialEq)]
 pub enum Token {
-  Comment(&'static str),
-  LanguageSpecification(&'static str),
+  Comment(String),
+  LanguageSpecification(String),
+  Literal(String),
+  Uri(String),
+  BlankNode(String),
   TripleDelimiter,
+  DataTypeStart,
 }

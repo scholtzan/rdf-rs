@@ -41,6 +41,26 @@ pub fn get_next_char<R: Read>(reader: &mut R) -> Result<Option<char>> {
 }
 
 
+/// Returns the next character of an input source that is not a whitespace.
+///
+/// # Example
+/// ```
+/// use rdf_rs::helper;
+///
+/// let mut input = "H   ello World!".as_bytes();
+/// assert_eq!(Some('H'), helper::get_next_char_discard_leading_spaces(&mut input).unwrap());
+/// assert_eq!(Some('e'), helper::get_next_char_discard_leading_spaces(&mut input).unwrap());
+/// ```
+pub fn get_next_char_discard_leading_spaces<R: Read>(reader: &mut R) -> Result<Option<char>> {
+  loop {
+    match get_next_char(reader) {
+      Ok(Some(' ')) => { },
+      c => return c
+    }
+  }
+}
+
+
 /// Returns all characters of a input source until a certain delimiter occurs.
 ///
 /// The delimiter itself is skipped.
@@ -50,18 +70,39 @@ pub fn get_next_char<R: Read>(reader: &mut R) -> Result<Option<char>> {
 /// use rdf_rs::helper;
 ///
 /// let mut input = "Hello World!".as_bytes();
-/// assert_eq!("Hello".to_string(), helper::get_until(&mut input, ' ').unwrap());
-/// assert_eq!("World".to_string(), helper::get_until(&mut input, '!').unwrap());
+/// assert_eq!("Hello".to_string(), helper::get_until(&mut input, |c| c == ' ').unwrap());
+/// assert_eq!("World".to_string(), helper::get_until(&mut input, |c| c == '!').unwrap());
 /// ```
-pub fn get_until<R: Read>(reader: &mut R, delimiter: char) -> Result<String> {
+pub fn get_until<R: Read, F: Fn(char) -> bool>(reader: &mut R, delimiter: F) -> Result<String> {
   let mut buf = Vec::new();
 
   loop {
     match get_next_char(reader) {
-      Ok(Some(c)) if c == delimiter => return Ok(buf.into_iter().collect()),
-      Ok(Some(c)) if c != delimiter => buf.push(c),
-      Ok(_) => return Err(Error::EndOfInput),
+      Ok(Some(c)) if delimiter(c) => return Ok(buf.into_iter().collect()),
+      Ok(Some(c)) if !delimiter(c) => buf.push(c),
+      Ok(_) => return Err(Error::EndOfInput(buf.into_iter().collect())),
       Err(err) => return Err(err)
     }
+  }
+}
+
+
+/// Returns all characters of a input source until a certain delimiter occurs and removes leading whitespaces.
+///
+/// The delimiter itself is skipped.
+///
+/// # Example
+/// ```
+/// use rdf_rs::helper;
+///
+/// let mut input = "Hello    World!".as_bytes();
+/// assert_eq!("Hello".to_string(), helper::get_until_discard_leading_spaces(&mut input, |c| c == ' ').unwrap());
+/// assert_eq!("World".to_string(), helper::get_until_discard_leading_spaces(&mut input, |c| c == '!').unwrap());
+/// ```
+pub fn get_until_discard_leading_spaces<R: Read, F: Fn(char) -> bool>(reader: &mut R, delimiter: F) -> Result<String> {
+  match get_until(reader, delimiter) {
+    Ok(str) => Ok(str.to_owned().trim().to_string()),
+    Err(Error::EndOfInput(str)) => Err(Error::EndOfInput(str.to_owned().trim().to_string())),
+    Err(err) => Err(err)
   }
 }
