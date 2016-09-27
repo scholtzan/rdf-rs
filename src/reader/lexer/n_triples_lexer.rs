@@ -8,7 +8,8 @@ use Result;
 
 
 pub struct NTriplesLexer<R: Read> {
-  input: R
+  input: R,
+  peeked_token: Option<Token>
 }
 
 
@@ -21,7 +22,8 @@ impl<R: Read> RdfLexer<R> for NTriplesLexer<R> {
   ///
   fn new(input: R) -> NTriplesLexer<R> {
     NTriplesLexer {
-      input: input
+      input: input,
+      peeked_token: None
     }
   }
 
@@ -32,6 +34,14 @@ impl<R: Read> RdfLexer<R> for NTriplesLexer<R> {
   /// todo
   ///
   fn get_next_token(&mut self) -> Result<Token> {
+    match self.peeked_token.clone() {
+      Some(token) => {
+        self.peeked_token = None;
+        return Ok(token)
+      },
+      None => { }
+    }
+
     match helper::get_next_char_discard_leading_spaces(&mut self.input) {
       Ok(Some('#')) => self.get_comment(),
       Ok(Some('@')) => self.get_language_specification(),
@@ -41,6 +51,27 @@ impl<R: Read> RdfLexer<R> for NTriplesLexer<R> {
       Ok(Some('^')) => self.get_data_type(),
       Ok(Some('.')) => Ok(Token::TripleDelimiter),
       _ => Err(Error::InvalidReaderInput)
+    }
+  }
+
+  /// Determines the next token without consuming it.
+  ///
+  /// # Examples
+  ///
+  /// todo
+  ///
+  fn peek_next_token(&mut self) -> Result<Token> {
+    match self.peeked_token.clone() {
+      Some(token) => Ok(token),
+      None => {
+        match self.get_next_token() {
+          Ok(next) => {
+            self.peeked_token = Some(next.clone());
+            return Ok(next)
+          },
+          Err(err) => return Err(err)
+        }
+      }
     }
   }
 }

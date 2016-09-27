@@ -7,4 +7,5 @@ pub trait RdfLexer<R: Read> {
   fn new(input: R) -> Self;
 
   fn get_next_token(&mut self) -> Result<Token>;
+  fn peek_next_token(&mut self) -> Result<Token>;
 }

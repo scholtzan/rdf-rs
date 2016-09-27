@@ -1,6 +1,6 @@
 
 // todo
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub enum Token {
   Comment(String),
   LanguageSpecification(String),
