@@ -6,5 +6,5 @@ use Result;
 pub trait RdfReader {
   /// Generates an RDF graph from a provided RDF syntax.
   /// Returns an error if invalid RDF input is provided.
-  fn read_from_string(&mut self, input_str: &String) -> Result<Graph>;
-}
+  fn decode(&mut self) -> Result<Graph>;
+} 

@@ -6,7 +6,6 @@ use error::Error;
 use Result;
 
 
-
 pub struct NTriplesLexer<R: Read> {
   input: R,
   peeked_token: Option<Token>
@@ -18,8 +17,14 @@ impl<R: Read> RdfLexer<R> for NTriplesLexer<R> {
   ///
   /// # Example
   ///
-  /// todo
+  /// ```
+  /// use rdf_rs::reader::lexer::rdf_lexer::RdfLexer;
+  /// use rdf_rs::reader::lexer::n_triples_lexer::NTriplesLexer;
   ///
+  /// let input = "<example.org/a>".as_bytes();
+  ///
+  /// let mut lexer = NTriplesLexer::new(input);
+  /// ```
   fn new(input: R) -> NTriplesLexer<R> {
     NTriplesLexer {
       input: input,
@@ -29,10 +34,22 @@ impl<R: Read> RdfLexer<R> for NTriplesLexer<R> {
 
   /// Determines the next token from the input.
   ///
-  /// # Examples
+  /// # Example
   ///
-  /// todo
+  /// ```
+  /// use rdf_rs::reader::lexer::rdf_lexer::RdfLexer;
+  /// use rdf_rs::reader::lexer::n_triples_lexer::NTriplesLexer;
+  /// use rdf_rs::reader::lexer::token::Token;
   ///
+  /// let input = "_:auto <example.org/b> \"test\" .".as_bytes();
+  ///
+  /// let mut lexer = NTriplesLexer::new(input);
+  ///
+  /// assert_eq!(lexer.get_next_token().unwrap(), Token::BlankNode("auto".to_string()));
+  /// assert_eq!(lexer.get_next_token().unwrap(), Token::Uri("example.org/b".to_string()));
+  /// assert_eq!(lexer.get_next_token().unwrap(), Token::Literal("test".to_string()));
+  /// assert_eq!(lexer.get_next_token().unwrap(), Token::TripleDelimiter);
+  /// ```
   fn get_next_token(&mut self) -> Result<Token> {
     match self.peeked_token.clone() {
       Some(token) => {
@@ -50,7 +67,8 @@ impl<R: Read> RdfLexer<R> for NTriplesLexer<R> {
       Ok(Some('_')) => self.get_blank_node(),
       Ok(Some('^')) => self.get_data_type(),
       Ok(Some('.')) => Ok(Token::TripleDelimiter),
-      _ => Err(Error::InvalidReaderInput)
+      Ok(None) => Ok(Token::EndOfInput),
+      e => Err(Error::InvalidReaderInput)
     }
   }
 
@@ -58,8 +76,20 @@ impl<R: Read> RdfLexer<R> for NTriplesLexer<R> {
   ///
   /// # Examples
   ///
-  /// todo
+  /// ```
+  /// use rdf_rs::reader::lexer::rdf_lexer::RdfLexer;
+  /// use rdf_rs::reader::lexer::n_triples_lexer::NTriplesLexer;
+  /// use rdf_rs::reader::lexer::token::Token;
   ///
+  /// let input = "_:auto <example.org/b> \"test\" .".as_bytes();
+  ///
+  /// let mut lexer = NTriplesLexer::new(input);
+  ///
+  /// assert_eq!(lexer.peek_next_token().unwrap(), Token::BlankNode("auto".to_string()));
+  /// assert_eq!(lexer.peek_next_token().unwrap(), Token::BlankNode("auto".to_string()));
+  /// assert_eq!(lexer.get_next_token().unwrap(), Token::BlankNode("auto".to_string()));
+  /// assert_eq!(lexer.peek_next_token().unwrap(), Token::Uri("example.org/b".to_string()));
+  /// ```
   fn peek_next_token(&mut self) -> Result<Token> {
     match self.peeked_token.clone() {
       Some(token) => Ok(token),
@@ -98,7 +128,7 @@ impl<R: Read> NTriplesLexer<R> {
 
   /// Parses a literal from the input and returns it as token.
   fn get_literal(&mut self) -> Result<Token> {
-    match helper::get_until(&mut self.input, |c| c == '\"') {
+    match helper::get_until(&mut self.input, |c| c == '"') {
       Ok(str) => Ok(Token::Literal(str)),
       Err(err) => Err(err)
     }

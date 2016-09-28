@@ -9,4 +9,5 @@ pub enum Token {
   BlankNode(String),
   TripleDelimiter,
   DataTypeStart,
+  EndOfInput,
 }

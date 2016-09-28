@@ -4,6 +4,8 @@ use std::str;
 use std::io::prelude::*;
 use error::Error;
 
+// todo: store white spaces
+
 
 /// Returns the next character of an input source.
 ///
@@ -55,6 +57,9 @@ pub fn get_next_char_discard_leading_spaces<R: Read>(reader: &mut R) -> Result<O
   loop {
     match get_next_char(reader) {
       Ok(Some(' ')) => { },
+      Ok(Some('\n')) => { },
+      Ok(Some('\t')) => { },
+      Ok(Some('\r')) => { },
       c => return c
     }
   }
