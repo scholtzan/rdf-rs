@@ -41,12 +41,10 @@ impl<R: Read> RdfReader for NTriplesReader<R> {
   fn decode(&mut self) -> Result<Graph> {
     let mut graph = Graph::new();
 
-    // todo: parse namespaces
-
     loop {
       match self.lexer.peek_next_token() {
         Ok(Token::Comment(_)) => {
-          self.lexer.get_next_token();
+          let _ = self.lexer.get_next_token();
           continue
         },
         Ok(Token::EndOfInput) => return Ok(graph),
@@ -129,11 +127,11 @@ impl<R: Read> NTriplesReader<R> {
       Ok(Token::Literal(literal)) => {
         match self.lexer.peek_next_token() {
           Ok(Token::LanguageSpecification(lang)) => {
-            self.lexer.get_next_token();
+            let _ = self.lexer.get_next_token();
             Ok(Node::LiteralNode { literal: literal, prefix: None, data_type: None, language: Some(lang) })
           },
           Ok(Token::DataTypeStart) => {
-            self.lexer.get_next_token();
+            let _ = self.lexer.get_next_token();
             match self.lexer.get_next_token() {
               Ok(Token::Uri(uri)) =>
                 Ok(Node::LiteralNode { literal: literal, prefix: None, data_type: Some(Uri::new(uri)), language: None }),

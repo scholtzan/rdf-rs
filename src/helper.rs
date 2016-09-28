@@ -1,10 +1,7 @@
 use Result;
-use std::io;
 use std::str;
 use std::io::prelude::*;
 use error::Error;
-
-// todo: store white spaces
 
 
 /// Returns the next character of an input source.

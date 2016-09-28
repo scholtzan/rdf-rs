@@ -23,7 +23,7 @@ impl<R: Read> RdfLexer<R> for NTriplesLexer<R> {
   ///
   /// let input = "<example.org/a>".as_bytes();
   ///
-  /// let mut lexer = NTriplesLexer::new(input);
+  /// NTriplesLexer::new(input);
   /// ```
   fn new(input: R) -> NTriplesLexer<R> {
     NTriplesLexer {
@@ -68,7 +68,7 @@ impl<R: Read> RdfLexer<R> for NTriplesLexer<R> {
       Ok(Some('^')) => self.get_data_type(),
       Ok(Some('.')) => Ok(Token::TripleDelimiter),
       Ok(None) => Ok(Token::EndOfInput),
-      e => Err(Error::InvalidReaderInput)
+      _ => Err(Error::InvalidReaderInput)
     }
   }
 
@@ -175,7 +175,7 @@ mod tests {
 
   #[test]
   fn parse_comment() {
-    let mut input = "# Hello World!\n# Foo".as_bytes();
+    let input = "# Hello World!\n# Foo".as_bytes();
 
     let mut lexer = NTriplesLexer::new(input);
 
@@ -185,7 +185,7 @@ mod tests {
 
   #[test]
   fn parse_literal() {
-    let mut input = "\"a\"@abc".as_bytes();
+    let input = "\"a\"@abc".as_bytes();
 
     let mut lexer = NTriplesLexer::new(input);
 
@@ -194,7 +194,7 @@ mod tests {
 
   #[test]
   fn parse_uri() {
-    let mut input = "<example.org/a>".as_bytes();
+    let input = "<example.org/a>".as_bytes();
 
     let mut lexer = NTriplesLexer::new(input);
 
@@ -203,7 +203,7 @@ mod tests {
 
   #[test]
   fn parse_language_specification() {
-    let mut input = "\"a\"@abc".as_bytes();
+    let input = "\"a\"@abc".as_bytes();
 
     let mut lexer = NTriplesLexer::new(input);
 
@@ -215,7 +215,7 @@ mod tests {
 
   #[test]
   fn parse_blank_node() {
-    let mut input = "_:auto".as_bytes();
+    let input = "_:auto".as_bytes();
 
     let mut lexer = NTriplesLexer::new(input);
 
@@ -224,7 +224,7 @@ mod tests {
 
   #[test]
   fn parse_data_type() {
-    let mut input = "\"a\"^^<example.org/abc>".as_bytes();
+    let input = "\"a\"^^<example.org/abc>".as_bytes();
 
     let mut lexer = NTriplesLexer::new(input);
 
@@ -235,7 +235,7 @@ mod tests {
 
   #[test]
   fn parse_triple_delimiter() {
-    let mut input = ".   \"a\"   .".as_bytes();
+    let input = ".   \"a\"   .".as_bytes();
 
     let mut lexer = NTriplesLexer::new(input);
 
