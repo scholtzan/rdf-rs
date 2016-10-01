@@ -2,7 +2,7 @@ use uri::Uri;
 
 
 /// Node representation.
-#[derive(Clone, PartialEq, Debug)]
+#[derive(Clone, PartialEq, PartialOrd, Eq, Ord, Debug)]
 pub enum Node {
   /// Node for representing a URI.
   UriNode { uri: Uri },

@@ -13,7 +13,7 @@ pub enum TripleSegment {
 
 
 /// Triple representation.
-#[derive(Clone, Debug)]
+#[derive(PartialOrd, Ord, Clone, Debug)]
 pub struct Triple {
   subject: Node,
   predicate: Node,

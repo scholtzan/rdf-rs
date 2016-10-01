@@ -3,6 +3,7 @@ use triple::*;
 use namespace::*;
 use node::*;
 use std::slice::Iter;
+use std::collections::HashMap;
 
 
 /// Representation of an RDF graph.
@@ -41,6 +42,26 @@ impl Graph {
   /// Returns the number of triples that are stored in the graph.
   pub fn count(&self) -> usize {
     self.triples.count()
+  }
+
+  /// Returns the base URI of the graph.
+  ///
+  /// # Example
+  ///
+  /// todo
+  ///
+  pub fn base_uri(&self) -> &Option<Uri> {
+    &self.base_uri
+  }
+
+  /// Returns a hashmap of namespaces and prefixes.
+  ///
+  /// # Example
+  ///
+  /// todo
+  ///
+  pub fn namespaces(&self) -> &HashMap<String, Uri> {
+    self.namespaces.namespaces()
   }
 
   /// Returns a literal node of the specified namespace.

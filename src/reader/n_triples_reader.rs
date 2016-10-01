@@ -166,6 +166,27 @@ mod tests {
       Err(_) => assert!(false)
     }
   }
+
+//  #[test]
+//  fn read_n_triples_from_string_and_sort() {
+//    let input = "<http://www.w3.org/2001/sw/RDFCore/ntriples/> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Document> .
+//                 <http://www.w3.org/2001/sw/RDFCore/ntriples/> <http://xmlns.com/foaf/0.1/maker> _:art .
+//                 _:art <http://xmlns.com/foaf/0.1/name> \"Art Barstow\" .
+//                 <http://www.w3.org/2001/sw/RDFCore/ntriples/> <http://purl.org/dc/terms/title> \"N-Triples\"@en-US .";
+//
+//    let mut reader = NTriplesReader::from_string(input.to_string());
+//
+//    match reader.decode() {
+//      Ok(mut graph) => {
+//        for x in graph.sorted_triples_iter() {
+//          println!("{:?}\n", x);
+//        }
+//
+//        assert!(true)
+//      },
+//      Err(_) => assert!(false)
+//    }
+//  }
 }
 
 
