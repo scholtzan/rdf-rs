@@ -18,6 +18,8 @@ impl XmlDataTypes {
     // todo
     match *self {
       XmlDataTypes::Boolean => Uri::new(schema_name + "boolean"),
+      XmlDataTypes::Integer => Uri::new(schema_name + "integer"),
+      XmlDataTypes::Decimal => Uri::new(schema_name + "decimal"),
       _ => Uri::new("todo".to_string())
     }
   }
