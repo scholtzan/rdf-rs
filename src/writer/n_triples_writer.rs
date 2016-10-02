@@ -120,7 +120,7 @@ mod tests {
     let object = Node::LiteralNode { literal: "literal".to_string(), data_type: None, language: Some("en".to_string()) };
     let predicate = Node::UriNode { uri: Uri::new("http://example.org/show/localName".to_string()) };
 
-    let trip = Triple::new(subject, predicate, object);
+    let trip = Triple::new(&subject, &predicate, &object);
 
     let result = "_:blank <http://example.org/show/localName> \"literal\"@en .".to_string();
 

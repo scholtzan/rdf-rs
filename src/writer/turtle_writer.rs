@@ -173,10 +173,69 @@ mod tests {
     let object = graph.create_blank_node();
     let predicate = graph.create_uri_node(&Uri::new("http://example.org/show/localName".to_string()));
 
-    let trip = Triple::new(subject, predicate, object);
+    let trip = Triple::new(&subject, &predicate, &object);
     graph.add_triple(&trip);
 
     let result = "_:auto0 <http://example.org/show/localName> _:auto1 .".to_string();
+
+    let writer = TurtleWriter::new(graph.namespaces());
+    match writer.write_to_string(&graph) {
+      Ok(str) => assert_eq!(result, str),
+      Err(_) => assert!(false)
+    }
+  }
+
+  #[test]
+  fn predicate_grouping() {
+    let mut graph = Graph::new(None);
+
+    let subject1 = graph.create_blank_node();
+    let object1 = graph.create_blank_node();
+    let predicate1 = graph.create_uri_node(&Uri::new("http://example.org/show/localName".to_string()));
+
+    let subject2 = graph.create_blank_node();
+    let object2 = graph.create_blank_node();
+    let predicate2 = graph.create_uri_node(&Uri::new("http://example.org/test".to_string()));
+
+    graph.add_triple(&Triple::new(&subject1, &predicate1, &object1));
+    graph.add_triple(&Triple::new(&subject2, &predicate1, &object1));
+    graph.add_triple(&Triple::new(&subject1, &predicate2, &object2));
+    graph.add_triple(&Triple::new(&subject2, &predicate2, &object2));
+
+    let result = "_:auto0 <http://example.org/show/localName> _:auto1 ;
+        <http://example.org/test> _:auto3 .
+_:auto2 <http://example.org/show/localName> _:auto1 ;
+        <http://example.org/test> _:auto3 .".to_string();
+
+    let writer = TurtleWriter::new(graph.namespaces());
+    match writer.write_to_string(&graph) {
+      Ok(str) => assert_eq!(result, str),
+      Err(_) => assert!(false)
+    }
+  }
+
+
+  #[test]
+  fn object_grouping() {
+    let mut graph = Graph::new(None);
+
+    let subject1 = graph.create_blank_node();
+    let object1 = graph.create_blank_node();
+    let predicate1 = graph.create_uri_node(&Uri::new("http://example.org/show/localName".to_string()));
+
+    let subject2 = graph.create_blank_node();
+    let object2 = graph.create_blank_node();
+    let predicate2 = graph.create_uri_node(&Uri::new("http://example.org/test".to_string()));
+
+    graph.add_triple(&Triple::new(&subject2, &predicate1, &object2));
+    graph.add_triple(&Triple::new(&subject1, &predicate1, &object1));
+    graph.add_triple(&Triple::new(&subject1, &predicate1, &object2));
+    graph.add_triple(&Triple::new(&subject2, &predicate1, &object1));
+
+    let result = "_:auto0 <http://example.org/show/localName> _:auto1 ,
+                                            _:auto3 .
+_:auto2 <http://example.org/show/localName> _:auto1 ,
+                                            _:auto3 .".to_string();
 
     let writer = TurtleWriter::new(graph.namespaces());
     match writer.write_to_string(&graph) {

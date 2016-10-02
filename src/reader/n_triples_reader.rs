@@ -99,7 +99,7 @@ impl<R: Read> NTriplesReader<R> {
       _ => return Err(Error::InvalidReaderInput)
     }
 
-    Ok(Triple::new(subject, predicate, object))
+    Ok(Triple::new(&subject, &predicate, &object))
   }
 
   /// Get the next token and check if it is a valid subject and create a new subject node.

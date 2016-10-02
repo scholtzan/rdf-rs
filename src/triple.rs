@@ -37,9 +37,9 @@ impl Triple {
   /// let predicate = Node::UriNode { uri: Uri::new("http://example.org/show/localName".to_string()) } ;
   /// let object = Node::BlankNode { id: "b".to_string() };
   ///
-  /// Triple::new(subject, predicate, object);
+  /// Triple::new(&subject, &predicate, &object);
   /// ```
-  pub fn new(subject: Node, predicate: Node, object: Node) -> Triple {
+  pub fn new(subject: &Node, predicate: &Node, object: &Node) -> Triple {
     Triple {
       subject: subject.clone(),
       predicate: predicate.clone(),
@@ -229,7 +229,7 @@ mod tests {
       language: None
     };
 
-    let trip = Triple::new(subject, predicate, object);
+    let trip = Triple::new(&subject, &predicate, &object);
 
     store.add_triple(&trip);
 

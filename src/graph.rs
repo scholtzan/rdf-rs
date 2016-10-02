@@ -220,7 +220,7 @@ impl Graph {
   /// let subject = graph.create_blank_node();
   /// let predicate = graph.create_uri_node(&Uri::new("http://example.org/show/localName".to_string()));
   /// let object = graph.create_blank_node();
-  /// let triple = Triple::new(subject, predicate, object);
+  /// let triple = Triple::new(&subject, &predicate, &object);
   ///
   /// graph.add_triple(&triple);
   ///
@@ -243,7 +243,7 @@ impl Graph {
   /// let subject = graph.create_blank_node();
   /// let predicate = graph.create_uri_node(&Uri::new("http://example.org/show/localName".to_string()));
   /// let object = graph.create_blank_node();
-  /// let triple = Triple::new(subject, predicate, object);
+  /// let triple = Triple::new(&subject, &predicate, &object);
   ///
   /// graph.add_triple(&triple);
   /// graph.remove_triple(&triple);
