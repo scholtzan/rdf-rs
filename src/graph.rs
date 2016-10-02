@@ -72,22 +72,17 @@ impl Graph {
   /// use rdf_rs::node::Node;
   ///
   /// let graph = Graph::new();
-  /// let literal_node = graph.create_literal_node("literal".to_string(), None);
+  /// let literal_node = graph.create_literal_node("literal".to_string());
   ///
   /// assert_eq!(literal_node, Node::LiteralNode {
   ///   literal: "literal".to_string(),
-  ///   prefix: None,
   ///   data_type: None,
   ///   language: None
   /// });
   /// ```
-  pub fn create_literal_node(&self, literal: String, namespace: Option<&Namespace>) -> Node {
+  pub fn create_literal_node(&self, literal: String) -> Node {
     Node::LiteralNode {
       literal: literal,
-      prefix: match namespace {
-        Some(ns) => Some(ns.prefix().clone()),
-        None => None
-      },
       data_type: None,
       language: None
     }
@@ -102,22 +97,17 @@ impl Graph {
   /// use rdf_rs::uri::Uri;
   ///
   /// let graph = Graph::new();
-  /// let literal_node = graph.create_literal_node_with_data_type("literal".to_string(), &Uri::new("http://example.org/show/localName".to_string()), None);
+  /// let literal_node = graph.create_literal_node_with_data_type("literal".to_string(), &Uri::new("http://example.org/show/localName".to_string()));
   ///
   /// assert_eq!(literal_node, Node::LiteralNode {
   ///   literal: "literal".to_string(),
-  ///   prefix: None,
   ///   data_type: Some(Uri::new("http://example.org/show/localName".to_string())),
   ///   language: None
   /// });
   /// ```
-  pub fn create_literal_node_with_data_type(&self, literal: String, data_type: &Uri, namespace: Option<&Namespace>) -> Node {
+  pub fn create_literal_node_with_data_type(&self, literal: String, data_type: &Uri) -> Node {
     Node::LiteralNode {
       literal: literal,
-      prefix: match namespace {
-        Some(ns) => Some(ns.prefix().clone()),
-        None => None
-      },
       data_type: Some(data_type.clone()),
       language: None
     }
@@ -131,22 +121,17 @@ impl Graph {
   /// use rdf_rs::node::Node;
   ///
   /// let graph = Graph::new();
-  /// let literal_node = graph.create_literal_node_with_language("literal".to_string(), "en".to_string(), None);
+  /// let literal_node = graph.create_literal_node_with_language("literal".to_string(), "en".to_string());
   ///
   /// assert_eq!(literal_node, Node::LiteralNode {
   ///   literal: "literal".to_string(),
-  ///   prefix: None,
   ///   data_type: None,
   ///   language: Some("en".to_string())
   /// });
   /// ```
-  pub fn create_literal_node_with_language(&self, literal: String, language: String, namespace: Option<&Namespace>) -> Node {
+  pub fn create_literal_node_with_language(&self, literal: String, language: String) -> Node {
     Node::LiteralNode {
       literal: literal,
-      prefix: match namespace {
-        Some(ns) => Some(ns.prefix().clone()),
-        None => None
-      },
       data_type: None,
       language: Some(language)
     }
@@ -321,11 +306,10 @@ mod tests {
   #[test]
   fn create_literal_node() {
     let graph = Graph::new();
-    let literal_node = graph.create_literal_node("literal".to_string(), None);
+    let literal_node = graph.create_literal_node("literal".to_string());
 
     assert_eq!(literal_node, Node::LiteralNode {
       literal: "literal".to_string(),
-      prefix: None,
       data_type: None,
       language: None
     });

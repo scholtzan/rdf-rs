@@ -8,15 +8,18 @@ use triple::TripleSegment;
 use Result;
 use std::iter::repeat;
 use error::Error;
+use std::collections::HashMap;
+use uri::Uri;
+
 
 /// RDF writer to generate Turtle syntax.
-pub struct TurtleWriter {
-  formatter: TurtleFormatter
+pub struct TurtleWriter<'a> {
+  formatter: TurtleFormatter<'a>
 }
 
 // todo: collect common subjects, predicates, ...
 // todo: decide if grouping should be done or ignored based on number of distinct subjects
-impl RdfWriter for TurtleWriter {
+impl<'a> RdfWriter for TurtleWriter<'a> {
   /// Generates the Turtle syntax for each triple stored in the provided graph.
   ///
   /// Returns an error if invalid Turtle syntax would be generated.
@@ -66,10 +69,10 @@ impl RdfWriter for TurtleWriter {
         // continue group
         if previous_predicate == Some(triple.predicate()) {
           // indent object
-          output_string.push_str(",\n");
+          output_string.push_str(" ,\n");
           output_string.push_str(&repeat(" ").take(object_indentation).collect::<String>());
         } else {
-          output_string.push_str(";\n");
+          output_string.push_str(" ;\n");
 
           // write predicate
           let turtle_predicate = try!(self.node_to_turtle(triple.predicate(), TripleSegment::Predicate));
@@ -86,7 +89,7 @@ impl RdfWriter for TurtleWriter {
         }
       } else {
         if previous_subject != None {
-          output_string.push_str(".\n");
+          output_string.push_str(" .\n");
         }
 
         // start new group
@@ -114,11 +117,11 @@ impl RdfWriter for TurtleWriter {
   }
 }
 
-impl TurtleWriter {
+impl<'a> TurtleWriter<'a> {
   /// Constructor of `TurtleWriter`.
-  fn new() -> TurtleWriter {
+  fn new(namespaces: &'a HashMap<String, Uri>) -> TurtleWriter<'a> {
     TurtleWriter {
-      formatter: TurtleFormatter::new()
+      formatter: TurtleFormatter::new(namespaces)
     }
   }
 
@@ -133,7 +136,7 @@ impl TurtleWriter {
         if segment == TripleSegment::Predicate {
           return Err(Error::InvalidWriterOutput)
         },
-      &Node::LiteralNode { literal: _, prefix: _, data_type: ref dt, language: ref lang } => {
+      &Node::LiteralNode { literal: _, data_type: ref dt, language: ref lang } => {
         // literal nodes are only allowed as objects
         if segment != TripleSegment::Object {
           return Err(Error::InvalidWriterOutput)

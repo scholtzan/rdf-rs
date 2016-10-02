@@ -13,6 +13,7 @@ impl Uri {
     }
   }
 
+  // todo: rename to to_string()
   pub fn uri(&self) -> &String {
     &self.uri
   }

@@ -87,7 +87,7 @@ impl NTriplesWriter {
         if segment == TripleSegment::Predicate {
           return Err(Error::InvalidWriterOutput)
         },
-      &Node::LiteralNode { literal: _, prefix: _, data_type: ref dt, language: ref lang } => {
+      &Node::LiteralNode { literal: _, data_type: ref dt, language: ref lang } => {
         // literal nodes are only allowed as objects
         if segment != TripleSegment::Object {
           return Err(Error::InvalidWriterOutput)
@@ -117,7 +117,7 @@ mod tests {
   #[test]
   fn test_n_triples_writer() {
     let subject = Node::BlankNode { id: "blank".to_string() };
-    let object = Node::LiteralNode { literal: "literal".to_string(), prefix: None, data_type: None, language: Some("en".to_string()) };
+    let object = Node::LiteralNode { literal: "literal".to_string(), data_type: None, language: Some("en".to_string()) };
     let predicate = Node::UriNode { uri: Uri::new("http://example.org/show/localName".to_string()) };
 
     let trip = Triple::new(subject, predicate, object);

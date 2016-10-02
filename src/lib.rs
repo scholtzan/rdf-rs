@@ -44,6 +44,15 @@ pub mod reader {
   pub mod n_triples_reader;
 }
 
+pub mod vocabulary {
+  // todo
+}
+
+pub mod specs {
+  pub mod xml_specs;
+  pub mod turtle_specs;
+}
+
 #[cfg(test)]
 mod tests {
     #[test]

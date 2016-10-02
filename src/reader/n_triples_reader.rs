@@ -128,17 +128,17 @@ impl<R: Read> NTriplesReader<R> {
         match self.lexer.peek_next_token() {
           Ok(Token::LanguageSpecification(lang)) => {
             let _ = self.lexer.get_next_token();
-            Ok(Node::LiteralNode { literal: literal, prefix: None, data_type: None, language: Some(lang) })
+            Ok(Node::LiteralNode { literal: literal, data_type: None, language: Some(lang) })
           },
           Ok(Token::DataTypeStart) => {
             let _ = self.lexer.get_next_token();
             match self.lexer.get_next_token() {
               Ok(Token::Uri(uri)) =>
-                Ok(Node::LiteralNode { literal: literal, prefix: None, data_type: Some(Uri::new(uri)), language: None }),
+                Ok(Node::LiteralNode { literal: literal, data_type: Some(Uri::new(uri)), language: None }),
               _ => Err(Error::InvalidToken)
             }
           },
-          _ => Ok(Node::LiteralNode { literal: literal, prefix: None, data_type: None, language: None }),
+          _ => Ok(Node::LiteralNode { literal: literal, data_type: None, language: None }),
         }
       },
       _ => Err(Error::InvalidToken)

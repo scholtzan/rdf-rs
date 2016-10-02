@@ -213,21 +213,18 @@ mod tests {
 
     let subject = Node::LiteralNode {
       literal: "abcd".to_string(),
-      prefix: None,
       data_type: None,
       language: None
     };
 
     let predicate = Node::LiteralNode {
       literal: "d".to_string(),
-      prefix: None,
       data_type: None,
       language: None
     };
 
     let object = Node::LiteralNode {
       literal: "s".to_string(),
-      prefix: None,
       data_type: None,
       language: None
     };

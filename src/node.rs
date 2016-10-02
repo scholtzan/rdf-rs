@@ -10,7 +10,6 @@ pub enum Node {
   /// Node for representing literals.
   LiteralNode {
     literal: String,
-    prefix: Option<String>,
     data_type: Option<Uri>,
     language: Option<String>
   },
@@ -29,13 +28,12 @@ mod tests {
   fn access_literal_node() {
     let node = Node::LiteralNode {
       literal: "abcd".to_string(),
-      prefix: Some("resat".to_string()),
       data_type: None,
       language: None
     };
 
     match node {
-      Node::LiteralNode { literal: lit, prefix: _, data_type: _, language: _ } =>
+      Node::LiteralNode { literal: lit, data_type: _, language: _ } =>
         assert_eq!(lit, "abcd".to_string()),
       _ => assert!(false)
     }
