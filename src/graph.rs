@@ -25,9 +25,9 @@ pub struct Graph {
 
 impl Graph {
   /// Constructor for the RDF graph.
-  pub fn new() -> Graph {
+  pub fn new(base_uri: Option<Uri>) -> Graph {
     Graph {
-      base_uri: None,
+      base_uri: base_uri,
       triples: TripleStore::new(),
       namespaces: NamespaceStore::new(),
       next_id: 0
@@ -71,7 +71,7 @@ impl Graph {
   /// use rdf_rs::graph::Graph;
   /// use rdf_rs::node::Node;
   ///
-  /// let graph = Graph::new();
+  /// let graph = Graph::new(None);
   /// let literal_node = graph.create_literal_node("literal".to_string());
   ///
   /// assert_eq!(literal_node, Node::LiteralNode {
@@ -96,7 +96,7 @@ impl Graph {
   /// use rdf_rs::node::Node;
   /// use rdf_rs::uri::Uri;
   ///
-  /// let graph = Graph::new();
+  /// let graph = Graph::new(None);
   /// let literal_node = graph.create_literal_node_with_data_type("literal".to_string(), &Uri::new("http://example.org/show/localName".to_string()));
   ///
   /// assert_eq!(literal_node, Node::LiteralNode {
@@ -120,7 +120,7 @@ impl Graph {
   /// use rdf_rs::graph::Graph;
   /// use rdf_rs::node::Node;
   ///
-  /// let graph = Graph::new();
+  /// let graph = Graph::new(None);
   /// let literal_node = graph.create_literal_node_with_language("literal".to_string(), "en".to_string());
   ///
   /// assert_eq!(literal_node, Node::LiteralNode {
@@ -149,7 +149,7 @@ impl Graph {
   /// use rdf_rs::graph::Graph;
   /// use rdf_rs::node::Node;
   ///
-  /// let mut graph = Graph::new();
+  /// let mut graph = Graph::new(None);
   /// let blank_node = graph.create_blank_node();
   ///
   /// assert_eq!(blank_node, Node::BlankNode {
@@ -173,7 +173,7 @@ impl Graph {
   /// use rdf_rs::graph::Graph;
   /// use rdf_rs::node::Node;
   ///
-  /// let graph = Graph::new();
+  /// let graph = Graph::new(None);
   /// let blank_node = graph.create_blank_node_with_id("foobar".to_string());
   ///
   /// assert_eq!(blank_node, Node::BlankNode {
@@ -194,7 +194,7 @@ impl Graph {
   /// use rdf_rs::node::Node;
   /// use rdf_rs::uri::Uri;
   ///
-  /// let graph = Graph::new();
+  /// let graph = Graph::new(None);
   /// let uri_node = graph.create_uri_node(&Uri::new("http://example.org/show/localName".to_string()));
   ///
   /// assert_eq!(uri_node, Node::UriNode {
@@ -215,7 +215,7 @@ impl Graph {
   /// use rdf_rs::uri::Uri;
   /// use rdf_rs::triple::Triple;
   ///
-  /// let mut graph = Graph::new();
+  /// let mut graph = Graph::new(None);
   ///
   /// let subject = graph.create_blank_node();
   /// let predicate = graph.create_uri_node(&Uri::new("http://example.org/show/localName".to_string()));
@@ -238,7 +238,7 @@ impl Graph {
   /// use rdf_rs::uri::Uri;
   /// use rdf_rs::triple::Triple;
   ///
-  /// let mut graph = Graph::new();
+  /// let mut graph = Graph::new(None);
   ///
   /// let subject = graph.create_blank_node();
   /// let predicate = graph.create_uri_node(&Uri::new("http://example.org/show/localName".to_string()));
@@ -299,13 +299,13 @@ mod tests {
 
   #[test]
   fn empty_graph() {
-    let graph = Graph::new();
+    let graph = Graph::new(None);
     assert_eq!(graph.is_empty(), true);
   }
 
   #[test]
   fn create_literal_node() {
-    let graph = Graph::new();
+    let graph = Graph::new(None);
     let literal_node = graph.create_literal_node("literal".to_string());
 
     assert_eq!(literal_node, Node::LiteralNode {
@@ -317,7 +317,7 @@ mod tests {
 
   #[test]
   fn create_multiple_blank_nodes() {
-    let mut graph = Graph::new();
+    let mut graph = Graph::new(None);
 
     let blank_node_0 = graph.create_blank_node();
     let blank_node_1 = graph.create_blank_node();

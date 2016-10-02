@@ -35,6 +35,7 @@ impl<'a> RdfWriter for TurtleWriter<'a> {
         // todo: URI formatter
         output_string.push_str(&base.uri());
         output_string.push_str("> \n");
+        output_string.push_str("\n");
       },
       &None => {}
     }
@@ -47,9 +48,8 @@ impl<'a> RdfWriter for TurtleWriter<'a> {
       output_string.push_str(" <");
       output_string.push_str(&namespace_uri.uri());
       output_string.push_str(">\n");
+      output_string.push_str("\n");
     }
-
-    output_string.push_str("\n");
 
     let mut triples_vec: Vec<Triple> = graph.triples_iter().cloned().collect();
     triples_vec.sort();
@@ -101,6 +101,7 @@ impl<'a> RdfWriter for TurtleWriter<'a> {
         let turtle_predicate = try!(self.node_to_turtle(triple.predicate(), TripleSegment::Predicate));
         output_string.push_str(&turtle_predicate);
         previous_predicate = Some(triple.predicate());
+        output_string.push_str(" ");
 
         predicate_indentation = turtle_subject.len() + 1;
         object_indentation = predicate_indentation + turtle_predicate.len() + 1;
@@ -111,7 +112,7 @@ impl<'a> RdfWriter for TurtleWriter<'a> {
       output_string.push_str(&turtle_object);
     }
 
-    output_string.push_str(".");
+    output_string.push_str(" .");
 
     Ok(output_string)
   }
@@ -152,5 +153,35 @@ impl<'a> TurtleWriter<'a> {
 
     // use the formatter to get the corresponding N-Triple syntax
     Ok(self.formatter.format_node(node))
+  }
+}
+
+#[cfg(test)]
+mod tests {
+  use node::Node;
+  use triple::*;
+  use uri::Uri;
+  use graph::Graph;
+  use writer::rdf_writer::RdfWriter;
+  use writer::turtle_writer::TurtleWriter;
+
+  #[test]
+  fn test_turtle_writer() {
+    let mut graph = Graph::new(None);
+
+    let subject = graph.create_blank_node();
+    let object = graph.create_blank_node();
+    let predicate = graph.create_uri_node(&Uri::new("http://example.org/show/localName".to_string()));
+
+    let trip = Triple::new(subject, predicate, object);
+    graph.add_triple(&trip);
+
+    let result = "_:auto0 <http://example.org/show/localName> _:auto1 .".to_string();
+
+    let writer = TurtleWriter::new(graph.namespaces());
+    match writer.write_to_string(&graph) {
+      Ok(str) => assert_eq!(result, str),
+      Err(_) => assert!(false)
+    }
   }
 }

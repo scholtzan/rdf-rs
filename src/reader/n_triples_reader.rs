@@ -39,7 +39,7 @@ impl<R: Read> RdfReader for NTriplesReader<R> {
   /// }
   /// ```
   fn decode(&mut self) -> Result<Graph> {
-    let mut graph = Graph::new();
+    let mut graph = Graph::new(None);
 
     loop {
       match self.lexer.peek_next_token() {

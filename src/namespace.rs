@@ -48,6 +48,6 @@ impl NamespaceStore {
 
   /// Returns the stored namespaces with prefixes.
   pub fn namespaces(&self) -> &HashMap<String, Uri> {
-    &self.namespaces()
+    &self.namespaces
   }
 }
