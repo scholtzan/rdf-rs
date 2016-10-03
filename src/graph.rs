@@ -25,9 +25,14 @@ pub struct Graph {
 
 impl Graph {
   /// Constructor for the RDF graph.
-  pub fn new(base_uri: Option<Uri>) -> Graph {
+  pub fn new(base_uri: Option<&Uri>) -> Graph {
+    let cloned_uri = match base_uri {
+      None => None,
+      Some(u) => Some(u.clone())
+    };
+
     Graph {
-      base_uri: base_uri,
+      base_uri: cloned_uri,
       triples: TripleStore::new(),
       namespaces: NamespaceStore::new(),
       next_id: 0
@@ -48,20 +53,39 @@ impl Graph {
   ///
   /// # Example
   ///
-  /// todo
+  /// ```
+  /// use rdf_rs::uri::Uri;
+  /// use rdf_rs::graph::Graph;
   ///
+  /// let base_uri = Uri::new("http://example.org/".to_string());
+  /// let graph = Graph::new(Some(&base_uri));
+  ///
+  /// assert_eq!(graph.base_uri(), &Some(base_uri));
+  /// ```
   pub fn base_uri(&self) -> &Option<Uri> {
     &self.base_uri
   }
 
   /// Returns a hashmap of namespaces and prefixes.
+  pub fn namespaces(&self) -> &HashMap<String, Uri> {
+    self.namespaces.namespaces()
+  }
+
+  /// Adds a new namespace with a specific prefix to the graph.
   ///
   /// # Example
   ///
-  /// todo
+  /// ```
+  /// use rdf_rs::uri::Uri;
+  /// use rdf_rs::graph::Graph;
   ///
-  pub fn namespaces(&self) -> &HashMap<String, Uri> {
-    self.namespaces.namespaces()
+  /// let mut graph = Graph::new(None);
+  /// graph.add_namespace(&"example".to_string(), &Uri::new("http://example.org/".to_string()));
+  ///
+  /// assert_eq!(graph.namespaces().len(), 1);
+  /// ```
+  pub fn add_namespace(&mut self, prefix: &String, uri: &Uri) {
+    self.namespaces.add(prefix, uri);
   }
 
   /// Returns a literal node of the specified namespace.
@@ -295,7 +319,6 @@ impl Graph {
 mod tests {
   use graph::Graph;
   use node::*;
-  use namespace::Namespace;
 
   #[test]
   fn empty_graph() {

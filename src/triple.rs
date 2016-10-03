@@ -188,7 +188,7 @@ impl IntoIterator for TripleStore {
   type IntoIter = IntoIter<Triple>;
 
   fn into_iter(self) -> Self::IntoIter {
-    self.into_iter()
+    self.triples.into_iter()
   }
 }
 
@@ -198,7 +198,6 @@ impl IntoIterator for TripleStore {
 mod tests {
   use node::*;
   use triple::*;
-  use std::collections::LinkedList;
 
   #[test]
   fn empty_triple_store() {

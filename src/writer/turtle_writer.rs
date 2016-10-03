@@ -17,7 +17,6 @@ pub struct TurtleWriter<'a> {
   formatter: TurtleFormatter<'a>
 }
 
-// todo: collect common subjects, predicates, ...
 // todo: decide if grouping should be done or ignored based on number of distinct subjects
 impl<'a> RdfWriter for TurtleWriter<'a> {
   /// Generates the Turtle syntax for each triple stored in the provided graph.
@@ -31,11 +30,9 @@ impl<'a> RdfWriter for TurtleWriter<'a> {
     // write base URI
     match graph.base_uri() {
       &Some(ref base) => {
-        output_string.push_str("@base <");
-        // todo: URI formatter
-        output_string.push_str(&base.uri());
-        output_string.push_str("> \n");
-        output_string.push_str("\n");
+        output_string.push_str("@base ");
+        output_string.push_str(&self.formatter.format_uri(base));
+        output_string.push_str(" .\n");
       },
       &None => {}
     }
@@ -44,11 +41,9 @@ impl<'a> RdfWriter for TurtleWriter<'a> {
     for (prefix, namespace_uri) in graph.namespaces() {
       output_string.push_str("@prefix ");
       output_string.push_str(&prefix);
-      // todo: use URI formatter
-      output_string.push_str(" <");
-      output_string.push_str(&namespace_uri.uri());
-      output_string.push_str(">\n");
-      output_string.push_str("\n");
+      output_string.push_str(": <");
+      output_string.push_str(namespace_uri.to_string());
+      output_string.push_str("> .\n");
     }
 
     let mut triples_vec: Vec<Triple> = graph.triples_iter().cloned().collect();
@@ -112,7 +107,9 @@ impl<'a> RdfWriter for TurtleWriter<'a> {
       output_string.push_str(&turtle_object);
     }
 
-    output_string.push_str(" .");
+    if !graph.is_empty() {
+      output_string.push_str(" .");
+    }
 
     Ok(output_string)
   }
@@ -158,7 +155,6 @@ impl<'a> TurtleWriter<'a> {
 
 #[cfg(test)]
 mod tests {
-  use node::Node;
   use triple::*;
   use uri::Uri;
   use graph::Graph;
@@ -225,7 +221,6 @@ _:auto2 <http://example.org/show/localName> _:auto1 ;
 
     let subject2 = graph.create_blank_node();
     let object2 = graph.create_blank_node();
-    let predicate2 = graph.create_uri_node(&Uri::new("http://example.org/test".to_string()));
 
     graph.add_triple(&Triple::new(&subject2, &predicate1, &object2));
     graph.add_triple(&Triple::new(&subject1, &predicate1, &object1));
@@ -236,6 +231,19 @@ _:auto2 <http://example.org/show/localName> _:auto1 ;
                                             _:auto3 .
 _:auto2 <http://example.org/show/localName> _:auto1 ,
                                             _:auto3 .".to_string();
+
+    let writer = TurtleWriter::new(graph.namespaces());
+    match writer.write_to_string(&graph) {
+      Ok(str) => assert_eq!(result, str),
+      Err(_) => assert!(false)
+    }
+  }
+
+  #[test]
+  fn turtle_base_uri() {
+    let graph = Graph::new(Some(&Uri::new("http://example.org/".to_string())));
+
+    let result = "@base <http://example.org/> .\n".to_string();
 
     let writer = TurtleWriter::new(graph.namespaces());
     match writer.write_to_string(&graph) {

@@ -208,7 +208,7 @@ mod tests {
     let mut lexer = NTriplesLexer::new(input);
 
     // get literal
-    lexer.get_next_token();
+    let _ = lexer.get_next_token();
 
     assert_eq!(lexer.get_next_token().unwrap(), Token::LanguageSpecification("abc".to_string()));
   }

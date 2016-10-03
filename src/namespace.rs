@@ -50,4 +50,9 @@ impl NamespaceStore {
   pub fn namespaces(&self) -> &HashMap<String, Uri> {
     &self.namespaces
   }
+
+  /// Adds a new namespace.
+  pub fn add(&mut self, prefix: &String, uri: &Uri) {
+    &self.namespaces.insert(prefix.clone(), uri.clone());
+  }
 }

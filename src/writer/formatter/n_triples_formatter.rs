@@ -67,7 +67,7 @@ impl RdfFormatter for NTriplesFormatter {
   /// Formats a URI to N-Triples syntax.
   fn format_uri(&self, uri: &Uri) -> String {
     let mut output_string = "<".to_string();
-    output_string.push_str(uri.uri());
+    output_string.push_str(uri.to_string());
     output_string.push_str(">");
 
     output_string

@@ -80,17 +80,17 @@ impl<'a> RdfFormatter for TurtleFormatter<'a> {
     let mut output_string = "".to_string();
 
     for (prefix, namespace_uri) in self.namespaces.iter() {
-      if uri.uri().starts_with(namespace_uri.uri()) {
+      if uri.to_string().starts_with(namespace_uri.to_string()) {
         output_string.push_str(prefix);
         output_string.push_str(":");
-        output_string.push_str(&uri.uri().to_owned().replace(namespace_uri.uri(), ""));
+        output_string.push_str(&uri.to_string().to_owned().replace(namespace_uri.to_string(), ""));
 
         return output_string;
       }
     }
 
     output_string.push_str("<");
-    output_string.push_str(uri.uri());
+    output_string.push_str(uri.to_string());
     output_string.push_str(">");
 
     output_string
