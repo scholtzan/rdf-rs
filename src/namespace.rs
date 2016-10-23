@@ -52,7 +52,7 @@ impl NamespaceStore {
   }
 
   /// Adds a new namespace.
-  pub fn add(&mut self, prefix: &String, uri: &Uri) {
-    &self.namespaces.insert(prefix.clone(), uri.clone());
+  pub fn add(&mut self, ns: &Namespace) {
+    &self.namespaces.insert(ns.prefix().clone(), ns.uri.clone());
   }
 }

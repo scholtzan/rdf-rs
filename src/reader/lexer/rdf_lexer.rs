@@ -10,6 +10,7 @@ pub trait RdfLexer<R: Read> {
   /// Determines the next token from the input.
   fn get_next_token(&mut self) -> Result<Token>;
 
-  /// Determines the next token without consuming it.
+  // Determines the next token without consuming it.
   fn peek_next_token(&mut self) -> Result<Token>;
 }
+

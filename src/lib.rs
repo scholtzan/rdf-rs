@@ -38,10 +38,12 @@ pub mod reader {
     pub mod token;
     pub mod rdf_lexer;
     pub mod n_triples_lexer;
+    pub mod turtle_lexer;
   }
 
   pub mod rdf_reader;
   pub mod n_triples_reader;
+  pub mod turtle_reader;
 }
 
 pub mod vocabulary {

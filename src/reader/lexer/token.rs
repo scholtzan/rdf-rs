@@ -9,5 +9,11 @@ pub enum Token {
   BlankNode(String),
   TripleDelimiter,
   DataTypeStart,
+  PrefixDirective,
+  BaseDirective,
+  QName(String, String),
+  Prefix(String),
+  PredicateListDelimiter,   // e.g. for Turtle syntax -> ;
+  ObjectListDelimiter,      // e.g. for Turtle syntax -> ,
   EndOfInput,
 }

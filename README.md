@@ -10,8 +10,8 @@ This project is a way for me to learn Rust and combine it with my interests in s
 ## Roadmap
 
 - [x] Provide the basic structure for representing graphs, triples, nodes, ...
-- [ ] Implement Rdf writer and support some common formats
-- [ ] Implement Rdf parser for some formats
+- [x] Implement Rdf writer and support some common formats
+- [x] Implement Rdf parser for some formats
 - [ ] Support querying with SPARQL
 
 

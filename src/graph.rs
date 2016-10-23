@@ -66,6 +66,16 @@ impl Graph {
     &self.base_uri
   }
 
+  /// Sets the base URI of the graph.
+  ///
+  /// # Example
+  ///
+  /// todo
+  ///
+  pub fn set_base_uri(&mut self, uri: &Uri) {
+    self.base_uri = Some(uri.clone());
+  }
+
   /// Returns a hashmap of namespaces and prefixes.
   pub fn namespaces(&self) -> &HashMap<String, Uri> {
     self.namespaces.namespaces()
@@ -78,14 +88,15 @@ impl Graph {
   /// ```
   /// use rdf_rs::uri::Uri;
   /// use rdf_rs::graph::Graph;
+  /// use rdf_rs::namespace::Namespace;
   ///
   /// let mut graph = Graph::new(None);
-  /// graph.add_namespace(&"example".to_string(), &Uri::new("http://example.org/".to_string()));
+  /// graph.add_namespace(&Namespace::new("example".to_string(), Uri::new("http://example.org/".to_string())));
   ///
   /// assert_eq!(graph.namespaces().len(), 1);
   /// ```
-  pub fn add_namespace(&mut self, prefix: &String, uri: &Uri) {
-    self.namespaces.add(prefix, uri);
+  pub fn add_namespace(&mut self, ns: &Namespace) {
+    self.namespaces.add(ns);
   }
 
   /// Returns a literal node of the specified namespace.
@@ -252,6 +263,18 @@ impl Graph {
   /// ```
   pub fn add_triple(&mut self, triple: &Triple) {
     self.triples.add_triple(triple);
+  }
+
+  /// Adds a vector of triples.
+  ///
+  /// # Example
+  ///
+  /// todo
+  ///
+  pub fn add_triples(&mut self, triples: &Vec<Triple>) {
+    for triple in triples {
+      self.add_triple(triple);
+    }
   }
 
   /// Deletes the triple from the graph.
