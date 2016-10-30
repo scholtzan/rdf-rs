@@ -1,17 +1,17 @@
 use reader::lexer::rdf_lexer::RdfLexer;
 use reader::lexer::token::Token;
+use reader::input_reader::InputReader;
 use std::io::Read;
-use helper;
 use error::Error;
 use Result;
 
 pub struct TurtleLexer<R: Read> {
-  input: R,
+  input_reader: InputReader<R>,
   peeked_token: Option<Token>
 }
 
 impl<R: Read> RdfLexer<R> for TurtleLexer<R> {
-  /// Constructor for `TurtleLexer`;
+  /// Constructor for `TurtleLexer`.
   ///
   /// # Example
   ///
@@ -25,7 +25,7 @@ impl<R: Read> RdfLexer<R> for TurtleLexer<R> {
   /// ```
   fn new(input: R) -> TurtleLexer<R> {
     TurtleLexer {
-      input: input,
+      input_reader: InputReader::new(input),
       peeked_token: None
     }
   }
@@ -58,7 +58,7 @@ impl<R: Read> RdfLexer<R> for TurtleLexer<R> {
       None => { }
     }
 
-    match helper::get_next_char_discard_leading_spaces(&mut self.input) {
+    match self.input_reader.get_next_char_discard_leading_spaces() {
 //      Ok(Some('#')) => self.get_comment(),
 //      Ok(Some('@')) => self.get_language_specification(), // todo: base, prefix
 //      Ok(Some('"')) => self.get_literal(),

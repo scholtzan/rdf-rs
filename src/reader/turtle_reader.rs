@@ -159,18 +159,18 @@ impl<R: Read> TurtleReader<R> {
       Ok(Token::Uri(uri)) => Ok(Node::UriNode { uri: Uri::new(uri) }),
       Ok(Token::Literal(literal)) => {
         match self.lexer.peek_next_token() {
-          Ok(Token::LanguageSpecification(lang)) => {
-            let _ = self.lexer.get_next_token();
-            Ok(Node::LiteralNode { literal: literal, data_type: None, language: Some(lang) })
-          },
-          Ok(Token::DataTypeStart) => {
-            let _ = self.lexer.get_next_token();
-            match self.lexer.get_next_token() {
-              Ok(Token::Uri(uri)) =>
-                Ok(Node::LiteralNode { literal: literal, data_type: Some(Uri::new(uri)), language: None }),
-              _ => Err(Error::InvalidToken)
-            }
-          },
+//          Ok(Token::LanguageSpecification(lang)) => {   todo
+//            let _ = self.lexer.get_next_token();
+//            Ok(Node::LiteralNode { literal: literal, data_type: None, language: Some(lang) })
+//          },
+//          Ok(Token::DataTypeStart) => {
+//            let _ = self.lexer.get_next_token();
+//            match self.lexer.get_next_token() {
+//              Ok(Token::Uri(uri)) =>
+//                Ok(Node::LiteralNode { literal: literal, data_type: Some(Uri::new(uri)), language: None }),
+//              _ => Err(Error::InvalidToken)
+//            }
+//          },
           _ => Ok(Node::LiteralNode { literal: literal, data_type: None, language: None }),
         }
       },

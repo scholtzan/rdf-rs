@@ -17,7 +17,6 @@ pub mod node;
 pub mod triple;
 pub mod graph;
 pub mod error;
-pub mod helper;
 
 pub type Result<T> = result::Result<T, error::Error>;
 
@@ -44,6 +43,7 @@ pub mod reader {
   pub mod rdf_reader;
   pub mod n_triples_reader;
   pub mod turtle_reader;
+  pub mod input_reader;
 }
 
 pub mod vocabulary {

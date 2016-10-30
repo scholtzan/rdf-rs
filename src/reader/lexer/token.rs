@@ -3,12 +3,13 @@
 #[derive(Debug, PartialEq, Clone)]
 pub enum Token {
   Comment(String),
-  LanguageSpecification(String),
   Literal(String),
+  LiteralWithUrlDatatype(String, String),   // first element is the literal, second the data type URL
+  LiteralWithQNameDatatype(String, String), // first element is the literal, second the QName of the data type
+  LiteralWithLanguageSpecification(String, String),
   Uri(String),
   BlankNode(String),
   TripleDelimiter,
-  DataTypeStart,
   PrefixDirective,
   BaseDirective,
   QName(String, String),
