@@ -40,9 +40,9 @@ pub mod reader {
     pub mod turtle_lexer;
   }
 
-  pub mod rdf_reader;
-  pub mod n_triples_reader;
-  pub mod turtle_reader;
+  pub mod rdf_parser;
+  pub mod n_triples_parser;
+  pub mod turtle_parser;
   pub mod input_reader;
 }
 

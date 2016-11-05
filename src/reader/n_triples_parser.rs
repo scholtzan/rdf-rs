@@ -1,5 +1,5 @@
 use Result;
-use reader::rdf_reader::RdfReader;
+use reader::rdf_parser::RdfParser;
 use graph::Graph;
 use error::Error;
 use triple::Triple;
@@ -11,13 +11,13 @@ use std::io::Read;
 use uri::Uri;
 use std::io::Cursor;
 
-/// RDF reader to generate an RDF graph from N-Triples syntax.
-pub struct NTriplesReader<R: Read> {
+/// RDF parser to generate an RDF graph from N-Triples syntax.
+pub struct NTriplesParser<R: Read> {
   lexer: NTriplesLexer<R>
 }
 
 
-impl<R: Read> RdfReader for NTriplesReader<R> {
+impl<R: Read> RdfParser for NTriplesParser<R> {
   /// Generates an RDF graph from a string containing N-Triples syntax.
   ///
   /// Returns in error in case invalid N-Triples syntax is provided.
@@ -25,13 +25,13 @@ impl<R: Read> RdfReader for NTriplesReader<R> {
   /// # Example
   ///
   /// ```
-  /// use rdf_rs::reader::n_triples_reader::NTriplesReader;
-  /// use rdf_rs::reader::rdf_reader::RdfReader;
+  /// use rdf_rs::reader::n_triples_reader::NTriplesParser;
+  /// use rdf_rs::reader::rdf_reader::RdfParser;
   ///
   /// let input = "<http://www.w3.org/2001/sw/RDFCore/ntriples/> <http://xmlns.com/foaf/0.1/maker> _:art .
   ///              _:art <http://xmlns.com/foaf/0.1/name> \"Art Barstow\" .";
   ///
-  /// let mut reader = NTriplesReader::from_string(input.to_string());
+  /// let mut reader = NTriplesParser::from_string(input.to_string());
   ///
   /// match reader.decode() {
   ///   Ok(graph) => assert_eq!(graph.count(), 2),
@@ -61,18 +61,19 @@ impl<R: Read> RdfReader for NTriplesReader<R> {
   }
 }
 
-impl NTriplesReader<Cursor<Vec<u8>>> {
-  /// Constructor of `NTriplesReader` from input string.
-  pub fn from_string<S>(input: S) -> NTriplesReader<Cursor<Vec<u8>>> where S: Into<String> {
-    NTriplesReader::from_reader(Cursor::new(input.into().into_bytes()))
+
+impl NTriplesParser<Cursor<Vec<u8>>> {
+  /// Constructor of `NTriplesParser` from input string.
+  pub fn from_string<S>(input: S) -> NTriplesParser<Cursor<Vec<u8>>> where S: Into<String> {
+    NTriplesParser::from_reader(Cursor::new(input.into().into_bytes()))
   }
 }
 
 
-impl<R: Read> NTriplesReader<R> {
-  /// Constructor of `NTriplesReader` from input reader.
-  pub fn from_reader(input: R) -> NTriplesReader<R> {
-    NTriplesReader {
+impl<R: Read> NTriplesParser<R> {
+  /// Constructor of `NTriplesParser` from input reader.
+  pub fn from_reader(input: R) -> NTriplesParser<R> {
+    NTriplesParser {
       lexer: NTriplesLexer::new(input)
     }
   }
@@ -149,8 +150,8 @@ impl<R: Read> NTriplesReader<R> {
 
 #[cfg(test)]
 mod tests {
-  use reader::n_triples_reader::NTriplesReader;
-  use reader::rdf_reader::RdfReader;
+  use reader::n_triples_parser::NTriplesParser;
+  use reader::rdf_parser::RdfParser;
 
   #[test]
   fn read_n_triples_from_string() {
@@ -159,7 +160,7 @@ mod tests {
                  <http://www.w3.org/2001/sw/RDFCore/ntriples/> <http://xmlns.com/foaf/0.1/maker> _:art .
                  _:art <http://xmlns.com/foaf/0.1/name> \"Art Barstow\" .";
 
-    let mut reader = NTriplesReader::from_string(input.to_string());
+    let mut reader = NTriplesParser::from_string(input.to_string());
 
     match reader.decode() {
       Ok(graph) => assert_eq!(graph.count(), 4),
@@ -174,7 +175,7 @@ mod tests {
 //                 _:art <http://xmlns.com/foaf/0.1/name> \"Art Barstow\" .
 //                 <http://www.w3.org/2001/sw/RDFCore/ntriples/> <http://purl.org/dc/terms/title> \"N-Triples\"@en-US .";
 //
-//    let mut reader = NTriplesReader::from_string(input.to_string());
+//    let mut reader = NTriplesParser::from_string(input.to_string());
 //
 //    match reader.decode() {
 //      Ok(mut graph) => {

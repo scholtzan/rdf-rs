@@ -1,5 +1,5 @@
 use Result;
-use reader::rdf_reader::RdfReader;
+use reader::rdf_parser::RdfParser;
 use graph::Graph;
 use error::Error;
 use triple::Triple;
@@ -12,12 +12,12 @@ use uri::Uri;
 use std::io::Cursor;
 use namespace::Namespace;
 
-/// RDF reader to generate an RDF graph from Turtle syntax.
-pub struct TurtleReader<R: Read> {
+/// RDF parser to generate an RDF graph from Turtle syntax.
+pub struct TurtleParser<R: Read> {
   lexer: TurtleLexer<R>
 }
 
-impl<R: Read> RdfReader for TurtleReader<R> {
+impl<R: Read> RdfParser for TurtleParser<R> {
   /// Generates an RDF graph from a string containing Turtle syntax.
   ///
   /// Returns in error in case invalid Turtle syntax is provided.
@@ -56,18 +56,18 @@ impl<R: Read> RdfReader for TurtleReader<R> {
   }
 }
 
-impl TurtleReader<Cursor<Vec<u8>>> {
-  /// Constructor of `TurtleReader` from input string.
-  pub fn from_string<S>(input: S) -> TurtleReader<Cursor<Vec<u8>>> where S: Into<String> {
-    TurtleReader::from_reader(Cursor::new(input.into().into_bytes()))
+impl TurtleParser<Cursor<Vec<u8>>> {
+  /// Constructor of `TurtleParser` from input string.
+  pub fn from_string<S>(input: S) -> TurtleParser<Cursor<Vec<u8>>> where S: Into<String> {
+    TurtleParser::from_reader(Cursor::new(input.into().into_bytes()))
   }
 }
 
 
-impl<R: Read> TurtleReader<R> {
-  /// Constructor of `TurtleReader` from input reader.
-  pub fn from_reader(input: R) -> TurtleReader<R> {
-    TurtleReader {
+impl<R: Read> TurtleParser<R> {
+  /// Constructor of `TurtleParser` from input reader.
+  pub fn from_reader(input: R) -> TurtleParser<R> {
+    TurtleParser {
       lexer: TurtleLexer::new(input)
     }
   }
