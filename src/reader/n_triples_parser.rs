@@ -1,7 +1,7 @@
 use Result;
 use reader::rdf_parser::RdfParser;
 use graph::Graph;
-use error::Error;
+use error::{Error, ErrorType};
 use triple::Triple;
 use reader::lexer::n_triples_lexer::NTriplesLexer;
 use reader::lexer::rdf_lexer::RdfLexer;
@@ -42,20 +42,24 @@ impl<R: Read> RdfParser for NTriplesParser<R> {
     let mut graph = Graph::new(None);
 
     loop {
-      match self.lexer.peek_next_token() {
-        Ok(Token::Comment(_)) => {
+      match try!(self.lexer.peek_next_token()) {
+        Token::Comment(_) => {
           let _ = self.lexer.get_next_token();
           continue
         },
-        Ok(Token::EndOfInput) => return Ok(graph),
-        Ok(_) => {},
-        Err(err) => return Err(err)
+        Token::EndOfInput => return Ok(graph),
+        _ => {}
       }
 
       match self.read_triple() {
         Ok(triple) => graph.add_triple(&triple),
-        Err(Error::EndOfInput(_)) => return Ok(graph),
-        Err(err) => return Err(err)
+        Err(err) => {
+          match err.error_type() {
+            &ErrorType::EndOfInput(_) => return Ok(graph),
+            error_type => return Err(Error::new(ErrorType::InvalidReaderInput,
+                                         "Error while parsing NTriples syntax."))
+          }
+        }
       }
     }
   }
@@ -80,24 +84,13 @@ impl<R: Read> NTriplesParser<R> {
 
   /// Creates a triple from the parsed tokens.
   fn read_triple(&mut self) -> Result<Triple> {
-    let subject = match self.read_subject() {
-      Ok(s) => s,
-      Err(err) => return Err(err)
-    };
-
-    let predicate = match self.read_predicate() {
-      Ok(p) => p,
-      Err(err) => return Err(err)
-    };
-
-    let object = match self.read_object() {
-      Ok(o) => o,
-      Err(err) => return Err(err)
-    };
+    let subject = try!(self.read_subject());
+    let predicate = try!(self.read_predicate());
+    let object = try!(self.read_object());
 
     match self.lexer.get_next_token() {
       Ok(Token::TripleDelimiter) => {},
-      _ => return Err(Error::InvalidReaderInput)
+      _ => return Err(Error::new(ErrorType::InvalidReaderInput, "Expected triple delimiter."))
     }
 
     Ok(Triple::new(&subject, &predicate, &object))
@@ -108,7 +101,7 @@ impl<R: Read> NTriplesParser<R> {
     match self.lexer.get_next_token() {
       Ok(Token::BlankNode(id)) => Ok(Node::BlankNode { id: id }),
       Ok(Token::Uri(uri)) => Ok(Node::UriNode { uri: Uri::new(uri) }),
-      _ => Err(Error::InvalidToken)
+      _ => Err(Error::new(ErrorType::InvalidToken, "Invalid token for NTriples subject."))
     }
   }
 
@@ -116,7 +109,7 @@ impl<R: Read> NTriplesParser<R> {
   fn read_predicate(&mut self) -> Result<Node> {
     match self.lexer.get_next_token() {
       Ok(Token::Uri(uri)) => Ok(Node::UriNode { uri: Uri::new(uri) }),
-      _ => Err(Error::InvalidToken)
+      _ => Err(Error::new(ErrorType::InvalidToken, "Invalid token for NTriples predicate."))
     }
   }
 
@@ -142,7 +135,7 @@ impl<R: Read> NTriplesParser<R> {
           _ => Ok(Node::LiteralNode { literal: literal, data_type: None, language: None }),
         }
       },
-      _ => Err(Error::InvalidToken)
+      _ => Err(Error::new(ErrorType::InvalidToken, "Invalid token for NTriples object."))
     }
   }
 }

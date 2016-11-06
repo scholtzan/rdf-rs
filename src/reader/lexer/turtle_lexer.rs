@@ -2,7 +2,7 @@ use reader::lexer::rdf_lexer::RdfLexer;
 use reader::lexer::token::Token;
 use reader::input_reader::InputReader;
 use std::io::Read;
-use error::Error;
+use error::{Error, ErrorType};
 use Result;
 
 pub struct TurtleLexer<R: Read> {
@@ -58,16 +58,18 @@ impl<R: Read> RdfLexer<R> for TurtleLexer<R> {
       None => { }
     }
 
-    match self.input_reader.get_next_char_discard_leading_spaces() {
-//      Ok(Some('#')) => self.get_comment(),
-//      Ok(Some('@')) => self.get_language_specification(), // todo: base, prefix
-//      Ok(Some('"')) => self.get_literal(),
-//      Ok(Some('<')) => self.get_uri(),
-//      Ok(Some('_')) => self.get_blank_node(),
-//      Ok(Some('^')) => self.get_data_type(),
-//      Ok(Some('.')) => Ok(Token::TripleDelimiter),
-//      Ok(None) => Ok(Token::EndOfInput),
-      _ => Err(Error::InvalidReaderInput)
+    match try!(self.input_reader.get_next_char_discard_leading_spaces()) {
+//      Some('#') => self.get_comment(),
+//      Some('@') => self.get_language_specification(), // todo: base, prefix
+//      Some('"') => self.get_literal(),
+//      Some('<') => self.get_uri(),
+//      Some('_') => self.get_blank_node(),
+//      Some('^') => self.get_data_type(),
+//      Some('.') => Ok(Token::TripleDelimiter),
+//      None => Ok(Token::EndOfInput),
+      Some(c) => Err(Error::new(ErrorType::InvalidReaderInput,
+                                    "Invalid character while parsing Turtle syntax: ".to_string() + &c.to_string())),
+      None => Err(Error::new(ErrorType::InvalidReaderInput, "Invalid Turtle input."))
     }
   }
 

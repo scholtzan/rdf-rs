@@ -1,10 +1,9 @@
 use std::fmt;
 use std::error::Error as StdError;
 
-
-/// An error related to the rdf-rs module.
+/// todo
 #[derive(Debug)]
-pub enum Error {
+pub enum ErrorType {
   InvalidWriterOutput,
   InvalidReaderInput,
   InvalidToken,
@@ -13,27 +12,43 @@ pub enum Error {
 }
 
 
+/// An error related to the rdf-rs module.
+///
+/// # Example
+///
+/// todo
+///
+#[derive(Debug)]
+pub struct Error {
+  error_type: ErrorType,
+  error: Box<StdError>
+}
+
+
+impl Error {
+  pub fn new<E>(error_type: ErrorType, error: E) -> Error
+    where E: Into<Box<StdError>> {
+    Error {
+      error_type: error_type,
+      error: error.into()
+    }
+  }
+
+  pub fn error_type(&self) -> &ErrorType {
+    &self.error_type
+  }
+}
+
+
 impl fmt::Display for Error {
   fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-    match *self {
-      Error::InvalidWriterOutput => write!(f, "Invalid writer output"),
-      Error::InvalidReaderInput => write!(f, "Invalid reader input"),
-      Error::InvalidToken => write!(f, "Invalid token"),
-      Error::EndOfInput(_) => write!(f, "End of input"),
-      Error::InvalidByteEncoding => write!(f, "Cannot decode bytes"),
-    }
+    self.error.fmt(f)
   }
 }
 
 
 impl StdError for Error {
   fn description(&self) -> &str {
-    match *self {
-      Error::InvalidWriterOutput => "Invalid writer output",
-      Error::InvalidReaderInput => "Invalid reader input",
-      Error::InvalidToken => "Invalid token",
-      Error::EndOfInput(_) => "End of input",
-      Error::InvalidByteEncoding => "Cannot decode bytes",
-    }
+    self.error.description()
   }
 }

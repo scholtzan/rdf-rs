@@ -1,5 +1,5 @@
 use std::io::Read;
-use error::Error;
+use error::{Error, ErrorType};
 use Result;
 use std::str;
 
@@ -63,7 +63,8 @@ impl<R: Read> InputReader<R> {
       let byte = match bytes.next() {
         Some(Ok(b)) => b,
         None => return Ok(None),
-        Some(Err(_)) => return Err(Error::InvalidReaderInput),
+        Some(Err(_)) => return Err(Error::new(ErrorType::InvalidReaderInput,
+                                              "Invalid input character.")),
       };
 
       buf[pos] = byte;
@@ -71,11 +72,13 @@ impl<R: Read> InputReader<R> {
       match str::from_utf8(&buf[..(pos + 1)]) {
         Ok(s) => return Ok(s.chars().next()),
         Err(_) if pos < MAX_BYTES - 1 => {},
-        _ => return Err(Error::InvalidByteEncoding)
+        _ => return Err(Error::new(ErrorType::InvalidByteEncoding,
+                                   "Invalid byte encoding of input."))
       }
     }
 
-    Err(Error::InvalidReaderInput)
+    Err(Error::new(ErrorType::InvalidReaderInput,
+                   "Unexpected error while reading input."))
   }
 
 
@@ -125,7 +128,8 @@ impl<R: Read> InputReader<R> {
       match self.get_next_char() {
         Ok(Some(c)) if delimiter(c) => return Ok(buf.into_iter().collect()),
         Ok(Some(c)) if !delimiter(c) => buf.push(c),
-        Ok(_) => return Err(Error::EndOfInput(buf.into_iter().collect())),
+        Ok(_) => return Err(Error::new(ErrorType::EndOfInput(buf.into_iter().collect()),
+                            "End of input.")),
         Err(err) => return Err(err)
       }
     }
@@ -149,8 +153,13 @@ impl<R: Read> InputReader<R> {
   pub fn get_until_discard_leading_spaces<F: Fn(char) -> bool>(&mut self, delimiter: F) -> Result<String> {
     match self.get_until(delimiter) {
       Ok(str) => Ok(str.to_owned().trim().to_string()),
-      Err(Error::EndOfInput(str)) => Err(Error::EndOfInput(str.to_owned().trim().to_string())),
-      Err(err) => Err(err)
+      Err(err) => {
+        match err.error_type() {
+          &ErrorType::EndOfInput(ref str) => Err(Error::new(ErrorType::EndOfInput(str.to_owned().trim().to_string()),
+                                                        "End of input")),
+          _ => Err(Error::new(ErrorType::InvalidReaderInput, "Error while reading input."))
+        }
+      }
     }
   }
 }

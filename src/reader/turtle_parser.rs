@@ -1,7 +1,7 @@
 use Result;
 use reader::rdf_parser::RdfParser;
 use graph::Graph;
-use error::Error;
+use error::{Error, ErrorType};
 use triple::Triple;
 use reader::lexer::turtle_lexer::TurtleLexer;
 use reader::lexer::rdf_lexer::RdfLexer;
@@ -48,9 +48,15 @@ impl<R: Read> RdfParser for TurtleParser<R> {
           let triples = try!(self.read_triples());
           graph.add_triples(&triples);
         },
-        Err(Error::EndOfInput(_)) => return Ok(graph),
-        Ok(_) => return Err(Error::InvalidToken),
-        Err(err) => return Err(err)
+        Err(err) => {
+          match err.error_type() {
+            &ErrorType::EndOfInput(_) => return Ok(graph),
+            error_type => return Err(Error::new(ErrorType::InvalidReaderInput,
+                                                "Error while parsing Turtle syntax."))
+          }
+        }
+        Ok(_) => return Err(Error::new(ErrorType::InvalidToken,
+                                       "Invalid token while parsing Turtle syntax."))
       }
     }
   }
@@ -74,10 +80,10 @@ impl<R: Read> TurtleParser<R> {
 
   /// Reads the base directive and returns the base URI.
   fn read_base_directive(&mut self) -> Result<Uri> {
-    match self.lexer.get_next_token() {
-      Ok(Token::Uri(uri)) => Ok(Uri::new(uri)),
-      Ok(_) => Err(Error::InvalidToken),
-      Err(err) => Err(err)
+    match try!(self.lexer.get_next_token()) {
+      Token::Uri(uri) => Ok(Uri::new(uri)),
+      _ => Err(Error::new(ErrorType::InvalidToken,
+                          "Invalid token parsing Turtle base directive."))
     }
   }
 
@@ -85,13 +91,15 @@ impl<R: Read> TurtleParser<R> {
   fn read_prefix_directive(&mut self) -> Result<Namespace> {
     let prefix = match self.lexer.get_next_token() {
       Ok(Token::Prefix(p)) => p,
-      Ok(_) => return Err(Error::InvalidToken),
+      Ok(_) => return Err(Error::new(ErrorType::InvalidToken,
+                                     "Invalid token parsing Turtle prefix directive.")),
       Err(err) => return Err(err)
     };
 
     let uri = match self.lexer.get_next_token() {
       Ok(Token::Uri(uri)) => Uri::new(uri),
-      Ok(_) => return Err(Error::InvalidToken),
+      Ok(_) => return Err(Error::new(ErrorType::InvalidToken,
+                                     "Invalid token parsing Turtle prefix directive URI.")),
       Err(err) => return Err(err)
     };
 
@@ -102,11 +110,7 @@ impl<R: Read> TurtleParser<R> {
   fn read_triples(&mut self) -> Result<Vec<Triple>> {
     let mut triples: Vec<Triple> = Vec::new();
 
-    let subject = match self.read_subject() {
-      Ok(s) => s,
-      Err(err) => return Err(err)
-    };
-
+    let subject = try!(self.read_subject());
     let (predicate, object) = try!(self.read_predicate_with_object());
 
     triples.push(Triple::new(&subject, &predicate, &object));
@@ -122,7 +126,8 @@ impl<R: Read> TurtleParser<R> {
           let object = try!(self.read_object());
           triples.push(Triple::new(&subject, &predicate, &object));
         },
-        _ => return Err(Error::InvalidReaderInput)
+        _ => return Err(Error::new(ErrorType::InvalidReaderInput,
+                                   "Invalid token while parsing Turtle triples."))
       }
     }
 
@@ -131,19 +136,20 @@ impl<R: Read> TurtleParser<R> {
 
   /// Get the next token and check if it is a valid subject and create a new subject node.
   fn read_subject(&mut self) -> Result<Node> {
-    match self.lexer.get_next_token() {
-      Ok(Token::BlankNode(id)) => Ok(Node::BlankNode { id: id }),
-      Ok(Token::Uri(uri)) => Ok(Node::UriNode { uri: Uri::new(uri) }),
-      _ => Err(Error::InvalidToken)
+    match try!(self.lexer.get_next_token()) {
+      Token::BlankNode(id) => Ok(Node::BlankNode { id: id }),
+      Token::Uri(uri) => Ok(Node::UriNode { uri: Uri::new(uri) }),
+      _ => Err(Error::new(ErrorType::InvalidToken,
+                          "Invalid token for Turtle subject."))
     }
   }
 
   /// Get the next token and check if it is a valid predicate and create a new predicate node.
   fn read_predicate_with_object(&mut self) -> Result<(Node, Node)> {
     // read the predicate
-    let predicate = match self.lexer.get_next_token() {
-      Ok(Token::Uri(uri)) => Node::UriNode { uri: Uri::new(uri) },
-      _ => return Err(Error::InvalidToken)
+    let predicate = match try!(self.lexer.get_next_token()) {
+      Token::Uri(uri) => Node::UriNode { uri: Uri::new(uri) },
+      _ => return Err(Error::new(ErrorType::InvalidToken, "Invalid token for Turtle predicate."))
     };
 
     // read the object
@@ -154,10 +160,10 @@ impl<R: Read> TurtleParser<R> {
 
   /// Get the next token and check if it is a valid object and create a new object node.
   fn read_object(&mut self) -> Result<Node> {
-    match self.lexer.get_next_token() {
-      Ok(Token::BlankNode(id)) => Ok(Node::BlankNode { id: id }),
-      Ok(Token::Uri(uri)) => Ok(Node::UriNode { uri: Uri::new(uri) }),
-      Ok(Token::Literal(literal)) => {
+    match try!(self.lexer.get_next_token()) {
+      Token::BlankNode(id) => Ok(Node::BlankNode { id: id }),
+      Token::Uri(uri) => Ok(Node::UriNode { uri: Uri::new(uri) }),
+      Token::Literal(literal) => {
         match self.lexer.peek_next_token() {
 //          Ok(Token::LanguageSpecification(lang)) => {   todo
 //            let _ = self.lexer.get_next_token();
@@ -174,7 +180,7 @@ impl<R: Read> TurtleParser<R> {
           _ => Ok(Node::LiteralNode { literal: literal, data_type: None, language: None }),
         }
       },
-      _ => Err(Error::InvalidToken)
+      _ => Err(Error::new(ErrorType::InvalidToken, "Invalid token for Turtle object."))
     }
   }
 }

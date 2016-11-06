@@ -85,17 +85,20 @@ impl NTriplesWriter {
       &Node::BlankNode { id: _ } =>
         // blank nodes are not allowed as predicates
         if segment == TripleSegment::Predicate {
-          return Err(Error::InvalidWriterOutput)
+          return Err(Error::new(ErrorType::InvalidWriterOutput,
+                                "Blank nodes are not allowed as predicates."))
         },
       &Node::LiteralNode { literal: _, data_type: ref dt, language: ref lang } => {
         // literal nodes are only allowed as objects
         if segment != TripleSegment::Object {
-          return Err(Error::InvalidWriterOutput)
+          return Err(Error::new(ErrorType::InvalidWriterOutput,
+                                "Literals are not allowed as subjects or predicates."))
         }
 
         // either language or data type could be defined, but not both
         if *lang != None && *dt != None {
-          return Err(Error::InvalidWriterOutput)
+          return Err(Error::new(ErrorType::InvalidWriterOutput,
+                                "Language and data type defined for a literal."))
         }
       },
       _ => {},
