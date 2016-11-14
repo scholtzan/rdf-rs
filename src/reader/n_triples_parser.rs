@@ -25,8 +25,8 @@ impl<R: Read> RdfParser for NTriplesParser<R> {
   /// # Example
   ///
   /// ```
-  /// use rdf_rs::reader::n_triples_reader::NTriplesParser;
-  /// use rdf_rs::reader::rdf_reader::RdfParser;
+  /// use rdf_rs::reader::n_triples_parser::NTriplesParser;
+  /// use rdf_rs::reader::rdf_parser::RdfParser;
   ///
   /// let input = "<http://www.w3.org/2001/sw/RDFCore/ntriples/> <http://xmlns.com/foaf/0.1/maker> _:art .
   ///              _:art <http://xmlns.com/foaf/0.1/name> \"Art Barstow\" .";
@@ -56,8 +56,11 @@ impl<R: Read> RdfParser for NTriplesParser<R> {
         Err(err) => {
           match err.error_type() {
             &ErrorType::EndOfInput(_) => return Ok(graph),
-            error_type => return Err(Error::new(ErrorType::InvalidReaderInput,
-                                         "Error while parsing NTriples syntax."))
+            _ => {
+              println!("Error: {}", err.to_string());
+              return Err(Error::new(ErrorType::InvalidReaderInput,
+                                    "Error while parsing NTriples syntax."))
+            }
           }
         }
       }
@@ -87,6 +90,8 @@ impl<R: Read> NTriplesParser<R> {
     let subject = try!(self.read_subject());
     let predicate = try!(self.read_predicate());
     let object = try!(self.read_object());
+
+    println!("----=====-=-=--==-");
 
     match self.lexer.get_next_token() {
       Ok(Token::TripleDelimiter) => {},
@@ -118,23 +123,12 @@ impl<R: Read> NTriplesParser<R> {
     match self.lexer.get_next_token() {
       Ok(Token::BlankNode(id)) => Ok(Node::BlankNode { id: id }),
       Ok(Token::Uri(uri)) => Ok(Node::UriNode { uri: Uri::new(uri) }),
-      Ok(Token::Literal(literal)) => {
-        match self.lexer.peek_next_token() {
-//          Ok(Token::LanguageSpecification(lang)) => {   todo
-//            let _ = self.lexer.get_next_token();
-//            Ok(Node::LiteralNode { literal: literal, data_type: None, language: Some(lang) })
-//          },
-//          Ok(Token::DataTypeStart) => { todo
-//            let _ = self.lexer.get_next_token();
-//            match self.lexer.get_next_token() {
-//              Ok(Token::Uri(uri)) =>
-//                Ok(Node::LiteralNode { literal: literal, data_type: Some(Uri::new(uri)), language: None }),
-//              _ => Err(Error::InvalidToken)
-//            }
-//          },
-          _ => Ok(Node::LiteralNode { literal: literal, data_type: None, language: None }),
-        }
-      },
+      Ok(Token::LiteralWithLanguageSpecification(literal, lang)) =>
+        Ok(Node::LiteralNode { literal: literal, data_type: None, language: Some(lang) }),
+      Ok(Token::LiteralWithUrlDatatype(literal, datatype)) =>
+        Ok(Node::LiteralNode { literal: literal, data_type: Some(Uri::new(datatype)), language: None }),
+      Ok(Token::Literal(literal)) =>
+        Ok(Node::LiteralNode { literal: literal, data_type: None, language: None }),
       _ => Err(Error::new(ErrorType::InvalidToken, "Invalid token for NTriples object."))
     }
   }
@@ -157,30 +151,12 @@ mod tests {
 
     match reader.decode() {
       Ok(graph) => assert_eq!(graph.count(), 4),
-      Err(_) => assert!(false)
+      Err(e) => {
+        println!("Err {}", e.to_string());
+        assert!(false)
+      }
     }
   }
-
-//  #[test]
-//  fn read_n_triples_from_string_and_sort() {
-//    let input = "<http://www.w3.org/2001/sw/RDFCore/ntriples/> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Document> .
-//                 <http://www.w3.org/2001/sw/RDFCore/ntriples/> <http://xmlns.com/foaf/0.1/maker> _:art .
-//                 _:art <http://xmlns.com/foaf/0.1/name> \"Art Barstow\" .
-//                 <http://www.w3.org/2001/sw/RDFCore/ntriples/> <http://purl.org/dc/terms/title> \"N-Triples\"@en-US .";
-//
-//    let mut reader = NTriplesParser::from_string(input.to_string());
-//
-//    match reader.decode() {
-//      Ok(mut graph) => {
-//        for x in graph.sorted_triples_iter() {
-//          println!("{:?}\n", x);
-//        }
-//
-//        assert!(true)
-//      },
-//      Err(_) => assert!(false)
-//    }
-//  }
 }
 
 

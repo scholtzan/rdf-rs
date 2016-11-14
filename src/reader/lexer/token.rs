@@ -10,8 +10,8 @@ pub enum Token {
   Uri(String),
   BlankNode(String),
   TripleDelimiter,
-  PrefixDirective,
-  BaseDirective,
+  PrefixDirective(String, String),
+  BaseDirective(String),
   QName(String, String),
   Prefix(String),
   PredicateListDelimiter,   // e.g. for Turtle syntax -> ;

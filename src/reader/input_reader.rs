@@ -40,6 +40,18 @@ impl<R: Read> InputReader<R> {
     }
   }
 
+  /// todo
+  pub fn peek_next_char_discard_leading_spaces(&mut self) -> Result<Option<char>> {
+    match self.get_next_char_discard_leading_spaces() {
+      Ok(Some(next_char)) => {
+        self.peeked_char = Some(next_char);
+        Ok(Some(next_char))
+      }, // todo: Ok(None)
+      Ok(None) => Ok(None),
+      Err(err) => Err(err)
+    }
+  }
+
   /// Returns the next character of an input source.
   ///
   /// # Example
@@ -53,6 +65,14 @@ impl<R: Read> InputReader<R> {
   /// assert_eq!(Some('e'), input_reader.get_next_char().unwrap());
   /// ```
   pub fn get_next_char(&mut self) -> Result<Option<char>> {
+    match self.peeked_char {
+      Some(c) => {
+        self.peeked_char = None;
+        return Ok(Some(c))
+      },
+      None => {}
+    }
+
     const MAX_BYTES: usize = 4;
     let mut buf = [0u8; MAX_BYTES];
 
@@ -119,14 +139,17 @@ impl<R: Read> InputReader<R> {
   /// let mut input_reader = InputReader::new(input);
   ///
   /// assert_eq!("Hello".to_string(), input_reader.get_until(|c| c == ' ').unwrap());
-  /// assert_eq!("World".to_string(), input_reader.get_until(|c| c == '!').unwrap());
+  /// assert_eq!(" World".to_string(), input_reader.get_until(|c| c == '!').unwrap());
   /// ```
   pub fn get_until<F: Fn(char) -> bool>(&mut self, delimiter: F) -> Result<String> {
     let mut buf = Vec::new();
 
     loop {
       match self.get_next_char() {
-        Ok(Some(c)) if delimiter(c) => return Ok(buf.into_iter().collect()),
+        Ok(Some(c)) if delimiter(c) => {
+          self.peeked_char = Some(c);
+          return Ok(buf.into_iter().collect())
+        },
         Ok(Some(c)) if !delimiter(c) => buf.push(c),
         Ok(_) => return Err(Error::new(ErrorType::EndOfInput(buf.into_iter().collect()),
                             "End of input.")),

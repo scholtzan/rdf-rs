@@ -36,14 +36,14 @@ impl<R: Read> RdfParser for TurtleParser<R> {
           continue
         },
         Ok(Token::EndOfInput) => return Ok(graph),
-        Ok(Token::BaseDirective) => {
-          let uri = try!(self.read_base_directive());
-          graph.set_base_uri(&uri);
-        },
-        Ok(Token::PrefixDirective) => {
-          let ns = try!(self.read_prefix_directive());
-          graph.add_namespace(&ns);
-        },
+//        Ok(Token::BaseDirective) => {   todo
+//          let uri = try!(self.read_base_directive());
+//          graph.set_base_uri(&uri);
+//        },
+//        Ok(Token::PrefixDirective) => {
+//          let ns = try!(self.read_prefix_directive());
+//          graph.add_namespace(&ns);
+//        },
         Ok(Token::Uri(_)) | Ok(Token::BlankNode(_)) | Ok(Token::QName(_, _)) => {
           let triples = try!(self.read_triples());
           graph.add_triples(&triples);
