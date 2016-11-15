@@ -194,7 +194,7 @@ impl<R: Read> TurtleLexer<R> {
         let language = try!(self.get_language_specification());
         Ok(Token::LiteralWithLanguageSpecification(literal, language))
       },
-      Some('^') => {    // todo: Qname
+      Some('^') => {
         self.consume_next_char(); // consume '^'
         self.consume_next_char(); // consume '^'
 
@@ -208,8 +208,12 @@ impl<R: Read> TurtleLexer<R> {
                                   "Invalid data type URI for Turtle literal."))
             }
           },
-          Some(c) => Err(Error::new(ErrorType::InvalidReaderInput,
-                                    "Invalid data type token for Turtle: ". to_string() + &c.to_string())),
+          Some(c) => {
+            match try!(self.get_qname()) {
+              Token::QName(prefix, path) => Ok(Token::LiteralWithQNameDatatype(literal, prefix, path)),
+              _ => Err(Error::new(ErrorType::InvalidReaderInput, "Invalid Turtle input for parsing QName data type."))
+            }
+          },
           None => Err(Error::new(ErrorType::InvalidReaderInput, "Invalid Turtle input."))
         }
       },
@@ -255,7 +259,19 @@ impl<R: Read> TurtleLexer<R> {
 
   /// Parses a QName.
   fn get_qname(&mut self) -> Result<Token> {
-    Ok(Token::TripleDelimiter)
+    let prefix = try!(self.input_reader.get_until(|c| c == ':'));
+    self.consume_next_char();    // consume ':'
+
+    match self.input_reader.get_until(|c| c == '\n' || c == '\r' || c == ' ' || c == '.') {
+      Ok(str) => Ok(Token::QName(prefix, str)),
+      Err(err) => {
+        match err.error_type() {
+          &ErrorType::EndOfInput(ref str) => Ok(Token::QName(prefix, str.clone())),
+          _ => Err(Error::new(ErrorType::InvalidReaderInput,
+                              "Invalid input for Turtle lexer while parsing QName."))
+        }
+      }
+    }
   }
 }
 
@@ -332,12 +348,30 @@ mod tests {
   }
 
   #[test]
+  fn parse_qname() {
+    let input = "abc:def:ghij".as_bytes();
+
+    let mut lexer = TurtleLexer::new(input);
+
+    assert_eq!(lexer.get_next_token().unwrap(), Token::QName("abc".to_string(), "def:ghij".to_string()));
+  }
+
+  #[test]
   fn parse_literal_with_data_type() {
     let input = "\"a\"^^<example.org/abc>".as_bytes();
 
     let mut lexer = TurtleLexer::new(input);
 
     assert_eq!(lexer.get_next_token().unwrap(), Token::LiteralWithUrlDatatype("a".to_string(), "example.org/abc".to_string()));
+  }
+
+  #[test]
+  fn parse_literal_with_qname_data_type() {
+    let input = "\"a\"^^ex:abc:asdf".as_bytes();
+
+    let mut lexer = TurtleLexer::new(input);
+
+    assert_eq!(lexer.get_next_token().unwrap(), Token::LiteralWithQNameDatatype("a".to_string(), "ex".to_string(), "abc:asdf".to_string()));
   }
 
   #[test]

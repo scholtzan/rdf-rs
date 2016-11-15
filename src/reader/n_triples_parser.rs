@@ -91,8 +91,6 @@ impl<R: Read> NTriplesParser<R> {
     let predicate = try!(self.read_predicate());
     let object = try!(self.read_object());
 
-    println!("----=====-=-=--==-");
-
     match self.lexer.get_next_token() {
       Ok(Token::TripleDelimiter) => {},
       _ => return Err(Error::new(ErrorType::InvalidReaderInput, "Expected triple delimiter."))

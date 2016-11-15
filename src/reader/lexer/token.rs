@@ -5,7 +5,7 @@ pub enum Token {
   Comment(String),
   Literal(String),
   LiteralWithUrlDatatype(String, String),   // first element is the literal, second the data type URL
-  LiteralWithQNameDatatype(String, String), // first element is the literal, second the QName of the data type
+  LiteralWithQNameDatatype(String, String, String), // first element is the literal, second the prefix of the QName data type, third the QName path
   LiteralWithLanguageSpecification(String, String),
   Uri(String),
   BlankNode(String),
