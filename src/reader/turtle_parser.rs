@@ -36,16 +36,14 @@ impl<R: Read> RdfParser for TurtleParser<R> {
           continue
         },
         Ok(Token::EndOfInput) => return Ok(graph),
-//        Ok(Token::BaseDirective) => {   todo
-//          let uri = try!(self.read_base_directive());
-//          graph.set_base_uri(&uri);
-//        },
-//        Ok(Token::PrefixDirective) => {
-//          let ns = try!(self.read_prefix_directive());
-//          graph.add_namespace(&ns);
-//        },
+        Ok(Token::BaseDirective(base_uri)) => {
+          graph.set_base_uri(&Uri::new(base_uri));
+        },
+        Ok(Token::PrefixDirective(prefix, uri)) => {
+          graph.add_namespace(&Namespace::new(prefix, Uri::new(uri)));
+        },
         Ok(Token::Uri(_)) | Ok(Token::BlankNode(_)) | Ok(Token::QName(_, _)) => {
-          let triples = try!(self.read_triples());
+          let triples = try!(self.read_triples(&graph));
           graph.add_triples(&triples);
         },
         Err(err) => {
@@ -78,40 +76,12 @@ impl<R: Read> TurtleParser<R> {
     }
   }
 
-  /// Reads the base directive and returns the base URI.
-  fn read_base_directive(&mut self) -> Result<Uri> {
-    match try!(self.lexer.get_next_token()) {
-      Token::Uri(uri) => Ok(Uri::new(uri)),
-      _ => Err(Error::new(ErrorType::InvalidToken,
-                          "Invalid token parsing Turtle base directive."))
-    }
-  }
-
-  /// Reads prefixes and creates namespaces.
-  fn read_prefix_directive(&mut self) -> Result<Namespace> {
-    let prefix = match self.lexer.get_next_token() {
-      Ok(Token::Prefix(p)) => p,
-      Ok(_) => return Err(Error::new(ErrorType::InvalidToken,
-                                     "Invalid token parsing Turtle prefix directive.")),
-      Err(err) => return Err(err)
-    };
-
-    let uri = match self.lexer.get_next_token() {
-      Ok(Token::Uri(uri)) => Uri::new(uri),
-      Ok(_) => return Err(Error::new(ErrorType::InvalidToken,
-                                     "Invalid token parsing Turtle prefix directive URI.")),
-      Err(err) => return Err(err)
-    };
-
-    Ok(Namespace::new(prefix, uri))
-  }
-
   /// Creates a triple from the parsed tokens.
-  fn read_triples(&mut self) -> Result<Vec<Triple>> {
+  fn read_triples(&mut self, graph: &Graph) -> Result<Vec<Triple>> {
     let mut triples: Vec<Triple> = Vec::new();
 
-    let subject = try!(self.read_subject());
-    let (predicate, object) = try!(self.read_predicate_with_object());
+    let subject = try!(self.read_subject(&graph));
+    let (predicate, object) = try!(self.read_predicate_with_object(graph));
 
     triples.push(Triple::new(&subject, &predicate, &object));
 
@@ -119,11 +89,11 @@ impl<R: Read> TurtleParser<R> {
       match self.lexer.get_next_token() {
         Ok(Token::TripleDelimiter) => break,
         Ok(Token::PredicateListDelimiter) => {
-          let (predicate, object) = try!(self.read_predicate_with_object());
+          let (predicate, object) = try!(self.read_predicate_with_object(graph));
           triples.push(Triple::new(&subject, &predicate, &object));
         },
         Ok(Token::ObjectListDelimiter) => {
-          let object = try!(self.read_object());
+          let object = try!(self.read_object(graph));
           triples.push(Triple::new(&subject, &predicate, &object));
         },
         _ => return Err(Error::new(ErrorType::InvalidReaderInput,
@@ -135,9 +105,14 @@ impl<R: Read> TurtleParser<R> {
   }
 
   /// Get the next token and check if it is a valid subject and create a new subject node.
-  fn read_subject(&mut self) -> Result<Node> {
+  fn read_subject(&mut self, graph: &Graph) -> Result<Node> {
     match try!(self.lexer.get_next_token()) {
       Token::BlankNode(id) => Ok(Node::BlankNode { id: id }),
+      Token::QName(prefix, path) => {
+        let mut uri = try!(graph.get_namespace_uri_by_prefix(prefix)).to_owned();
+        uri.append_resource_path(path.replace(":", "/"));   // adjust the QName path to URI path
+        Ok(Node::UriNode { uri: uri })
+      }
       Token::Uri(uri) => Ok(Node::UriNode { uri: Uri::new(uri) }),
       _ => Err(Error::new(ErrorType::InvalidToken,
                           "Invalid token for Turtle subject."))
@@ -145,41 +120,40 @@ impl<R: Read> TurtleParser<R> {
   }
 
   /// Get the next token and check if it is a valid predicate and create a new predicate node.
-  fn read_predicate_with_object(&mut self) -> Result<(Node, Node)> {
+  fn read_predicate_with_object(&mut self, graph: &Graph) -> Result<(Node, Node)> {
     // read the predicate
     let predicate = match try!(self.lexer.get_next_token()) {
       Token::Uri(uri) => Node::UriNode { uri: Uri::new(uri) },
+      Token::QName(prefix, path) => {
+        let mut uri = try!(graph.get_namespace_uri_by_prefix(prefix)).to_owned();
+        uri.append_resource_path(path.replace(":", "/"));   // adjust the QName path to URI path
+        Node::UriNode { uri: uri }
+      },
       _ => return Err(Error::new(ErrorType::InvalidToken, "Invalid token for Turtle predicate."))
     };
 
     // read the object
-    let object = try!(self.read_object());
+    let object = try!(self.read_object(graph));
 
     Ok((predicate, object))
   }
 
   /// Get the next token and check if it is a valid object and create a new object node.
-  fn read_object(&mut self) -> Result<Node> {
+  fn read_object(&mut self, graph: &Graph) -> Result<Node> {
     match try!(self.lexer.get_next_token()) {
       Token::BlankNode(id) => Ok(Node::BlankNode { id: id }),
       Token::Uri(uri) => Ok(Node::UriNode { uri: Uri::new(uri) }),
-      Token::Literal(literal) => {
-        match self.lexer.peek_next_token() {
-//          Ok(Token::LanguageSpecification(lang)) => {   todo
-//            let _ = self.lexer.get_next_token();
-//            Ok(Node::LiteralNode { literal: literal, data_type: None, language: Some(lang) })
-//          },
-//          Ok(Token::DataTypeStart) => {
-//            let _ = self.lexer.get_next_token();
-//            match self.lexer.get_next_token() {
-//              Ok(Token::Uri(uri)) =>
-//                Ok(Node::LiteralNode { literal: literal, data_type: Some(Uri::new(uri)), language: None }),
-//              _ => Err(Error::InvalidToken)
-//            }
-//          },
-          _ => Ok(Node::LiteralNode { literal: literal, data_type: None, language: None }),
-        }
+      Token::QName(prefix, path) => {
+        let mut uri = try!(graph.get_namespace_uri_by_prefix(prefix)).to_owned();
+        uri.append_resource_path(path.replace(":", "/"));   // adjust the QName path to URI path
+        Ok(Node::UriNode { uri: uri })
       },
+      Token::LiteralWithLanguageSpecification(literal, lang) =>
+        Ok(Node::LiteralNode { literal: literal, data_type: None, language: Some(lang) }),
+      Token::LiteralWithUrlDatatype(literal, datatype) =>
+        Ok(Node::LiteralNode { literal: literal, data_type: Some(Uri::new(datatype)), language: None }),
+      Token::Literal(literal) =>
+        Ok(Node::LiteralNode { literal: literal, data_type: None, language: None }),
       _ => Err(Error::new(ErrorType::InvalidToken, "Invalid token for Turtle object."))
     }
   }

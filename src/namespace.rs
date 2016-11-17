@@ -1,5 +1,7 @@
 use std::collections::HashMap;
 use uri::Uri;
+use Result;
+use error::{Error, ErrorType};
 
 /// Representation of a specific namespace.
 #[derive(Debug)]
@@ -54,5 +56,14 @@ impl NamespaceStore {
   /// Adds a new namespace.
   pub fn add(&mut self, ns: &Namespace) {
     &self.namespaces.insert(ns.prefix().clone(), ns.uri.clone());
+  }
+
+  /// Returns the URI of a specific namespace.
+  pub fn get_uri_by_prefix(&self, prefix: String) -> Result<&Uri> {
+    match self.namespaces.get(&prefix) {
+      Some(uri) => Ok(uri),
+      None => Err(Error::new(ErrorType::InvalidNamespace,
+                             "Namespace does not exists for prefix: ".to_string() + &prefix.to_string()))
+    }
   }
 }

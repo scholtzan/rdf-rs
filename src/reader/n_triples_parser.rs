@@ -118,14 +118,14 @@ impl<R: Read> NTriplesParser<R> {
 
   /// Get the next token and check if it is a valid object and create a new object node.
   fn read_object(&mut self) -> Result<Node> {
-    match self.lexer.get_next_token() {
-      Ok(Token::BlankNode(id)) => Ok(Node::BlankNode { id: id }),
-      Ok(Token::Uri(uri)) => Ok(Node::UriNode { uri: Uri::new(uri) }),
-      Ok(Token::LiteralWithLanguageSpecification(literal, lang)) =>
+    match try!(self.lexer.get_next_token()) {
+      Token::BlankNode(id) => Ok(Node::BlankNode { id: id }),
+      Token::Uri(uri) => Ok(Node::UriNode { uri: Uri::new(uri) }),
+      Token::LiteralWithLanguageSpecification(literal, lang) =>
         Ok(Node::LiteralNode { literal: literal, data_type: None, language: Some(lang) }),
-      Ok(Token::LiteralWithUrlDatatype(literal, datatype)) =>
+      Token::LiteralWithUrlDatatype(literal, datatype) =>
         Ok(Node::LiteralNode { literal: literal, data_type: Some(Uri::new(datatype)), language: None }),
-      Ok(Token::Literal(literal)) =>
+      Token::Literal(literal) =>
         Ok(Node::LiteralNode { literal: literal, data_type: None, language: None }),
       _ => Err(Error::new(ErrorType::InvalidToken, "Invalid token for NTriples object."))
     }

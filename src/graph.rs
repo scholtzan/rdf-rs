@@ -4,6 +4,7 @@ use namespace::*;
 use node::*;
 use std::slice::Iter;
 use std::collections::HashMap;
+use Result;
 
 
 /// Representation of an RDF graph.
@@ -97,6 +98,11 @@ impl Graph {
   /// ```
   pub fn add_namespace(&mut self, ns: &Namespace) {
     self.namespaces.add(ns);
+  }
+
+  /// todo
+  pub fn get_namespace_uri_by_prefix(&self, prefix: String) -> Result<&Uri> {
+    self.namespaces.get_uri_by_prefix(prefix)
   }
 
   /// Returns a literal node of the specified namespace.

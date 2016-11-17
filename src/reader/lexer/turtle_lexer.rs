@@ -240,7 +240,7 @@ impl<R: Read> TurtleLexer<R> {
     match try!(self.input_reader.get_next_char()) {
       Some(':') => { }
       Some(c) => return Err(Error::new(ErrorType::InvalidReaderInput,
-                                       "Invalid character while parsing Turtle blank node: ". to_string() + &c.to_string())),
+                                       "Invalid character while parsing Turtle blank node: ".to_string() + &c.to_string())),
       None => return Err(Error::new(ErrorType::InvalidReaderInput,
                                     "Error while parsing Turtle blank node."))
     }

@@ -17,4 +17,10 @@ impl Uri {
   pub fn to_string(&self) -> &String {
     &self.uri
   }
+
+  /// todo
+  pub fn append_resource_path(&mut self, path: String) {
+    // todo: check if URI ends with '/', if not add '/'
+    self.uri.push_str(&path.to_string());
+  }
 }

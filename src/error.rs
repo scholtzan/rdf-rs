@@ -9,6 +9,7 @@ pub enum ErrorType {
   InvalidToken,
   EndOfInput(String),
   InvalidByteEncoding,
+  InvalidNamespace
 }
 
 
