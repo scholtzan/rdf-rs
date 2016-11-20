@@ -33,7 +33,7 @@ impl<R: Read> InputReader<R> {
           Ok(Some(next_char)) => {
             self.peeked_char = Some(next_char);
             Ok(Some(next_char))
-          }, // todo: Ok(None)
+          },
           Ok(None) => Ok(None),
           Err(err) => Err(err)
         }
@@ -46,7 +46,7 @@ impl<R: Read> InputReader<R> {
       Ok(Some(next_char)) => {
         self.peeked_char = Some(next_char);
         Ok(Some(next_char))
-      }, // todo: Ok(None)
+      },
       Ok(None) => Ok(None),
       Err(err) => Err(err)
     }

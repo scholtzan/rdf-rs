@@ -20,12 +20,24 @@ pub struct TurtleParser<R: Read> {
 impl<R: Read> RdfParser for TurtleParser<R> {
   /// Generates an RDF graph from a string containing Turtle syntax.
   ///
-  /// Returns in error in case invalid Turtle syntax is provided.
+  /// Returns an error in case invalid Turtle syntax is provided.
   ///
   /// # Example
   ///
-  /// todo
+  /// ```
+  /// use rdf_rs::reader::turtle_parser::TurtleParser;
+  /// use rdf_rs::reader::rdf_parser::RdfParser;
   ///
+  /// let input = "<http://www.w3.org/2001/sw/RDFCore/ntriples/> <http://xmlns.com/foaf/0.1/maker> _:art .
+  ///              _:art <http://xmlns.com/foaf/0.1/name> \"Art Barstow\" .";
+  ///
+  /// let mut reader = TurtleParser::from_string(input.to_string());
+  ///
+  /// match reader.decode() {
+  ///   Ok(graph) => assert_eq!(graph.count(), 2),
+  ///   Err(_) => assert!(false)
+  /// }
+  /// ```
   fn decode(&mut self) -> Result<Graph> {
     let mut graph = Graph::new(None);
 
@@ -36,11 +48,13 @@ impl<R: Read> RdfParser for TurtleParser<R> {
           continue
         },
         Ok(Token::EndOfInput) => return Ok(graph),
-        Ok(Token::BaseDirective(base_uri)) => {
-          graph.set_base_uri(&Uri::new(base_uri));
+        Ok(Token::BaseDirective(_)) => {
+          let base_uri = try!(self.read_base_directive());
+          graph.set_base_uri(&base_uri);
         },
-        Ok(Token::PrefixDirective(prefix, uri)) => {
-          graph.add_namespace(&Namespace::new(prefix, Uri::new(uri)));
+        Ok(Token::PrefixDirective(_, _)) => {
+          let namespace = try!(self.read_prefix_directive());
+          graph.add_namespace(&namespace);
         },
         Ok(Token::Uri(_)) | Ok(Token::BlankNode(_)) | Ok(Token::QName(_, _)) => {
           let triples = try!(self.read_triples(&graph));
@@ -49,12 +63,14 @@ impl<R: Read> RdfParser for TurtleParser<R> {
         Err(err) => {
           match err.error_type() {
             &ErrorType::EndOfInput(_) => return Ok(graph),
-            error_type => return Err(Error::new(ErrorType::InvalidReaderInput,
-                                                "Error while parsing Turtle syntax."))
+            _ => return Err(Error::new(ErrorType::InvalidReaderInput,
+                                       "Error while parsing Turtle syntax."))
           }
         }
-        Ok(_) => return Err(Error::new(ErrorType::InvalidToken,
-                                       "Invalid token while parsing Turtle syntax."))
+        Ok(_) => {
+          return Err(Error::new(ErrorType::InvalidToken,
+                                "Invalid token while parsing Turtle syntax."))
+        }
       }
     }
   }
@@ -73,6 +89,36 @@ impl<R: Read> TurtleParser<R> {
   pub fn from_reader(input: R) -> TurtleParser<R> {
     TurtleParser {
       lexer: TurtleLexer::new(input)
+    }
+  }
+
+  /// Parses prefix directives and returns the created namespace.
+  fn read_base_directive(&mut self) -> Result<Uri> {
+    match try!(self.lexer.get_next_token()) {
+      Token::BaseDirective(uri) => {
+        match try!(self.lexer.get_next_token()) {
+          Token::TripleDelimiter => Ok(Uri::new(uri)),
+          _ => Err(Error::new(ErrorType::InvalidReaderInput,
+                              "Turtle base directive does not end with '.'"))
+        }
+      },
+      _ => Err(Error::new(ErrorType::InvalidReaderInput,
+                          "Invalid input for Turtle base directive."))
+    }
+  }
+
+  /// Parses prefix directives and returns the created namespace.
+  fn read_prefix_directive(&mut self) -> Result<Namespace> {
+    match try!(self.lexer.get_next_token()) {
+      Token::PrefixDirective(prefix, uri) => {
+        match try!(self.lexer.get_next_token()) {
+          Token::TripleDelimiter => Ok(Namespace::new(prefix, Uri::new(uri))),
+          _ => Err(Error::new(ErrorType::InvalidReaderInput,
+                              "Turtle prefix directive does not end with '.'"))
+        }
+      },
+      _ => Err(Error::new(ErrorType::InvalidReaderInput,
+                          "Invalid input for Turtle prefix."))
     }
   }
 
@@ -157,4 +203,105 @@ impl<R: Read> TurtleParser<R> {
       _ => Err(Error::new(ErrorType::InvalidToken, "Invalid token for Turtle object."))
     }
   }
+}
+
+
+#[cfg(test)]
+mod tests {
+  use reader::turtle_parser::TurtleParser;
+  use reader::rdf_parser::RdfParser;
+  use uri::Uri;
+
+  #[test]
+  fn read_n_triples_as_turtle_from_string() {
+    let input = "<http://www.w3.org/2001/sw/RDFCore/ntriples/> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Document> .
+                 <http://www.w3.org/2001/sw/RDFCore/ntriples/> <http://purl.org/dc/terms/title> \"N-Triples\"@en-US .
+                 <http://www.w3.org/2001/sw/RDFCore/ntriples/> <http://xmlns.com/foaf/0.1/maker> _:art .
+                 _:art <http://xmlns.com/foaf/0.1/name> \"Art Barstow\" .";
+
+    let mut reader = TurtleParser::from_string(input.to_string());
+
+    match reader.decode() {
+      Ok(graph) => assert_eq!(graph.count(), 4),
+      Err(e) => {
+        println!("Err {}", e.to_string());
+        assert!(false)
+      }
+    }
+  }
+
+
+  #[test]
+  fn read_uncompressed_turtle_from_string() {
+    let input = "@base <http://example.org/> .
+                 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+                 @prefix foaf: <http://xmlns.com/foaf/0.1/> .
+
+                 <http://www.w3.org/2001/sw/RDFCore/ntriples/> rdf:type foaf:Document .
+                 <http://www.w3.org/2001/sw/RDFCore/ntriples/> <http://purl.org/dc/terms/title> \"N-Triples\"@en-US .
+                 <http://www.w3.org/2001/sw/RDFCore/ntriples/> foaf:maker _:art .
+                 _:art foaf:name \"Art Barstow\" .";
+
+    let mut reader = TurtleParser::from_string(input.to_string());
+
+    match reader.decode() {
+      Ok(graph) => {
+        assert_eq!(graph.count(), 4);
+        assert_eq!(graph.namespaces().len(), 2);
+        assert_eq!(graph.base_uri(), &Some(Uri::new("http://example.org/".to_string())))
+      },
+      Err(e) => {
+        println!("Err {}", e.to_string());
+        assert!(false)
+      }
+    }
+  }
+
+
+  #[test]
+  fn read_compressed_turtle_from_string() {
+    let input = "@base <http://example.org/> .
+                 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+                 @prefix foaf: <http://xmlns.com/foaf/0.1/> .
+
+                 <http://www.w3.org/2001/sw/RDFCore/ntriples/> rdf:type foaf:Document ;
+                                                               <http://purl.org/dc/terms/title> \"N-Triples\"@en-US ;
+                                                               foaf:maker _:art .
+
+                 _:art foaf:name \"Art Barstow\" ,
+                                 \"Art Барстоу\" ,
+                                 \"아트 바스트\" .";
+
+    let mut reader = TurtleParser::from_string(input.to_string());
+
+    match reader.decode() {
+      Ok(graph) => {
+        assert_eq!(graph.count(), 6);
+        assert_eq!(graph.namespaces().len(), 2);
+        assert_eq!(graph.base_uri(), &Some(Uri::new("http://example.org/".to_string())))
+      },
+      Err(e) => {
+        println!("Err {}", e.to_string());
+        assert!(false)
+      }
+    }
+  }
+
+
+  #[test]
+  fn read_turtle_with_empty_prefix_from_string() {
+    let input = "@prefix : <http://example/> .
+                 :subject :predicate :object .";
+
+    let mut reader = TurtleParser::from_string(input.to_string());
+
+    match reader.decode() {
+      Ok(graph) => assert_eq!(graph.count(), 1),
+      Err(e) => {
+        println!("Err {}", e.to_string());
+        assert!(false)
+      }
+    }
+  }
+
 }

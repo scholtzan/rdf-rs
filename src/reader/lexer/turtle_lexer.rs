@@ -69,8 +69,16 @@ impl<R: Read> RdfLexer<R> for TurtleLexer<R> {
         self.consume_next_char();  // consume '.'
         Ok(Token::TripleDelimiter)
       },
-      Some(c) => self.get_qname(),
-      None => Err(Error::new(ErrorType::InvalidReaderInput, "Invalid Turtle input."))
+      Some(',') => {
+        self.consume_next_char();  // consume ','
+        Ok(Token::ObjectListDelimiter)
+      },
+      Some(';') => {
+        self.consume_next_char();  // consume ';'
+        Ok(Token::PredicateListDelimiter)
+      },
+      Some(_) => self.get_qname(),
+      None => Ok(Token::EndOfInput)
     }
   }
 
@@ -136,7 +144,9 @@ impl<R: Read> TurtleLexer<R> {
   fn get_prefix_directive(&mut self) -> Result<Token> {
     let _ = self.input_reader.get_until(|c| c == ' ');  // consume '@prefix'
 
-    let name = try!(self.input_reader.get_until_discard_leading_spaces(|c| c == ':'));
+    // get prefix name including ':'
+    let mut name = try!(self.input_reader.get_until_discard_leading_spaces(|c| c == ':'));
+    name.push(':');
 
     let _ = self.input_reader.get_until(|c| c == '<');  // consume characters until URI begin
 
@@ -208,7 +218,7 @@ impl<R: Read> TurtleLexer<R> {
                                   "Invalid data type URI for Turtle literal."))
             }
           },
-          Some(c) => {
+          Some(_) => {
             match try!(self.get_qname()) {
               Token::QName(prefix, path) => Ok(Token::LiteralWithQNameDatatype(literal, prefix, path)),
               _ => Err(Error::new(ErrorType::InvalidReaderInput, "Invalid Turtle input for parsing QName data type."))
@@ -259,7 +269,8 @@ impl<R: Read> TurtleLexer<R> {
 
   /// Parses a QName.
   fn get_qname(&mut self) -> Result<Token> {
-    let prefix = try!(self.input_reader.get_until(|c| c == ':'));
+    let mut prefix = try!(self.input_reader.get_until(|c| c == ':'));
+    prefix.push(':');     // ':' is part of prefix name
     self.consume_next_char();    // consume ':'
 
     match self.input_reader.get_until(|c| c == '\n' || c == '\r' || c == ' ' || c == '.') {
@@ -297,7 +308,7 @@ mod tests {
 
     let mut lexer = TurtleLexer::new(input);
 
-    assert_eq!(lexer.get_next_token().unwrap(), Token::PrefixDirective("foaf".to_string(), "http://xmlns.com/foaf/0.1/".to_string()));
+    assert_eq!(lexer.get_next_token().unwrap(), Token::PrefixDirective("foaf:".to_string(), "http://xmlns.com/foaf/0.1/".to_string()));
     assert_eq!(lexer.get_next_token().unwrap(), Token::TripleDelimiter);
   }
 
@@ -353,7 +364,7 @@ mod tests {
 
     let mut lexer = TurtleLexer::new(input);
 
-    assert_eq!(lexer.get_next_token().unwrap(), Token::QName("abc".to_string(), "def:ghij".to_string()));
+    assert_eq!(lexer.get_next_token().unwrap(), Token::QName("abc:".to_string(), "def:ghij".to_string()));
   }
 
   #[test]
@@ -371,7 +382,7 @@ mod tests {
 
     let mut lexer = TurtleLexer::new(input);
 
-    assert_eq!(lexer.get_next_token().unwrap(), Token::LiteralWithQNameDatatype("a".to_string(), "ex".to_string(), "abc:asdf".to_string()));
+    assert_eq!(lexer.get_next_token().unwrap(), Token::LiteralWithQNameDatatype("a".to_string(), "ex:".to_string(), "abc:asdf".to_string()));
   }
 
   #[test]

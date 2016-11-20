@@ -20,7 +20,7 @@ pub struct NTriplesParser<R: Read> {
 impl<R: Read> RdfParser for NTriplesParser<R> {
   /// Generates an RDF graph from a string containing N-Triples syntax.
   ///
-  /// Returns in error in case invalid N-Triples syntax is provided.
+  /// Returns an error in case invalid N-Triples syntax is provided.
   ///
   /// # Example
   ///
