@@ -60,26 +60,39 @@ impl<R: Read> RdfLexer<R> for TurtleLexer<R> {
     }
 
     match try!(self.input_reader.peek_next_char_discard_leading_spaces()) {
-      Some('#') => self.get_comment(),
-      Some('@') => self.get_base_or_prefix(),
-      Some('"') => self.get_literal(),
-      Some('<') => self.get_uri(),
-      Some('_') => self.get_blank_node(),
+      Some('#') => return self.get_comment(),
+      Some('@') => {
+        self.consume_next_char();   // consume '@'
+        return self.get_base_or_prefix();
+      },
+      Some('"') => return self.get_literal(),      // todo: ''
+      Some('<') => return self.get_uri(),
+      Some('_') => return self.get_blank_node(),
       Some('.') => {
         self.consume_next_char();  // consume '.'
-        Ok(Token::TripleDelimiter)
+        return Ok(Token::TripleDelimiter);
       },
       Some(',') => {
         self.consume_next_char();  // consume ','
-        Ok(Token::ObjectListDelimiter)
+        return Ok(Token::ObjectListDelimiter);
       },
       Some(';') => {
         self.consume_next_char();  // consume ';'
-        Ok(Token::PredicateListDelimiter)
+        return Ok(Token::PredicateListDelimiter);
       },
-      Some(_) => self.get_qname(),
-      None => Ok(Token::EndOfInput)
+      Some('P') | Some('B') => {
+        match self.get_base_or_prefix() {
+          Ok(token) => return Ok(token),
+          _ => {}     // continue, because it could still be a QName
+        }
+      },
+//      Some('t') | Some('f') => self.get_boolean(),
+//      // todo: boolean, numbers, ....
+      Some(_) => {},
+      None => return Ok(Token::EndOfInput)
     }
+
+    self.get_qname()
   }
 
 
@@ -113,13 +126,11 @@ impl<R: Read> TurtleLexer<R> {
   
   /// Parses the base or prefix definition.
   fn get_base_or_prefix(&mut self) -> Result<Token> {
-    self.consume_next_char(); // consume '@'
-
-    match try!(self.input_reader.get_next_char()) {
-      Some('b') => {
+    match try!(self.input_reader.peek_next_char()) {
+      Some('b') | Some('B') => {
         self.get_base_directive()
       },
-      Some('p') => {
+      Some('p') | Some('P') => {
         self.get_prefix_directive()
       },
       None | Some(_) => Err(Error::new(ErrorType::InvalidReaderInput,
@@ -129,7 +140,15 @@ impl<R: Read> TurtleLexer<R> {
 
   /// Parses the base directive.
   fn get_base_directive(&mut self) -> Result<Token> {
-    let _ = self.input_reader.get_until(|c| c == '<');  // consume '@base'
+    let base_directive: Vec<Option<char>> = try!(self.input_reader.peek_next_k_chars(5));
+    let base_directive_string: String = base_directive.into_iter().flat_map(|c| c).collect();
+
+    if base_directive_string.to_lowercase() != "base " {
+      return Err(Error::new(ErrorType::InvalidReaderInput,
+                           "Invalid URI for Turtle base directive."));
+    }
+
+    let _ = self.input_reader.get_until(|c| c == '<');  // consume 'base'
 
     match try!(self.get_uri()) {
       Token::Uri(base_uri) => {
@@ -142,7 +161,15 @@ impl<R: Read> TurtleLexer<R> {
 
   /// Parses the prefix directive.
   fn get_prefix_directive(&mut self) -> Result<Token> {
-    let _ = self.input_reader.get_until(|c| c == ' ');  // consume '@prefix'
+    let prefix_directive: Vec<Option<char>> = try!(self.input_reader.peek_next_k_chars(7));
+    let prefix_directive_string: String = prefix_directive.into_iter().flat_map(|c| c).collect();
+
+    if prefix_directive_string.to_lowercase() != "prefix " {
+      return Err(Error::new(ErrorType::InvalidReaderInput,
+                            "Invalid URI for Turtle base directive."));
+    }
+
+    let _ = self.input_reader.get_until(|c| c == ' ');  // consume 'prefix'
 
     // get prefix name including ':'
     let mut name = try!(self.input_reader.get_until_discard_leading_spaces(|c| c == ':'));
@@ -303,6 +330,16 @@ mod tests {
   }
 
   #[test]
+  fn parse_sparql_base_directive() {
+    let input = "BASE <http://example.org/> .".as_bytes();
+
+    let mut lexer = TurtleLexer::new(input);
+
+    assert_eq!(lexer.get_next_token().unwrap(), Token::BaseDirective("http://example.org/".to_string()));
+    assert_eq!(lexer.get_next_token().unwrap(), Token::TripleDelimiter);
+  }
+
+  #[test]
   fn parse_prefix_directive() {
     let input = "@prefix foaf: <http://xmlns.com/foaf/0.1/> .".as_bytes();
 
@@ -311,6 +348,18 @@ mod tests {
     assert_eq!(lexer.get_next_token().unwrap(), Token::PrefixDirective("foaf:".to_string(), "http://xmlns.com/foaf/0.1/".to_string()));
     assert_eq!(lexer.get_next_token().unwrap(), Token::TripleDelimiter);
   }
+
+
+  #[test]
+  fn parse_sparql_prefix_directive() {
+    let input = "PREFIX foaf: <http://xmlns.com/foaf/0.1/> .".as_bytes();
+
+    let mut lexer = TurtleLexer::new(input);
+
+    assert_eq!(lexer.get_next_token().unwrap(), Token::PrefixDirective("foaf:".to_string(), "http://xmlns.com/foaf/0.1/".to_string()));
+    assert_eq!(lexer.get_next_token().unwrap(), Token::TripleDelimiter);
+  }
+
 
   #[test]
   fn parse_comment() {
