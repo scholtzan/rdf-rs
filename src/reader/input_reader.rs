@@ -4,10 +4,10 @@ use Result;
 use std::str;
 
 
-/// todo
+// todo
 pub struct InputReader<R: Read> {
   input: R,
-  peeked_char: Option<char>
+  peeked_chars: Vec<Option<char>>
 }
 
 impl<R: Read> InputReader<R> {
@@ -20,31 +20,35 @@ impl<R: Read> InputReader<R> {
   pub fn new(input: R) -> InputReader<R> {
     InputReader {
       input: input,
-      peeked_char: None
+      peeked_chars: Vec::new()
     }
   }
 
-  /// todo
+  // todo
+  pub fn peek_next_k_chars(&mut self, k: usize) -> Result<Vec<Option<char>>> {
+    if self.peeked_chars.len() >= k {
+      Ok(self.peeked_chars[0..k].to_vec())
+    } else {
+      let next_k_chars = try!(self.get_next_k_chars(k));
+      self.peeked_chars = next_k_chars.clone();
+      Ok(next_k_chars)
+    }
+  }
+
+  // todo
   pub fn peek_next_char(&mut self) -> Result<Option<char>> {
-    match self.peeked_char {
-      Some(peeked_char) => Ok(Some(peeked_char)),
-      None =>
-        match self.get_next_char() {
-          Ok(Some(next_char)) => {
-            self.peeked_char = Some(next_char);
-            Ok(Some(next_char))
-          },
-          Ok(None) => Ok(None),
-          Err(err) => Err(err)
-        }
-    }
+    let peeked_char = try!(self.peek_next_k_chars(1));
+    Ok(peeked_char[0])
   }
 
-  /// todo
+  // todo
   pub fn peek_next_char_discard_leading_spaces(&mut self) -> Result<Option<char>> {
     match self.get_next_char_discard_leading_spaces() {
       Ok(Some(next_char)) => {
-        self.peeked_char = Some(next_char);
+        if self.peeked_chars.len() <= 0 {
+          self.peeked_chars.push(Some(next_char));
+        }
+
         Ok(Some(next_char))
       },
       Ok(None) => Ok(None),
@@ -65,12 +69,8 @@ impl<R: Read> InputReader<R> {
   /// assert_eq!(Some('e'), input_reader.get_next_char().unwrap());
   /// ```
   pub fn get_next_char(&mut self) -> Result<Option<char>> {
-    match self.peeked_char {
-      Some(c) => {
-        self.peeked_char = None;
-        return Ok(Some(c))
-      },
-      None => {}
+    if self.peeked_chars.len() > 0 {
+      return Ok(self.peeked_chars.remove(0));
     }
 
     const MAX_BYTES: usize = 4;
@@ -99,6 +99,19 @@ impl<R: Read> InputReader<R> {
 
     Err(Error::new(ErrorType::InvalidReaderInput,
                    "Unexpected error while reading input."))
+  }
+
+
+  // todo
+  pub fn get_next_k_chars(&mut self, k: usize) -> Result<Vec<Option<char>>> {
+    let mut next_k_chars = Vec::new();
+
+    for _ in 0..k {
+      let next_char = try!(self.get_next_char());
+      next_k_chars.push(next_char);
+    }
+
+    Ok(next_k_chars)
   }
 
 
@@ -147,7 +160,10 @@ impl<R: Read> InputReader<R> {
     loop {
       match self.get_next_char() {
         Ok(Some(c)) if delimiter(c) => {
-          self.peeked_char = Some(c);
+          if self.peeked_chars.len() <= 0 {
+            self.peeked_chars.push(Some(c));
+          }
+
           return Ok(buf.into_iter().collect())
         },
         Ok(Some(c)) if !delimiter(c) => buf.push(c),
