@@ -4,6 +4,8 @@ use reader::input_reader::InputReader;
 use std::io::Read;
 use error::{Error, ErrorType};
 use Result;
+use specs::turtle_specs::TurtleSpecs;
+use specs::xml_specs::XmlDataTypes;
 
 pub struct TurtleLexer<R: Read> {
   input_reader: InputReader<R>,
@@ -86,8 +88,13 @@ impl<R: Read> RdfLexer<R> for TurtleLexer<R> {
           _ => {}     // continue, because it could still be a QName
         }
       },
-//      Some('t') | Some('f') => self.get_boolean(),
-//      // todo: boolean, numbers, ....
+      Some('t') | Some('f') => {
+        match self.get_boolean_literal() {
+          Ok(token) => return Ok(token),
+          _ => {}     // continue, because it could still be a QName
+        }
+      },
+      // todo: boolean, numbers, ....
       Some(_) => {},
       None => return Ok(Token::EndOfInput)
     }
@@ -202,6 +209,54 @@ impl<R: Read> TurtleLexer<R> {
                               "Invalid input for Turtle lexer while parsing comment."))
         }
       }
+    }
+  }
+
+  /// Parses a boolean value and returns it as token.
+  fn get_boolean_literal(&mut self) -> Result<Token> {
+    let boolean: Vec<Option<char>> = try!(self.input_reader.peek_next_k_chars(7));
+
+    match try!(self.input_reader.peek_next_char()) {
+      Some('f') => {
+        let boolean_literal: Vec<Option<char>> = try!(self.input_reader.peek_next_k_chars(6));
+
+        if boolean_literal[5] == Some('\n') ||
+            boolean_literal[5] == Some('\r') ||
+            boolean_literal[5] == Some(' ') ||
+            boolean_literal[5] == Some('.') ||
+            boolean_literal[5] == None {
+          if TurtleSpecs::is_boolean_literal(&boolean_literal.into_iter().flat_map(|c| c).collect()) {
+            return Ok(Token::LiteralWithUrlDatatype("false".to_string(), XmlDataTypes::Boolean.to_string()))
+          } else {
+            return Err(Error::new(ErrorType::InvalidReaderInput,
+                                  "Invalid Turtle input for boolean."))
+          }
+        } else {
+          return Err(Error::new(ErrorType::InvalidReaderInput,
+                                "Invalid Turtle input for boolean."))
+        }
+      },
+      Some('t') => {
+        let boolean_literal: Vec<Option<char>> = try!(self.input_reader.peek_next_k_chars(5));
+
+        if boolean_literal[4] == Some('\n') ||
+            boolean_literal[4] == Some('\r') ||
+            boolean_literal[4] == Some(' ') ||
+            boolean_literal[4] == Some('.') ||
+            boolean_literal[4] == None {
+          if TurtleSpecs::is_boolean_literal(&boolean_literal.into_iter().flat_map(|c| c).collect()) {
+            return Ok(Token::LiteralWithUrlDatatype("true".to_string(), XmlDataTypes::Boolean.to_string()))
+          } else {
+            return Err(Error::new(ErrorType::InvalidReaderInput,
+                                  "Invalid Turtle input for boolean."))
+          }
+        } else {
+          return Err(Error::new(ErrorType::InvalidReaderInput,
+                                "Invalid Turtle input for boolean."))
+        }
+      },
+      _ => Err(Error::new(ErrorType::InvalidReaderInput,
+                          "Invalid Turtle input for boolean."))
     }
   }
 
