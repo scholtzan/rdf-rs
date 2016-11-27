@@ -97,6 +97,12 @@ impl<R: Read> RdfLexer<R> for TurtleLexer<R> {
           _ => {}     // continue, because it could still be a QName
         }
       },
+      Some('a') => {
+        match self.get_a_keyword() {
+          Ok(token) => return Ok(token),
+          _ => {}     // continue, because it could still be a QName
+        }
+      },
       Some('+') | Some('-') => return self.get_numeric(),
       Some(c) if InputReaderHelper::digit(c) => return self.get_numeric(),
       Some(_) => {},
@@ -240,6 +246,18 @@ impl<R: Read> TurtleLexer<R> {
     } else {
       return Err(Error::new(ErrorType::InvalidReaderInput,
                             "Invalid Turtle input for boolean."))
+    }
+  }
+
+  /// Parses the 'a' keyword.
+  fn get_a_keyword(&mut self) -> Result<Token> {
+    let a = self.input_reader.peek_until_discard_leading_spaces(InputReaderHelper::node_delimiter)?;
+
+    if a.len() == 1 && a[0] == Some('a') {
+      return Ok(Token::KeywordA)
+    } else {
+      return Err(Error::new(ErrorType::InvalidReaderInput,
+                            "Invalid Turtle input for keyword 'a'."))
     }
   }
 
@@ -447,7 +465,7 @@ mod tests {
 
   #[test]
   fn parse_qname() {
-    let input = "abc:def:ghij".as_bytes();
+    let input = "abc:def:ghij gggg:gggg abc:dd .".as_bytes();
 
     let mut lexer = TurtleLexer::new(input);
 

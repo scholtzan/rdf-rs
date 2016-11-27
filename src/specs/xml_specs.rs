@@ -14,16 +14,7 @@ pub enum XmlDataTypes {
 
 impl XmlDataTypes {
   pub fn to_uri(&self) -> Uri {
-    let schema_name = "http://www.w3.org/2001/XMLSchema#".to_string();
-
-    // todo
-    match *self {
-      XmlDataTypes::Boolean => Uri::new(schema_name + "boolean"),
-      XmlDataTypes::Integer => Uri::new(schema_name + "integer"),
-      XmlDataTypes::Decimal => Uri::new(schema_name + "decimal"),
-      XmlDataTypes::Double => Uri::new(schema_name + "decimal"),
-      _ => Uri::new("todo".to_string())
-    }
+    Uri::new(self.to_string())
   }
 
   pub fn to_string(&self) -> String {

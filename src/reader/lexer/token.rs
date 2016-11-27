@@ -14,6 +14,7 @@ pub enum Token {
   BaseDirective(String),
   QName(String, String),
   Prefix(String),
+  KeywordA,                 // 'a'
   PredicateListDelimiter,   // e.g. for Turtle syntax -> ;
   ObjectListDelimiter,      // e.g. for Turtle syntax -> ,
   EndOfInput,

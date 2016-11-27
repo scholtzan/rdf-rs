@@ -11,6 +11,7 @@ use std::io::Read;
 use uri::Uri;
 use std::io::Cursor;
 use namespace::Namespace;
+use specs::rdf_syntax_specs::RdfSyntaxDataTypes;
 
 /// RDF parser to generate an RDF graph from Turtle syntax.
 pub struct TurtleParser<R: Read> {
@@ -173,6 +174,7 @@ impl<R: Read> TurtleParser<R> {
     // read the predicate
     let predicate = match self.lexer.get_next_token()? {
       Token::Uri(uri) => Node::UriNode { uri: Uri::new(uri) },
+      Token::KeywordA => Node::UriNode { uri: RdfSyntaxDataTypes::A.to_uri() },
       Token::QName(prefix, path) => {
         let mut uri = graph.get_namespace_uri_by_prefix(prefix)?.to_owned();
         uri.append_resource_path(path.replace(":", "/"));   // adjust the QName path to URI path

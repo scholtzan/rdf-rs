@@ -72,6 +72,10 @@ impl InputChars {
     self.input_chars.push(c);
   }
 
+  pub fn insert(&mut self, i: usize, c: InputChar) {
+    self.input_chars.insert(i, c);
+  }
+
   pub fn remove(&mut self, i: usize) -> InputChar {
     self.input_chars.remove(i)
   }
@@ -256,9 +260,7 @@ impl<R: Read> InputReader<R> {
     loop {
       match self.get_next_char()? {
         Some(c) if delimiter(c) => {
-          if self.peeked_chars.len() <= 0 {
-            self.peeked_chars.push(Some(c));
-          }
+          self.peeked_chars.insert(0, Some(c));
 
           return Ok(InputChars::new(buf.into_iter().collect()))
         },

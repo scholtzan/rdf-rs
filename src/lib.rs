@@ -54,6 +54,7 @@ pub mod vocabulary {
 pub mod specs {
   pub mod xml_specs;
   pub mod turtle_specs;
+  pub mod rdf_syntax_specs;
 }
 
 #[cfg(test)]
