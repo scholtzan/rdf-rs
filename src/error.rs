@@ -1,5 +1,6 @@
 use std::fmt;
 use std::error::Error as StdError;
+use reader::input_reader::InputChars;
 
 /// todo
 #[derive(Debug)]
@@ -7,7 +8,7 @@ pub enum ErrorType {
   InvalidWriterOutput,
   InvalidReaderInput,
   InvalidToken,
-  EndOfInput(String),
+  EndOfInput(InputChars),
   InvalidByteEncoding,
   InvalidNamespace
 }

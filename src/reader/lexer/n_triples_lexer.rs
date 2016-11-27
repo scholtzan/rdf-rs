@@ -116,13 +116,13 @@ impl<R: Read> NTriplesLexer<R> {
     self.consume_next_char();    // consume '#'
 
     match self.input_reader.get_until_discard_leading_spaces(|c| c == '\n' || c == '\r') {
-      Ok(str) => {
+      Ok(chars) => {
         self.consume_next_char();  // consume comment delimiter
-        Ok(Token::Comment(str))
+        Ok(Token::Comment(chars.to_string()))
       },
       Err(err) => {
         match err.error_type() {
-          &ErrorType::EndOfInput(ref str) => Ok(Token::Comment(str.clone())),
+          &ErrorType::EndOfInput(ref chars) => Ok(Token::Comment(chars.to_string())),
           _ => Err(Error::new(ErrorType::InvalidReaderInput,
                               "Invalid input for Turtle lexer while parsing comment."))
         }
@@ -133,10 +133,10 @@ impl<R: Read> NTriplesLexer<R> {
   /// Parses the language specification from the input and returns it as token.
   fn get_language_specification(&mut self) -> Result<String> {
     match self.input_reader.get_until(|c| c == '\n' || c == '\r' || c == ' ' || c == '.') {
-      Ok(str) => Ok(str),
+      Ok(chars) => Ok(chars.to_string()),
       Err(err) => {
         match err.error_type() {
-          &ErrorType::EndOfInput(ref str) => Ok(str.clone()),
+          &ErrorType::EndOfInput(ref chars) => Ok(chars.to_string()),
           _ => Err(Error::new(ErrorType::InvalidReaderInput,
                               "Invalid input for NTriples lexer while parsing language specification."))
         }
@@ -147,22 +147,22 @@ impl<R: Read> NTriplesLexer<R> {
   /// Parses a literal from the input and returns it as token.
   fn get_literal(&mut self) -> Result<Token> {
     self.consume_next_char();  // consume '"'
-    let literal = try!(self.input_reader.get_until(|c| c == '"'));
+    let literal = self.input_reader.get_until(|c| c == '"')?.to_string();
     self.consume_next_char(); // consume '"'
 
-    match try!(self.input_reader.peek_next_char()) {
+    match self.input_reader.peek_next_char()? {
       Some('@') => {
         self.consume_next_char(); // consume '@'
-        let language = try!(self.get_language_specification());
+        let language = self.get_language_specification()?;
         Ok(Token::LiteralWithLanguageSpecification(literal, language))
       },
       Some('^') => {
         self.consume_next_char(); // consume '^'
         self.consume_next_char(); // consume '^'
 
-        match try!(self.input_reader.peek_next_char()) {
+        match self.input_reader.peek_next_char()? {
           Some('<') => {    // data type is an URI (NTriples allows only URI data types)
-            match try!(self.get_uri()) {
+            match self.get_uri()? {
               Token::Uri(datatype_uri) => {
                 Ok(Token::LiteralWithUrlDatatype(literal, datatype_uri))
               },
@@ -185,9 +185,9 @@ impl<R: Read> NTriplesLexer<R> {
   /// Parses a URI from the input and returns it as token.
   fn get_uri(&mut self) -> Result<Token> {
     self.consume_next_char();    // consume '<'
-    let str = try!(self.input_reader.get_until(|c| c == '>'));
+    let chars = self.input_reader.get_until(|c| c == '>')?;
     self.consume_next_char();    // consume '>'
-    Ok(Token::Uri(str))
+    Ok(Token::Uri(chars.to_string()))
   }
 
   /// Parses a blank node ID from the input and returns it as token.
@@ -204,10 +204,10 @@ impl<R: Read> NTriplesLexer<R> {
     }
 
     match self.input_reader.get_until(|c| c == '\n' || c == '\r' || c == ' ' || c == '.') {
-      Ok(str) => Ok(Token::BlankNode(str)),
+      Ok(chars) => Ok(Token::BlankNode(chars.to_string())),
       Err(err) => {
         match err.error_type() {
-          &ErrorType::EndOfInput(ref str) => Ok(Token::BlankNode(str.clone())),
+          &ErrorType::EndOfInput(ref chars) => Ok(Token::BlankNode(chars.to_string())),
           _ => Err(Error::new(ErrorType::InvalidReaderInput,
                               "Invalid input for NTriples lexer while parsing blank node."))
         }

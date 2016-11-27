@@ -1,6 +1,6 @@
 use reader::lexer::rdf_lexer::RdfLexer;
 use reader::lexer::token::Token;
-use reader::input_reader::InputReader;
+use reader::input_reader::{InputReader, InputReaderHelper};
 use std::io::Read;
 use error::{Error, ErrorType};
 use Result;
@@ -133,7 +133,7 @@ impl<R: Read> TurtleLexer<R> {
   
   /// Parses the base or prefix definition.
   fn get_base_or_prefix(&mut self) -> Result<Token> {
-    match try!(self.input_reader.peek_next_char()) {
+    match self.input_reader.peek_next_char()? {
       Some('b') | Some('B') => {
         self.get_base_directive()
       },
@@ -147,17 +147,16 @@ impl<R: Read> TurtleLexer<R> {
 
   /// Parses the base directive.
   fn get_base_directive(&mut self) -> Result<Token> {
-    let base_directive: Vec<Option<char>> = try!(self.input_reader.peek_next_k_chars(5));
-    let base_directive_string: String = base_directive.into_iter().flat_map(|c| c).collect();
+    let base_directive = self.input_reader.peek_next_k_chars(5)?;
 
-    if base_directive_string.to_lowercase() != "base " {
+    if base_directive.to_string().to_lowercase() != "base " {
       return Err(Error::new(ErrorType::InvalidReaderInput,
                            "Invalid URI for Turtle base directive."));
     }
 
     let _ = self.input_reader.get_until(|c| c == '<');  // consume 'base'
 
-    match try!(self.get_uri()) {
+    match self.get_uri()? {
       Token::Uri(base_uri) => {
         Ok(Token::BaseDirective(base_uri))
       },
@@ -168,10 +167,9 @@ impl<R: Read> TurtleLexer<R> {
 
   /// Parses the prefix directive.
   fn get_prefix_directive(&mut self) -> Result<Token> {
-    let prefix_directive: Vec<Option<char>> = try!(self.input_reader.peek_next_k_chars(7));
-    let prefix_directive_string: String = prefix_directive.into_iter().flat_map(|c| c).collect();
+    let prefix_directive = self.input_reader.peek_next_k_chars(7)?;
 
-    if prefix_directive_string.to_lowercase() != "prefix " {
+    if prefix_directive.to_string().to_lowercase() != "prefix " {
       return Err(Error::new(ErrorType::InvalidReaderInput,
                             "Invalid URI for Turtle base directive."));
     }
@@ -179,12 +177,12 @@ impl<R: Read> TurtleLexer<R> {
     let _ = self.input_reader.get_until(|c| c == ' ');  // consume 'prefix'
 
     // get prefix name including ':'
-    let mut name = try!(self.input_reader.get_until_discard_leading_spaces(|c| c == ':'));
+    let mut name = self.input_reader.get_until_discard_leading_spaces(|c| c == ':')?.to_string();
     name.push(':');
 
     let _ = self.input_reader.get_until(|c| c == '<');  // consume characters until URI begin
 
-    match try!(self.get_uri()) {
+    match self.get_uri()? {
       Token::Uri(prefix_uri) => {
         Ok(Token::PrefixDirective(name, prefix_uri))
       },
@@ -197,14 +195,14 @@ impl<R: Read> TurtleLexer<R> {
   fn get_comment(&mut self) -> Result<Token> {
     self.consume_next_char();    // consume '#'
 
-    match self.input_reader.get_until_discard_leading_spaces(|c| c == '\n' || c == '\r') {
-      Ok(str) => {
+    match self.input_reader.get_until_discard_leading_spaces(InputReaderHelper::line_break) {
+      Ok(chars) => {
         self.consume_next_char();  // consume comment delimiter
-        Ok(Token::Comment(str))
+        Ok(Token::Comment(chars.to_string()))
       },
       Err(err) => {
         match err.error_type() {
-          &ErrorType::EndOfInput(ref str) => Ok(Token::Comment(str.clone())),
+          &ErrorType::EndOfInput(ref chars) => Ok(Token::Comment(chars.to_string())),
           _ => Err(Error::new(ErrorType::InvalidReaderInput,
                               "Invalid input for Turtle lexer while parsing comment."))
         }
@@ -214,59 +212,24 @@ impl<R: Read> TurtleLexer<R> {
 
   /// Parses a boolean value and returns it as token.
   fn get_boolean_literal(&mut self) -> Result<Token> {
-    let boolean: Vec<Option<char>> = try!(self.input_reader.peek_next_k_chars(7));
+    let boolean = self.input_reader.peek_until_discard_leading_spaces(InputReaderHelper::node_delimiter)?;
 
-    match try!(self.input_reader.peek_next_char()) {
-      Some('f') => {
-        let boolean_literal: Vec<Option<char>> = try!(self.input_reader.peek_next_k_chars(6));
-
-        if boolean_literal[5] == Some('\n') ||
-            boolean_literal[5] == Some('\r') ||
-            boolean_literal[5] == Some(' ') ||
-            boolean_literal[5] == Some('.') ||
-            boolean_literal[5] == None {
-          if TurtleSpecs::is_boolean_literal(&boolean_literal.into_iter().flat_map(|c| c).collect()) {
-            return Ok(Token::LiteralWithUrlDatatype("false".to_string(), XmlDataTypes::Boolean.to_string()))
-          } else {
-            return Err(Error::new(ErrorType::InvalidReaderInput,
-                                  "Invalid Turtle input for boolean."))
-          }
-        } else {
-          return Err(Error::new(ErrorType::InvalidReaderInput,
-                                "Invalid Turtle input for boolean."))
-        }
-      },
-      Some('t') => {
-        let boolean_literal: Vec<Option<char>> = try!(self.input_reader.peek_next_k_chars(5));
-
-        if boolean_literal[4] == Some('\n') ||
-            boolean_literal[4] == Some('\r') ||
-            boolean_literal[4] == Some(' ') ||
-            boolean_literal[4] == Some('.') ||
-            boolean_literal[4] == None {
-          if TurtleSpecs::is_boolean_literal(&boolean_literal.into_iter().flat_map(|c| c).collect()) {
-            return Ok(Token::LiteralWithUrlDatatype("true".to_string(), XmlDataTypes::Boolean.to_string()))
-          } else {
-            return Err(Error::new(ErrorType::InvalidReaderInput,
-                                  "Invalid Turtle input for boolean."))
-          }
-        } else {
-          return Err(Error::new(ErrorType::InvalidReaderInput,
-                                "Invalid Turtle input for boolean."))
-        }
-      },
-      _ => Err(Error::new(ErrorType::InvalidReaderInput,
-                          "Invalid Turtle input for boolean."))
+    if TurtleSpecs::is_boolean_literal(&boolean.to_string()) {
+      return Ok(Token::LiteralWithUrlDatatype(boolean.to_string(),
+                                              XmlDataTypes::Boolean.to_string()))
+    } else {
+      return Err(Error::new(ErrorType::InvalidReaderInput,
+                            "Invalid Turtle input for boolean."))
     }
   }
 
   /// Parses the language specification from the input and returns it as token.
   fn get_language_specification(&mut self) -> Result<String> {
-    match self.input_reader.get_until(|c| c == '\n' || c == '\r' || c == ' ' || c == '.') {
-      Ok(str) => Ok(str),
+    match self.input_reader.get_until(InputReaderHelper::node_delimiter) {
+      Ok(chars) => Ok(chars.to_string()),
       Err(err) => {
         match err.error_type() {
-          &ErrorType::EndOfInput(ref str) => Ok(str.clone()),
+          &ErrorType::EndOfInput(ref chars) => Ok(chars.to_string()),
           _ => Err(Error::new(ErrorType::InvalidReaderInput,
                               "Invalid input for Turtle lexer while parsing language specification."))
         }
@@ -277,22 +240,22 @@ impl<R: Read> TurtleLexer<R> {
   /// Parses a literal from the input and returns it as token.
   fn get_literal(&mut self) -> Result<Token> {
     self.consume_next_char();  // consume '"'
-    let literal = try!(self.input_reader.get_until(|c| c == '"'));
+    let literal = self.input_reader.get_until(|c| c == '"')?.to_string();
     self.consume_next_char(); // consume '"'
 
-    match try!(self.input_reader.peek_next_char()) {
+    match self.input_reader.peek_next_char()? {
       Some('@') => {
         self.consume_next_char(); // consume '@'
-        let language = try!(self.get_language_specification());
+        let language = self.get_language_specification()?;
         Ok(Token::LiteralWithLanguageSpecification(literal, language))
       },
       Some('^') => {
         self.consume_next_char(); // consume '^'
         self.consume_next_char(); // consume '^'
 
-        match try!(self.input_reader.peek_next_char()) {
+        match self.input_reader.peek_next_char()? {
           Some('<') => {    // data type is an URI (NTriples allows only URI data types)
-            match try!(self.get_uri()) {
+            match self.get_uri()? {
               Token::Uri(datatype_uri) => {
                 Ok(Token::LiteralWithUrlDatatype(literal, datatype_uri))
               },
@@ -301,7 +264,7 @@ impl<R: Read> TurtleLexer<R> {
             }
           },
           Some(_) => {
-            match try!(self.get_qname()) {
+            match self.get_qname()? {
               Token::QName(prefix, path) => Ok(Token::LiteralWithQNameDatatype(literal, prefix, path)),
               _ => Err(Error::new(ErrorType::InvalidReaderInput, "Invalid Turtle input for parsing QName data type."))
             }
@@ -319,9 +282,9 @@ impl<R: Read> TurtleLexer<R> {
   /// Parses a URI from the input and returns it as token.
   fn get_uri(&mut self) -> Result<Token> {
     self.consume_next_char();    // consume '<'
-    let str = try!(self.input_reader.get_until(|c| c == '>'));
+    let chars = self.input_reader.get_until(|c| c == '>')?.to_string();
     self.consume_next_char();    // consume '>'
-    Ok(Token::Uri(str))
+    Ok(Token::Uri(chars))
   }
 
   /// Parses a blank node ID from the input and returns it as token.
@@ -337,11 +300,11 @@ impl<R: Read> TurtleLexer<R> {
                                     "Error while parsing Turtle blank node."))
     }
 
-    match self.input_reader.get_until(|c| c == '\n' || c == '\r' || c == ' ' || c == '.') {
-      Ok(str) => Ok(Token::BlankNode(str)),
+    match self.input_reader.get_until(InputReaderHelper::node_delimiter) {
+      Ok(chars) => Ok(Token::BlankNode(chars.to_string())),
       Err(err) => {
         match err.error_type() {
-          &ErrorType::EndOfInput(ref str) => Ok(Token::BlankNode(str.clone())),
+          &ErrorType::EndOfInput(ref chars) => Ok(Token::BlankNode(chars.to_string())),
           _ => Err(Error::new(ErrorType::InvalidReaderInput,
                               "Invalid input for Turtle lexer while parsing blank node."))
         }
@@ -351,15 +314,15 @@ impl<R: Read> TurtleLexer<R> {
 
   /// Parses a QName.
   fn get_qname(&mut self) -> Result<Token> {
-    let mut prefix = try!(self.input_reader.get_until(|c| c == ':'));
+    let mut prefix = self.input_reader.get_until(|c| c == ':')?.to_string();
     prefix.push(':');     // ':' is part of prefix name
     self.consume_next_char();    // consume ':'
 
-    match self.input_reader.get_until(|c| c == '\n' || c == '\r' || c == ' ' || c == '.') {
-      Ok(str) => Ok(Token::QName(prefix, str)),
+    match self.input_reader.get_until(InputReaderHelper::node_delimiter) {
+      Ok(chars) => Ok(Token::QName(prefix, chars.to_string())),
       Err(err) => {
         match err.error_type() {
-          &ErrorType::EndOfInput(ref str) => Ok(Token::QName(prefix, str.clone())),
+          &ErrorType::EndOfInput(ref chars) => Ok(Token::QName(prefix, chars.to_string())),
           _ => Err(Error::new(ErrorType::InvalidReaderInput,
                               "Invalid input for Turtle lexer while parsing QName."))
         }
