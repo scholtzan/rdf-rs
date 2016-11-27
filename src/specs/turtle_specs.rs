@@ -18,7 +18,7 @@ impl TurtleSpecs {
   /// assert_eq!(TurtleSpecs::is_plain_literal(&"a".to_string(), &Some(XmlDataTypes::Decimal.to_uri())), false);
   /// ```
   pub fn is_plain_literal(literal: &String, data_type: &Option<Uri>) -> bool {
-    if TurtleSpecs::is_decimal_literal(literal) && *data_type == Some(XmlDataTypes::Decimal.to_uri()) {
+    if TurtleSpecs::is_double_literal(literal) && *data_type == Some(XmlDataTypes::Decimal.to_uri()) {
       return true;
     }
 
@@ -40,11 +40,11 @@ impl TurtleSpecs {
   /// ```
   /// use rdf_rs::specs::turtle_specs::TurtleSpecs;
   ///
-  /// assert!(TurtleSpecs::is_decimal_literal(&"3.0".to_string()));
-  /// assert!(TurtleSpecs::is_decimal_literal(&"3e10".to_string()));
-  /// assert_eq!(TurtleSpecs::is_decimal_literal(&"a".to_string()), false);
+  /// assert!(TurtleSpecs::is_double_literal(&"3.0".to_string()));
+  /// assert!(TurtleSpecs::is_double_literal(&"3e10".to_string()));
+  /// assert_eq!(TurtleSpecs::is_double_literal(&"a".to_string()), false);
   /// ```
-  pub fn is_decimal_literal(literal: &String) -> bool {
+  pub fn is_double_literal(literal: &String) -> bool {
     match literal.parse::<f64>() {
       Ok(_) => true,
       Err(_) => false

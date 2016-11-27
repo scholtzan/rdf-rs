@@ -4,6 +4,7 @@ use uri::Uri;
 pub enum XmlDataTypes {
   String,
   Decimal,
+  Double,
   Boolean,
   Date,
   Long,
@@ -20,6 +21,7 @@ impl XmlDataTypes {
       XmlDataTypes::Boolean => Uri::new(schema_name + "boolean"),
       XmlDataTypes::Integer => Uri::new(schema_name + "integer"),
       XmlDataTypes::Decimal => Uri::new(schema_name + "decimal"),
+      XmlDataTypes::Double => Uri::new(schema_name + "decimal"),
       _ => Uri::new("todo".to_string())
     }
   }
@@ -32,6 +34,7 @@ impl XmlDataTypes {
       XmlDataTypes::Boolean => schema_name + "boolean",
       XmlDataTypes::Integer => schema_name + "integer",
       XmlDataTypes::Decimal => schema_name + "decimal",
+      XmlDataTypes::Double => schema_name + "double",
       _ => "todo".to_string()
     }
   }

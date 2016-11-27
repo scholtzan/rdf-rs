@@ -71,8 +71,11 @@ impl<R: Read> RdfLexer<R> for TurtleLexer<R> {
       Some('<') => return self.get_uri(),
       Some('_') => return self.get_blank_node(),
       Some('.') => {
-        self.consume_next_char();  // consume '.'
-        return Ok(Token::TripleDelimiter);
+        // try to parse a decimal, if error then it is a triple delimiter
+        return self.get_numeric().or_else(|_| {
+          self.consume_next_char();  // consume '.'
+          Ok(Token::TripleDelimiter)
+        })
       },
       Some(',') => {
         self.consume_next_char();  // consume ','
@@ -94,7 +97,8 @@ impl<R: Read> RdfLexer<R> for TurtleLexer<R> {
           _ => {}     // continue, because it could still be a QName
         }
       },
-      // todo: boolean, numbers, ....
+      Some('+') | Some('-') => return self.get_numeric(),
+      Some(c) if InputReaderHelper::digit(c) => return self.get_numeric(),
       Some(_) => {},
       None => return Ok(Token::EndOfInput)
     }
@@ -207,6 +211,22 @@ impl<R: Read> TurtleLexer<R> {
                               "Invalid input for Turtle lexer while parsing comment."))
         }
       }
+    }
+  }
+
+  /// Parses integer, decimals and doubles.
+  fn get_numeric(&mut self) -> Result<Token> {
+    let numeric = self.input_reader.peek_until_discard_leading_spaces(InputReaderHelper::node_delimiter)?;
+
+    if TurtleSpecs::is_integer_literal(&numeric.to_string()) {
+      return Ok(Token::LiteralWithUrlDatatype(numeric.to_string(),
+                                              XmlDataTypes::Integer.to_string()))
+    } else if TurtleSpecs::is_double_literal(&numeric.to_string()) {
+      return Ok(Token::LiteralWithUrlDatatype(numeric.to_string(),
+                                              XmlDataTypes::Double.to_string()))
+    } else {
+      return Err(Error::new(ErrorType::InvalidReaderInput,
+                            "Invalid Turtle input for numeric literal."))
     }
   }
 

@@ -128,6 +128,8 @@ impl<R: Read> TurtleParser<R> {
     let mut triples: Vec<Triple> = Vec::new();
 
     let subject = self.read_subject(&graph)?;
+
+    println!("Subj: {:?}", subject);
     let (predicate, object) = self.read_predicate_with_object(graph)?;
 
     triples.push(Triple::new(&subject, &predicate, &object));
@@ -178,6 +180,8 @@ impl<R: Read> TurtleParser<R> {
       },
       _ => return Err(Error::new(ErrorType::InvalidToken, "Invalid token for Turtle predicate."))
     };
+
+    println!("Pred: {:?}", predicate);
 
     // read the object
     let object = self.read_object(graph)?;

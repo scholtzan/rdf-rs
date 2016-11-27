@@ -21,6 +21,10 @@ impl InputReaderHelper {
   pub fn node_delimiter(c: char) -> bool {
     c == '\n' || c == '\r' || c == ' ' || c == '.'
   }
+
+  pub fn digit(c: char) -> bool {
+    c >= '0' && c <= '9'
+  }
 }
 
 type InputChar = Option<char>;
@@ -70,6 +74,10 @@ impl InputChars {
 
   pub fn remove(&mut self, i: usize) -> InputChar {
     self.input_chars.remove(i)
+  }
+
+  pub fn append(&mut self, other: &mut InputChars) {
+    self.input_chars.append(&mut other.to_vec());
   }
 }
 
@@ -212,16 +220,20 @@ impl<R: Read> InputReader<R> {
 
   // todo
   pub fn peek_until<F: Fn(char) -> bool>(&mut self, delimiter: F) -> Result<InputChars> {
-    let chars = self.get_until(delimiter)?;
-    self.peeked_chars = chars.clone();
-    Ok(chars)
+    let mut chars = self.get_until(delimiter)?;
+    let result = chars.clone();
+    chars.append(&mut self.peeked_chars);
+    self.peeked_chars = chars;
+    Ok(result)
   }
 
   // todo
   pub fn peek_until_discard_leading_spaces<F: Fn(char) -> bool>(&mut self, delimiter: F) -> Result<InputChars> {
-    let chars = self.get_until_discard_leading_spaces(delimiter)?;
-    self.peeked_chars = chars.clone();
-    Ok(chars)
+    let mut chars = self.get_until_discard_leading_spaces(delimiter)?;
+    let result = chars.clone();
+    chars.append(&mut self.peeked_chars);
+    self.peeked_chars = chars;
+    Ok(result)
   }
 
   /// Returns all characters of a input source until a certain delimiter occurs.
@@ -235,25 +247,24 @@ impl<R: Read> InputReader<R> {
   /// let mut input = "Hello World!".as_bytes();
   /// let mut input_reader = InputReader::new(input);
   ///
-  /// assert_eq!("Hello".to_string(), input_reader.get_until(|c| c == ' ').unwrap());
-  /// assert_eq!(" World".to_string(), input_reader.get_until(|c| c == '!').unwrap());
+  /// assert_eq!("Hello".to_string(), input_reader.get_until(|c| c == ' ').unwrap().to_string());
+  /// assert_eq!(" World".to_string(), input_reader.get_until(|c| c == '!').unwrap().to_string());
   /// ```
   pub fn get_until<F: Fn(char) -> bool>(&mut self, delimiter: F) -> Result<InputChars> {
     let mut buf = Vec::new();
 
     loop {
-      match self.get_next_char() {
-        Ok(Some(c)) if delimiter(c) => {
+      match self.get_next_char()? {
+        Some(c) if delimiter(c) => {
           if self.peeked_chars.len() <= 0 {
             self.peeked_chars.push(Some(c));
           }
 
           return Ok(InputChars::new(buf.into_iter().collect()))
         },
-        Ok(Some(c)) if !delimiter(c) => buf.push(Some(c)),
-        Ok(_) => return Err(Error::new(ErrorType::EndOfInput(InputChars::new(buf.into_iter().collect())),
-                            "End of input.")),
-        Err(err) => return Err(err)
+        Some(c) if !delimiter(c) => buf.push(Some(c)),
+        _ => return Err(Error::new(ErrorType::EndOfInput(InputChars::new(buf.into_iter().collect())),
+                            "End of input."))
       }
     }
   }
@@ -270,8 +281,8 @@ impl<R: Read> InputReader<R> {
   /// let mut input = "Hello    World!".as_bytes();
   /// let mut input_reader = InputReader::new(input);
   ///
-  /// assert_eq!("Hello".to_string(), input_reader.get_until_discard_leading_spaces(|c| c == ' ').unwrap());
-  /// assert_eq!("World".to_string(), input_reader.get_until_discard_leading_spaces(|c| c == '!').unwrap());
+  /// assert_eq!("Hello".to_string(), input_reader.get_until_discard_leading_spaces(|c| c == ' ').unwrap().to_string());
+  /// assert_eq!("World".to_string(), input_reader.get_until_discard_leading_spaces(|c| c == '!').unwrap().to_string());
   /// ```
   pub fn get_until_discard_leading_spaces<F: Fn(char) -> bool>(&mut self, delimiter: F) -> Result<InputChars> {
     let whitespaces = InputReaderHelper::whitespace;
