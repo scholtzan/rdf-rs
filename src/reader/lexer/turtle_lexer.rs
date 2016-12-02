@@ -7,6 +7,7 @@ use Result;
 use specs::turtle_specs::TurtleSpecs;
 use specs::xml_specs::XmlDataTypes;
 
+
 pub struct TurtleLexer<R: Read> {
   input_reader: InputReader<R>,
   peeked_token: Option<Token>
@@ -67,7 +68,7 @@ impl<R: Read> RdfLexer<R> for TurtleLexer<R> {
         self.consume_next_char();   // consume '@'
         return self.get_base_or_prefix();
       },
-      Some('"') => return self.get_literal(),      // todo: ''
+      Some('"') | Some('\'') => return self.get_literal(),
       Some('<') => return self.get_uri(),
       Some('_') => return self.get_blank_node(),
       Some('.') => {
@@ -276,9 +277,42 @@ impl<R: Read> TurtleLexer<R> {
   }
 
   /// Parses a literal from the input and returns it as token.
+  /// todo: escaped characters
   fn get_literal(&mut self) -> Result<Token> {
-    self.consume_next_char();  // consume '"'
-    let literal = self.input_reader.get_until(|c| c == '"')?.to_string();
+    let literal_delimiter = self.input_reader.get_next_char()?;
+    let mut is_multiline = false;
+
+    let potential_literal_quotes = self.input_reader.peek_next_k_chars(2)?;
+
+    // check if the literal is multiline
+    if potential_literal_quotes[0] == literal_delimiter &&
+      potential_literal_quotes[1] == literal_delimiter {
+      is_multiline = true;
+      let _ = self.input_reader.get_next_k_chars(2);  // consume
+    }
+
+    let mut found_literal_end = false;
+    let mut literal = "".to_string();
+
+    while !found_literal_end {
+      literal.push_str(&self.input_reader.get_until(|c| c == literal_delimiter.unwrap())?.to_string());
+
+      if is_multiline {
+        let potential_literal_delimiters = self.input_reader.peek_next_k_chars(2)?.to_vec();
+
+        if potential_literal_delimiters[0] == literal_delimiter &&
+          potential_literal_delimiters [1] == literal_delimiter {
+          self.consume_next_char();
+          self.consume_next_char();
+
+          found_literal_end = true;
+        }
+      } else {
+        // todo: escaping
+        found_literal_end = true;
+      }
+    }
+    
     self.consume_next_char(); // consume '"'
 
     match self.input_reader.peek_next_char()? {
@@ -311,7 +345,6 @@ impl<R: Read> TurtleLexer<R> {
         }
       },
       _ => {
-        self.consume_next_char(); // consume '"'
         Ok(Token::Literal(literal))
       }
     }
