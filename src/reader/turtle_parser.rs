@@ -57,9 +57,8 @@ impl<R: Read> RdfParser for TurtleParser<R> {
           let namespace = self.read_prefix_directive()?;
           graph.add_namespace(&namespace);
         },
-        Ok(Token::Uri(_)) | Ok(Token::BlankNode(_)) | Ok(Token::QName(_, _)) => {
-          let triples = self.read_triples(&graph)?;
-            println!("Triples: {:?}", triples);
+        Ok(Token::Uri(_)) | Ok(Token::BlankNode(_)) | Ok(Token::QName(_, _)) | Ok(Token::CollectionStart) => {
+          let triples = self.read_triples(&mut graph)?;
           graph.add_triples(&triples);
         },
         Err(err) => {
@@ -125,29 +124,28 @@ impl<R: Read> TurtleParser<R> {
   }
 
   /// Creates a triple from the parsed tokens.
-  fn read_triples(&mut self, graph: &Graph) -> Result<Vec<Triple>> {
+  fn read_triples(&mut self, graph: &mut Graph) -> Result<Vec<Triple>> {
     let mut triples: Vec<Triple> = Vec::new();
 
-    let subject = self.read_subject(&graph)?;
+    let subject = self.read_subject(graph)?;
 
-    println!("Subj: {:?}", subject);
     let (predicate, object) = self.read_predicate_with_object(graph)?;
 
     triples.push(Triple::new(&subject, &predicate, &object));
 
     loop {
-      match self.lexer.get_next_token() {
-        Ok(Token::TripleDelimiter) => break,
-        Ok(Token::PredicateListDelimiter) => {
+      match self.lexer.get_next_token()? {
+        Token::TripleDelimiter => break,
+        Token::PredicateListDelimiter => {
           let (predicate, object) = self.read_predicate_with_object(graph)?;
           triples.push(Triple::new(&subject, &predicate, &object));
         },
-        Ok(Token::ObjectListDelimiter) => {
+        Token::ObjectListDelimiter => {
           let object = self.read_object(graph)?;
           triples.push(Triple::new(&subject, &predicate, &object));
-        },
-        _ => return Err(Error::new(ErrorType::InvalidReaderInput,
-                                   "Invalid token while parsing Turtle triples."))
+        }
+        _ => return Err(Error::new(ErrorType::InvalidToken,
+                                   "Invalid token while reading Turtle triples."))
       }
     }
 
@@ -155,7 +153,7 @@ impl<R: Read> TurtleParser<R> {
   }
 
   /// Get the next token and check if it is a valid subject and create a new subject node.
-  fn read_subject(&mut self, graph: &Graph) -> Result<Node> {
+  fn read_subject(&mut self, graph: &mut Graph) -> Result<Node> {
     match self.lexer.get_next_token()? {
       Token::BlankNode(id) => Ok(Node::BlankNode { id: id }),
       Token::QName(prefix, path) => {
@@ -164,13 +162,14 @@ impl<R: Read> TurtleParser<R> {
         Ok(Node::UriNode { uri: uri })
       }
       Token::Uri(uri) => Ok(Node::UriNode { uri: Uri::new(uri) }),
+      Token::CollectionStart => self.read_collection(graph),
       _ => Err(Error::new(ErrorType::InvalidToken,
                           "Invalid token for Turtle subject."))
     }
   }
 
   /// Get the next token and check if it is a valid predicate and create a new predicate node.
-  fn read_predicate_with_object(&mut self, graph: &Graph) -> Result<(Node, Node)> {
+  fn read_predicate_with_object(&mut self, graph: &mut Graph) -> Result<(Node, Node)> {
     // read the predicate
     let predicate = match self.lexer.get_next_token()? {
       Token::Uri(uri) => Node::UriNode { uri: Uri::new(uri) },
@@ -180,10 +179,9 @@ impl<R: Read> TurtleParser<R> {
         uri.append_resource_path(path.replace(":", "/"));   // adjust the QName path to URI path
         Node::UriNode { uri: uri }
       },
+      Token::BlankNode(id) => Node::BlankNode { id: id },
       _ => return Err(Error::new(ErrorType::InvalidToken, "Invalid token for Turtle predicate."))
     };
-
-    println!("Pred: {:?}", predicate);
 
     // read the object
     let object = self.read_object(graph)?;
@@ -192,7 +190,7 @@ impl<R: Read> TurtleParser<R> {
   }
 
   /// Get the next token and check if it is a valid object and create a new object node.
-  fn read_object(&mut self, graph: &Graph) -> Result<Node> {
+  fn read_object(&mut self, graph: &mut Graph) -> Result<Node> {
     match self.lexer.get_next_token()? {
       Token::BlankNode(id) => Ok(Node::BlankNode { id: id }),
       Token::Uri(uri) => Ok(Node::UriNode { uri: Uri::new(uri) }),
@@ -207,11 +205,56 @@ impl<R: Read> TurtleParser<R> {
         Ok(Node::LiteralNode { literal: literal, data_type: Some(Uri::new(datatype)), language: None }),
       Token::Literal(literal) =>
         Ok(Node::LiteralNode { literal: literal, data_type: None, language: None }),
+      Token::CollectionStart => self.read_collection(graph),
       t => {
           println!("Token {:?}", t);
           Err(Error::new(ErrorType::InvalidToken, "Invalid token for Turtle object."))
       }
     }
+  }
+
+  // todo
+  fn read_collection(&mut self, graph: &mut Graph) -> Result<Node> {
+    // check if the list is empty and return list:nil
+    if self.lexer.peek_next_token()? == Token::CollectionEnd {
+      let _ = self.lexer.get_next_token()?;     // consume the token indicating the collection end ')'
+
+      return Ok(Node::UriNode { uri: RdfSyntaxDataTypes::ListNil.to_uri() })
+    }
+
+    // for non-empty list generate blank node
+    let subject = graph.create_blank_node();
+
+    let mut next_subject = subject.to_owned();
+
+    loop {
+      let rest = graph.create_blank_node();
+      let object = self.read_object(graph)?;
+
+      graph.add_triple(&Triple::new(&next_subject,
+                                    &Node::UriNode { uri: RdfSyntaxDataTypes::ListFirst.to_uri() },
+                                    &object ));
+
+      // check if the rest of the list is nil
+      if self.lexer.peek_next_token()? == Token::CollectionEnd {
+        let _ = self.lexer.get_next_token()?;     // consume the token indicating the collection end ')'
+
+        // create list:nil node
+        graph.add_triple(&Triple::new(&next_subject,
+                                      &Node::UriNode { uri: RdfSyntaxDataTypes::ListRest.to_uri() },
+                                      &Node::UriNode { uri: RdfSyntaxDataTypes::ListNil.to_uri() }));
+        break;  // stop further list evaluation
+      } else {
+        // create node referring to the non-empty rest of the list
+        graph.add_triple(&Triple::new(&next_subject,
+                                      &Node::UriNode { uri: RdfSyntaxDataTypes::ListRest.to_uri() },
+                                      &rest));
+      }
+
+      next_subject = rest;
+    }
+
+    Ok(subject)
   }
 }
 
@@ -314,4 +357,37 @@ mod tests {
     }
   }
 
+  #[test]
+  fn read_collection_from_string() {
+    let input = "_:a _:b ( _:c _:d ) .";
+
+    let mut reader = TurtleParser::from_string(input.to_string());
+
+    match reader.decode() {
+      Ok(graph) => {
+        assert_eq!(graph.count(), 5)
+      },
+      Err(e) => {
+        println!("Err {}", e.to_string());
+        assert!(false)
+      }
+    }
+  }
+
+  #[test]
+  fn read_empty_collection_from_string() {
+    let input = "() _:b (  ) .";
+
+    let mut reader = TurtleParser::from_string(input.to_string());
+
+    match reader.decode() {
+      Ok(graph) => {
+        assert_eq!(graph.count(), 1)
+      },
+      Err(e) => {
+        println!("Err {}", e.to_string());
+        assert!(false)
+      }
+    }
+  }
 }

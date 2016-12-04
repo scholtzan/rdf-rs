@@ -17,5 +17,7 @@ pub enum Token {
   KeywordA,                 // 'a'
   PredicateListDelimiter,   // e.g. for Turtle syntax -> ;
   ObjectListDelimiter,      // e.g. for Turtle syntax -> ,
+  CollectionStart,          // e.g. for Turtle syntax -> (
+  CollectionEnd,            // e.g. for Turtle syntax -> )
   EndOfInput,
 }

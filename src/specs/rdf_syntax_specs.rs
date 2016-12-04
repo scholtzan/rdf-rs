@@ -2,7 +2,10 @@ use uri::Uri;
 
 // todo
 pub enum RdfSyntaxDataTypes {
-  A
+  A,
+  ListFirst,
+  ListRest,
+  ListNil
 }
 
 impl RdfSyntaxDataTypes {
@@ -15,7 +18,10 @@ impl RdfSyntaxDataTypes {
 
     // todo
     match *self {
-        RdfSyntaxDataTypes::A => schema_name + "type"
+      RdfSyntaxDataTypes::A => schema_name + "type",
+      RdfSyntaxDataTypes::ListFirst => schema_name + "first",
+      RdfSyntaxDataTypes::ListRest => schema_name + "rest",
+      RdfSyntaxDataTypes::ListNil => schema_name + "nil"
     }
   }
 }

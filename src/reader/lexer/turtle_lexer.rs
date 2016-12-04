@@ -86,6 +86,14 @@ impl<R: Read> RdfLexer<R> for TurtleLexer<R> {
         self.consume_next_char();  // consume ';'
         return Ok(Token::PredicateListDelimiter);
       },
+      Some('(') => {
+        self.consume_next_char();  // consume '('
+        return Ok(Token::CollectionStart);
+      },
+      Some(')') => {
+        self.consume_next_char();  // consume ')'
+        return Ok(Token::CollectionEnd);
+      },
       Some('P') | Some('B') => {
         match self.get_base_or_prefix() {
           Ok(token) => return Ok(token),
@@ -312,7 +320,7 @@ impl<R: Read> TurtleLexer<R> {
         found_literal_end = true;
       }
     }
-    
+
     self.consume_next_char(); // consume '"'
 
     match self.input_reader.peek_next_char()? {
