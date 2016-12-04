@@ -19,5 +19,7 @@ pub enum Token {
   ObjectListDelimiter,      // e.g. for Turtle syntax -> ,
   CollectionStart,          // e.g. for Turtle syntax -> (
   CollectionEnd,            // e.g. for Turtle syntax -> )
+  UnlabeledBlankNodeStart,  // e.g. for Turtle syntax -> [
+  UnlabeledBlankNodeEnd,    // e.g. for Turtle syntax -> ]
   EndOfInput,
 }

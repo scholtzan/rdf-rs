@@ -57,7 +57,8 @@ impl<R: Read> RdfParser for TurtleParser<R> {
           let namespace = self.read_prefix_directive()?;
           graph.add_namespace(&namespace);
         },
-        Ok(Token::Uri(_)) | Ok(Token::BlankNode(_)) | Ok(Token::QName(_, _)) | Ok(Token::CollectionStart) => {
+        Ok(Token::Uri(_)) | Ok(Token::BlankNode(_)) | Ok(Token::QName(_, _)) |
+        Ok(Token::CollectionStart) | Ok(Token::UnlabeledBlankNodeStart) => {
           let triples = self.read_triples(&mut graph)?;
           graph.add_triples(&triples);
         },
@@ -125,31 +126,9 @@ impl<R: Read> TurtleParser<R> {
 
   /// Creates a triple from the parsed tokens.
   fn read_triples(&mut self, graph: &mut Graph) -> Result<Vec<Triple>> {
-    let mut triples: Vec<Triple> = Vec::new();
-
     let subject = self.read_subject(graph)?;
 
-    let (predicate, object) = self.read_predicate_with_object(graph)?;
-
-    triples.push(Triple::new(&subject, &predicate, &object));
-
-    loop {
-      match self.lexer.get_next_token()? {
-        Token::TripleDelimiter => break,
-        Token::PredicateListDelimiter => {
-          let (predicate, object) = self.read_predicate_with_object(graph)?;
-          triples.push(Triple::new(&subject, &predicate, &object));
-        },
-        Token::ObjectListDelimiter => {
-          let object = self.read_object(graph)?;
-          triples.push(Triple::new(&subject, &predicate, &object));
-        }
-        _ => return Err(Error::new(ErrorType::InvalidToken,
-                                   "Invalid token while reading Turtle triples."))
-      }
-    }
-
-    Ok(triples)
+    self.read_predicate_object_list(&subject, graph)
   }
 
   /// Get the next token and check if it is a valid subject and create a new subject node.
@@ -163,9 +142,37 @@ impl<R: Read> TurtleParser<R> {
       }
       Token::Uri(uri) => Ok(Node::UriNode { uri: Uri::new(uri) }),
       Token::CollectionStart => self.read_collection(graph),
+      Token::UnlabeledBlankNodeStart => self.read_unlabeled_blank_node(graph),
       _ => Err(Error::new(ErrorType::InvalidToken,
                           "Invalid token for Turtle subject."))
     }
+  }
+
+  // todo
+  fn read_predicate_object_list(&mut self, subject: &Node, graph: &mut Graph) -> Result<Vec<Triple>> {
+    let mut triples: Vec<Triple> = Vec::new();
+
+    let (predicate, object) = self.read_predicate_with_object(graph)?;
+    triples.push(Triple::new(subject, &predicate, &object));
+
+    loop {
+      match self.lexer.get_next_token()? {
+        Token::TripleDelimiter => break,
+        Token::UnlabeledBlankNodeEnd => break,
+        Token::PredicateListDelimiter => {
+          let (predicate, object) = self.read_predicate_with_object(graph)?;
+          triples.push(Triple::new(subject, &predicate, &object));
+        },
+        Token::ObjectListDelimiter => {
+          let object = self.read_object(graph)?;
+          triples.push(Triple::new(subject, &predicate, &object));
+        }
+        _ => return Err(Error::new(ErrorType::InvalidToken,
+                                   "Invalid token while reading Turtle triples."))
+      }
+    }
+
+    Ok(triples)
   }
 
   /// Get the next token and check if it is a valid predicate and create a new predicate node.
@@ -206,11 +213,26 @@ impl<R: Read> TurtleParser<R> {
       Token::Literal(literal) =>
         Ok(Node::LiteralNode { literal: literal, data_type: None, language: None }),
       Token::CollectionStart => self.read_collection(graph),
+      Token::UnlabeledBlankNodeStart => self.read_unlabeled_blank_node(graph),
       t => {
           println!("Token {:?}", t);
           Err(Error::new(ErrorType::InvalidToken, "Invalid token for Turtle object."))
       }
     }
+  }
+
+  // todo
+  fn read_unlabeled_blank_node(&mut self, graph: &mut Graph) -> Result<Node> {
+    let subject = graph.create_blank_node();
+
+    if self.lexer.peek_next_token()? == Token::UnlabeledBlankNodeEnd {
+      let _ = self.lexer.get_next_token()?;     // consume the token indicating the node end ']'
+    } else {
+      let triples = self.read_predicate_object_list(&subject, graph)?;
+      graph.add_triples(&triples);
+    }
+
+    Ok(subject)
   }
 
   // todo
@@ -383,6 +405,64 @@ mod tests {
     match reader.decode() {
       Ok(graph) => {
         assert_eq!(graph.count(), 1)
+      },
+      Err(e) => {
+        println!("Err {}", e.to_string());
+        assert!(false)
+      }
+    }
+  }
+
+
+  #[test]
+  fn read_nested_collections_from_string() {
+    let input = "( _:a (_:b _:c ) ) _:b ( _:b ( ( ( ) ) ) ) .";
+
+    let mut reader = TurtleParser::from_string(input.to_string());
+
+    match reader.decode() {
+      Ok(graph) => {
+        assert_eq!(graph.count(), 17)
+      },
+      Err(e) => {
+        println!("Err {}", e.to_string());
+        assert!(false)
+      }
+    }
+  }
+
+
+  #[test]
+  fn read_empty_unlabeled_node_from_string() {
+    let input = "[ ] _:b [ ] .";
+
+    let mut reader = TurtleParser::from_string(input.to_string());
+
+    match reader.decode() {
+      Ok(graph) => {
+        assert_eq!(graph.count(), 1)
+      },
+      Err(e) => {
+        println!("Err {}", e.to_string());
+        assert!(false)
+      }
+    }
+  }
+
+
+  #[test]
+  fn read_unlabeled_nodes_from_string() {
+    let input = "[ _:a _:g ] _:b [ _:c [
+      _:s _:d ,
+          [ _:asd _:asdf ] ;
+      _:g _:h
+    ] ] .";
+
+    let mut reader = TurtleParser::from_string(input.to_string());
+
+    match reader.decode() {
+      Ok(graph) => {
+        assert_eq!(graph.count(), 7)
       },
       Err(e) => {
         println!("Err {}", e.to_string());

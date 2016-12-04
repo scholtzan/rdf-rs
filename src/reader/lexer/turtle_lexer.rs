@@ -94,6 +94,14 @@ impl<R: Read> RdfLexer<R> for TurtleLexer<R> {
         self.consume_next_char();  // consume ')'
         return Ok(Token::CollectionEnd);
       },
+      Some('[') => {
+        self.consume_next_char();  // consume '['
+        return Ok(Token::UnlabeledBlankNodeStart);
+      },
+      Some(']') => {
+        self.consume_next_char();  // consume ']'
+        return Ok(Token::UnlabeledBlankNodeEnd);
+      },
       Some('P') | Some('B') => {
         match self.get_base_or_prefix() {
           Ok(token) => return Ok(token),
