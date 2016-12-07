@@ -362,7 +362,6 @@ mod tests {
     }
   }
 
-
   #[test]
   fn read_turtle_with_empty_prefix_from_string() {
     let input = "@prefix : <http://example/> .
@@ -381,7 +380,7 @@ mod tests {
 
   #[test]
   fn read_collection_from_string() {
-    let input = "_:a _:b ( _:c _:d ) .";
+    let input = "_:a _:b ( _:c _:g ) .";
 
     let mut reader = TurtleParser::from_string(input.to_string());
 
@@ -413,7 +412,6 @@ mod tests {
     }
   }
 
-
   #[test]
   fn read_nested_collections_from_string() {
     let input = "( _:a (_:b _:c ) ) _:b ( _:b ( ( ( ) ) ) ) .";
@@ -431,7 +429,6 @@ mod tests {
     }
   }
 
-
   #[test]
   fn read_empty_unlabeled_node_from_string() {
     let input = "[ ] _:b [ ] .";
@@ -448,7 +445,6 @@ mod tests {
       }
     }
   }
-
 
   #[test]
   fn read_unlabeled_nodes_from_string() {

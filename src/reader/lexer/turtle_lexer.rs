@@ -34,8 +34,7 @@ impl<R: Read> RdfLexer<R> for TurtleLexer<R> {
     }
   }
 
-  /// Determines the next token from the input.
-  /// todo
+  /// Determines the next token from the input and consumes the read input characters.
   ///
   /// # Example
   ///
@@ -54,6 +53,7 @@ impl<R: Read> RdfLexer<R> for TurtleLexer<R> {
   /// assert_eq!(lexer.get_next_token().unwrap(), Token::TripleDelimiter);
   /// ```
   fn get_next_token(&mut self) -> Result<Token> {
+    // first read peeked characters
     match self.peeked_token.clone() {
       Some(token) => {
         self.peeked_token = None;
@@ -72,9 +72,8 @@ impl<R: Read> RdfLexer<R> for TurtleLexer<R> {
       Some('<') => return self.get_uri(),
       Some('_') => return self.get_blank_node(),
       Some('.') => {
-        // try to parse a decimal, if error then it is a triple delimiter
+        // try to parse a decimal, if there is an error then it is a triple delimiter
         return self.get_numeric().or_else(|_| {
-          self.consume_next_char();  // consume '.'
           Ok(Token::TripleDelimiter)
         })
       },
@@ -102,19 +101,19 @@ impl<R: Read> RdfLexer<R> for TurtleLexer<R> {
         self.consume_next_char();  // consume ']'
         return Ok(Token::UnlabeledBlankNodeEnd);
       },
-      Some('P') | Some('B') => {
+      Some('P') | Some('B') => {      // try parsing PREFIX or BASE
         match self.get_base_or_prefix() {
           Ok(token) => return Ok(token),
           _ => {}     // continue, because it could still be a QName
         }
       },
-      Some('t') | Some('f') => {
+      Some('t') | Some('f') => {      // try parsing 'true' or 'false'
         match self.get_boolean_literal() {
           Ok(token) => return Ok(token),
           _ => {}     // continue, because it could still be a QName
         }
       },
-      Some('a') => {
+      Some('a') => {            // try parsing the 'a' keyword
         match self.get_a_keyword() {
           Ok(token) => return Ok(token),
           _ => {}     // continue, because it could still be a QName
@@ -130,12 +129,25 @@ impl<R: Read> RdfLexer<R> for TurtleLexer<R> {
   }
 
 
-  /// Determines the next token without consuming it.
+  /// Determines the next token without consuming the input.
   ///
   /// # Examples
   ///
-  /// todo
   ///
+  /// ```
+  /// use rdf_rs::reader::lexer::rdf_lexer::RdfLexer;
+  /// use rdf_rs::reader::lexer::turtle_lexer::TurtleLexer;
+  /// use rdf_rs::reader::lexer::token::Token;
+  ///
+  /// let input = "_:auto <example.org/b> \"test\" .".as_bytes();
+  ///
+  /// let mut lexer = TurtleLexer::new(input);
+  ///
+  /// assert_eq!(lexer.peek_next_token().unwrap(), Token::BlankNode("auto".to_string()));
+  /// assert_eq!(lexer.peek_next_token().unwrap(), Token::BlankNode("auto".to_string()));
+  /// assert_eq!(lexer.get_next_token().unwrap(), Token::BlankNode("auto".to_string()));
+  /// assert_eq!(lexer.get_next_token().unwrap(), Token::Uri("example.org/b".to_string()));
+  /// ```
   fn peek_next_token(&mut self) -> Result<Token> {
     match self.peeked_token.clone() {
       Some(token) => Ok(token),
@@ -239,7 +251,25 @@ impl<R: Read> TurtleLexer<R> {
 
   /// Parses integer, decimals and doubles.
   fn get_numeric(&mut self) -> Result<Token> {
-    let numeric = self.input_reader.peek_until_discard_leading_spaces(InputReaderHelper::node_delimiter)?;
+    let numeric = self.input_reader.get_until_discard_leading_spaces(InputReaderHelper::node_delimiter)?;
+
+    // check if delimiter was '.' and if it is part of a decimal or if it is a delimiter
+    if self.input_reader.get_next_char()? == Some('.') {
+      let mut complete_numeric = numeric.clone();
+      match self.input_reader.peek_until(InputReaderHelper::node_delimiter) {
+        Ok(mut input_chars) => {
+          complete_numeric.push(Some('.'));
+          complete_numeric.append(&mut input_chars);
+
+          if TurtleSpecs::is_double_literal(&complete_numeric.to_string()) {
+            let _ = self.input_reader.get_until_discard_leading_spaces(InputReaderHelper::node_delimiter)?; // consume
+            return Ok(Token::LiteralWithUrlDatatype(complete_numeric.to_string(),
+                                                    XmlDataTypes::Double.to_string()))
+          }
+        },
+        _ => {}
+      }
+    }
 
     if TurtleSpecs::is_integer_literal(&numeric.to_string()) {
       return Ok(Token::LiteralWithUrlDatatype(numeric.to_string(),
@@ -423,6 +453,8 @@ mod tests {
   use reader::lexer::rdf_lexer::RdfLexer;
   use reader::lexer::turtle_lexer::TurtleLexer;
   use reader::lexer::token::Token;
+  use specs::xml_specs::XmlDataTypes;
+
 
   #[test]
   fn parse_base_directive() {
@@ -505,16 +537,18 @@ mod tests {
 
   #[test]
   fn parse_blank_node() {
-    let input = "_:auto".as_bytes();
+    let input = ". _:auto .".as_bytes();
 
     let mut lexer = TurtleLexer::new(input);
 
+    assert_eq!(lexer.get_next_token().unwrap(), Token::TripleDelimiter);
     assert_eq!(lexer.get_next_token().unwrap(), Token::BlankNode("auto".to_string()));
+
   }
 
   #[test]
   fn parse_qname() {
-    let input = "abc:def:ghij gggg:gggg abc:dd .".as_bytes();
+    let input = " abc:def:ghij gggg:gggg abc:dd .".as_bytes();
 
     let mut lexer = TurtleLexer::new(input);
 
@@ -541,12 +575,31 @@ mod tests {
 
   #[test]
   fn parse_triple_delimiter() {
-    let input = ".   \"a\"   .".as_bytes();
+    let input = ". \"a\"   . ".as_bytes();
 
     let mut lexer = TurtleLexer::new(input);
 
     assert_eq!(lexer.get_next_token().unwrap(), Token::TripleDelimiter);
     assert_eq!(lexer.get_next_token().unwrap(), Token::Literal("a".to_string()));
     assert_eq!(lexer.get_next_token().unwrap(), Token::TripleDelimiter);
+  }
+
+  #[test]
+  fn parse_numeric_literals() {
+    let input = "4 1.2 -5.123 -.123 .123 5e10 .".as_bytes();
+    let mut lexer = TurtleLexer::new(input);
+
+    assert_eq!(lexer.get_next_token().unwrap(),
+               Token::LiteralWithUrlDatatype("4".to_string(), XmlDataTypes::Integer.to_string()));
+    assert_eq!(lexer.get_next_token().unwrap(),
+               Token::LiteralWithUrlDatatype("1.2".to_string(), XmlDataTypes::Double.to_string()));
+    assert_eq!(lexer.get_next_token().unwrap(),
+               Token::LiteralWithUrlDatatype("-5.123".to_string(), XmlDataTypes::Double.to_string()));
+    assert_eq!(lexer.get_next_token().unwrap(),
+               Token::LiteralWithUrlDatatype("-.123".to_string(), XmlDataTypes::Double.to_string()));
+    assert_eq!(lexer.get_next_token().unwrap(),
+               Token::LiteralWithUrlDatatype(".123".to_string(), XmlDataTypes::Double.to_string()));
+    assert_eq!(lexer.get_next_token().unwrap(),
+               Token::LiteralWithUrlDatatype("5e10".to_string(), XmlDataTypes::Double.to_string()));
   }
 }
