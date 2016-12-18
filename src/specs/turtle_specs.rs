@@ -1,7 +1,9 @@
 use uri::Uri;
 use specs::xml_specs::XmlDataTypes;
 
+/// Contains specifications for validating turtle syntax.
 pub struct TurtleSpecs { }
+
 
 impl TurtleSpecs {
   /// Checks if the provided literal is a plain literal that corresponds to the provided data type.

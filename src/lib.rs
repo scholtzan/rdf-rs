@@ -47,10 +47,6 @@ pub mod reader {
   pub mod input_reader;
 }
 
-pub mod vocabulary {
-  // todo
-}
-
 pub mod specs {
   pub mod xml_specs;
   pub mod turtle_specs;
