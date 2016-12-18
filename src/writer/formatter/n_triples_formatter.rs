@@ -4,6 +4,7 @@ use uri::Uri;
 
 
 /// Formatter for formatting nodes to N-Triple syntax.
+/// This formatter is used by `NTriplesWriter`.
 pub struct NTriplesFormatter { }
 
 
@@ -36,7 +37,7 @@ impl RdfFormatter for NTriplesFormatter {
   ///
   fn format_literal(&self, literal: &String, data_type: &Option<Uri>, language: &Option<String>) -> String {
     let mut output_string = "\"".to_string();
-    // todo: escaping?
+    // todo: escaping
     output_string.push_str(&literal);
     output_string.push_str("\"");
 
@@ -71,5 +72,67 @@ impl RdfFormatter for NTriplesFormatter {
     output_string.push_str(">");
 
     output_string
+  }
+}
+
+
+#[cfg(test)]
+mod tests {
+  use node::*;
+  use writer::formatter::rdf_formatter::RdfFormatter;
+  use uri::Uri;
+  use writer::formatter::n_triples_formatter::NTriplesFormatter;
+
+
+  #[test]
+  fn test_n_triples_blank_node_formatting() {
+    let formatter = NTriplesFormatter::new();
+    let node = Node::BlankNode { id: "auto0".to_string() };
+
+    assert_eq!(formatter.format_node(&node), "_:auto0".to_string());
+  }
+
+  #[test]
+  fn test_n_triples_uri_node_formatting() {
+    let formatter = NTriplesFormatter::new();
+    let node = Node::UriNode { uri: Uri::new("http://example.org/show/localName".to_string()) };
+
+    assert_eq!(formatter.format_node(&node), "<http://example.org/show/localName>".to_string());
+  }
+
+  #[test]
+  fn test_n_triples_plain_literal_node_formatting() {
+    let formatter = NTriplesFormatter::new();
+    let node = Node::LiteralNode {
+      literal: "literal".to_string(),
+      data_type: None,
+      language: None
+    };
+
+    assert_eq!(formatter.format_node(&node), "\"literal\"".to_string());
+  }
+
+  #[test]
+  fn test_n_triples_literal_node_with_datatype_formatting() {
+    let formatter = NTriplesFormatter::new();
+    let node = Node::LiteralNode {
+      literal: "literal".to_string(),
+      data_type: Some(Uri::new("http://example.org/show/localName".to_string())),
+      language: None
+    };
+
+    assert_eq!(formatter.format_node(&node), "\"literal\"^^<http://example.org/show/localName>".to_string());
+  }
+
+  #[test]
+  fn test_n_triples_literal_node_with_language_formatting() {
+    let formatter = NTriplesFormatter::new();
+    let node = Node::LiteralNode {
+      literal: "literal".to_string(),
+      data_type: None,
+      language: Some("en".to_string())
+    };
+
+    assert_eq!(formatter.format_node(&node), "\"literal\"@en".to_string());
   }
 }

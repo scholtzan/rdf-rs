@@ -18,6 +18,23 @@ impl RdfWriter for NTriplesWriter {
   ///
   /// Returns an error if invalid N-Triple syntax would be generated.
   ///
+  /// # Examples
+  ///
+  /// ```
+  /// use rdf_rs::writer::n_triples_writer::NTriplesWriter;
+  /// use rdf_rs::writer::rdf_writer::RdfWriter;
+  /// use rdf_rs::graph::Graph;
+  ///
+  /// let writer = NTriplesWriter::new();
+  /// let graph = Graph::new(None);
+  ///
+  /// assert_eq!(writer.write_to_string(&graph).unwrap(), "".to_string());
+  /// ```
+  ///
+  /// # Failures
+  ///
+  /// - Invalid triples are to be written to the output that do not conform the NTriples syntax standard.
+  ///
   fn write_to_string(&self, graph: &Graph) -> Result<String> {
     let mut output_string = "".to_string();
 
@@ -39,6 +56,15 @@ impl RdfWriter for NTriplesWriter {
 
 impl NTriplesWriter {
   /// Constructor of `NTriplesWriter`.
+  ///
+  /// # Examples
+  ///
+  /// ```
+  /// use rdf_rs::writer::n_triples_writer::NTriplesWriter;
+  /// use rdf_rs::writer::rdf_writer::RdfWriter;
+  ///
+  /// let writer = NTriplesWriter::new();
+  /// ```
   pub fn new() -> NTriplesWriter {
     NTriplesWriter {
       formatter: NTriplesFormatter::new()
@@ -46,6 +72,31 @@ impl NTriplesWriter {
   }
 
   /// Generates the corresponding N-Triples syntax of the provided triple.
+  ///
+  /// # Examples
+  ///
+  /// ```
+  /// use rdf_rs::writer::n_triples_writer::NTriplesWriter;
+  /// use rdf_rs::writer::rdf_writer::RdfWriter;
+  /// use rdf_rs::node::Node;
+  /// use rdf_rs::triple::Triple;
+  /// use rdf_rs::uri::Uri;
+  ///
+  /// let writer = NTriplesWriter::new();
+  ///
+  /// let subject = Node::BlankNode { id: "blank".to_string() };
+  /// let object = Node::LiteralNode { literal: "literal".to_string(), data_type: None, language: Some("en".to_string()) };
+  /// let predicate = Node::UriNode { uri: Uri::new("http://example.org/show/localName".to_string()) };
+  /// let triple = Triple::new(&subject, &predicate, &object);
+  ///
+  /// assert_eq!(writer.triple_to_n_triples(&triple).unwrap(),
+  ///            "_:blank <http://example.org/show/localName> \"literal\"@en .".to_string());
+  /// ```
+  ///
+  /// # Failures
+  ///
+  /// - Invalid node type for a certain position.
+  ///
   pub fn triple_to_n_triples(&self, triple: &Triple) -> Result<String> {
     let mut output_string = "".to_string();
 
@@ -80,6 +131,26 @@ impl NTriplesWriter {
   ///
   /// Checks if the node type is valid considering the triple segment.
   ///
+  /// # Examples
+  ///
+  /// ```
+  /// use rdf_rs::writer::n_triples_writer::NTriplesWriter;
+  /// use rdf_rs::writer::rdf_writer::RdfWriter;
+  /// use rdf_rs::node::Node;
+  /// use rdf_rs::triple::TripleSegment;
+  ///
+  /// let writer = NTriplesWriter::new();
+  ///
+  /// let node = Node::BlankNode { id: "blank".to_string() };
+  ///
+  /// assert_eq!(writer.node_to_n_triples(&node, TripleSegment::Subject).unwrap(),
+  ///            "_:blank".to_string());
+  /// ```
+  ///
+  /// # Failures
+  ///
+  /// - Node type for triple segment does not conform with NTriples syntax standard.
+  ///
   pub fn node_to_n_triples(&self, node: &Node, segment: TripleSegment) -> Result<String> {
     match node {
       &Node::BlankNode { id: _ } =>
@@ -106,31 +177,5 @@ impl NTriplesWriter {
 
     // use the formatter to get the corresponding N-Triple syntax
     Ok(self.formatter.format_node(node))
-  }
-}
-
-
-#[cfg(test)]
-mod tests {
-  use node::Node;
-  use triple::*;
-  use uri::Uri;
-  use writer::n_triples_writer::NTriplesWriter;
-
-  #[test]
-  fn test_n_triples_writer() {
-    let subject = Node::BlankNode { id: "blank".to_string() };
-    let object = Node::LiteralNode { literal: "literal".to_string(), data_type: None, language: Some("en".to_string()) };
-    let predicate = Node::UriNode { uri: Uri::new("http://example.org/show/localName".to_string()) };
-
-    let trip = Triple::new(&subject, &predicate, &object);
-
-    let result = "_:blank <http://example.org/show/localName> \"literal\"@en .".to_string();
-
-    let writer = NTriplesWriter::new();
-    match writer.triple_to_n_triples(&trip) {
-      Ok(str) => assert_eq!(result, str),
-      Err(_) => assert!(false)
-    }
   }
 }

@@ -29,6 +29,7 @@ impl XmlDataTypes {
       XmlDataTypes::Double => schema_name + "double",
       XmlDataTypes::Date => schema_name + "date",
       XmlDataTypes::Long => schema_name + "long",
+      XmlDataTypes::Int => schema_name + "int",
       XmlDataTypes::String => schema_name + "string"
     }
   }

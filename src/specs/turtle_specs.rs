@@ -8,7 +8,7 @@ pub struct TurtleSpecs { }
 impl TurtleSpecs {
   /// Checks if the provided literal is a plain literal that corresponds to the provided data type.
   ///
-  /// # Example
+  /// # Examples
   ///
   /// ```
   /// use rdf_rs::specs::turtle_specs::TurtleSpecs;
@@ -37,7 +37,7 @@ impl TurtleSpecs {
 
   /// Checks if the provided literal is decimal.
   ///
-  /// # Example
+  /// # Examples
   ///
   /// ```
   /// use rdf_rs::specs::turtle_specs::TurtleSpecs;
@@ -55,7 +55,7 @@ impl TurtleSpecs {
 
   /// Checks if the provided literal is an integer.
   ///
-  /// # Example
+  /// # Examples
   ///
   /// ```
   /// use rdf_rs::specs::turtle_specs::TurtleSpecs;
@@ -73,7 +73,7 @@ impl TurtleSpecs {
 
   /// Checks if the provided literal is a boolean.
   ///
-  /// # Example
+  /// # Examples
   ///
   /// ```
   /// use rdf_rs::specs::turtle_specs::TurtleSpecs;

@@ -23,7 +23,7 @@ impl<R: Read> RdfParser for TurtleParser<R> {
   ///
   /// Returns an error in case invalid Turtle syntax is provided.
   ///
-  /// # Example
+  /// # Examples
   ///
   /// ```
   /// use rdf_rs::reader::turtle_parser::TurtleParser;

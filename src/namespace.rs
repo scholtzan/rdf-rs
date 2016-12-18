@@ -14,7 +14,7 @@ pub struct Namespace {
 impl Namespace {
   /// `Namespace` constructor.
   ///
-  /// # Example
+  /// # Examples
   ///
   /// ```
   /// use rdf_rs::namespace::Namespace;
@@ -32,7 +32,7 @@ impl Namespace {
 
   /// Returns the prefix of the namespace.
   ///
-  /// # Example
+  /// # Examples
   ///
   /// ```
   /// use rdf_rs::namespace::Namespace;
@@ -49,7 +49,7 @@ impl Namespace {
 
   /// Returns the URI of the namespace.
   ///
-  /// # Example
+  /// # Examples
   ///
   /// ```
   /// use rdf_rs::namespace::Namespace;
@@ -77,7 +77,7 @@ pub struct NamespaceStore {
 impl NamespaceStore {
   /// Constructor for `NamespaceStore`.
   ///
-  /// # Example
+  /// # Examples
   ///
   /// ```
   /// use rdf_rs::namespace::NamespaceStore;
@@ -97,7 +97,7 @@ impl NamespaceStore {
 
   /// Adds a new namespace.
   ///
-  /// # Example
+  /// # Examples
   ///
   /// ```
   /// use rdf_rs::namespace::NamespaceStore;
@@ -117,7 +117,7 @@ impl NamespaceStore {
 
   /// Returns the URI of a specific namespace.
   ///
-  /// # Example
+  /// # Examples
   ///
   /// ```
   /// use rdf_rs::namespace::NamespaceStore;

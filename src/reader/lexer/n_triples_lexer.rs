@@ -15,7 +15,7 @@ pub struct NTriplesLexer<R: Read> {
 impl<R: Read> RdfLexer<R> for NTriplesLexer<R> {
   /// Constructor for `NTriplesLexer`;
   ///
-  /// # Example
+  /// # Examples
   ///
   /// ```
   /// use rdf_rs::reader::lexer::rdf_lexer::RdfLexer;
@@ -34,7 +34,7 @@ impl<R: Read> RdfLexer<R> for NTriplesLexer<R> {
 
   /// Determines the next token from the input.
   ///
-  /// # Example
+  /// # Examples
   ///
   /// ```
   /// use rdf_rs::reader::lexer::rdf_lexer::RdfLexer;
@@ -76,7 +76,7 @@ impl<R: Read> RdfLexer<R> for NTriplesLexer<R> {
 
   /// Determines the next token without consuming it.
   ///
-  /// # Examples
+  /// # Exampless
   ///
   /// ```
   /// use rdf_rs::reader::lexer::rdf_lexer::RdfLexer;

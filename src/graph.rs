@@ -27,7 +27,7 @@ pub struct Graph {
 impl Graph {
   /// Constructor for the RDF graph.
   ///
-  /// # Example
+  /// # Examples
   ///
   /// ```
   /// use rdf_rs::graph::Graph;
@@ -50,7 +50,7 @@ impl Graph {
 
   /// Returns `true` if the graph does not contain any triples.
   ///
-  /// # Example
+  /// # Examples
   ///
   /// ```
   /// use rdf_rs::graph::Graph;
@@ -65,7 +65,7 @@ impl Graph {
 
   /// Returns the number of triples that are stored in the graph.
   ///
-  /// # Example
+  /// # Examples
   ///
   /// ```
   /// use rdf_rs::graph::Graph;
@@ -80,7 +80,7 @@ impl Graph {
 
   /// Returns the base URI of the graph.
   ///
-  /// # Example
+  /// # Examples
   ///
   /// ```
   /// use rdf_rs::uri::Uri;
@@ -97,7 +97,7 @@ impl Graph {
 
   /// Sets the base URI of the graph.
   ///
-  /// # Example
+  /// # Examples
   ///
   /// ```
   /// use rdf_rs::uri::Uri;
@@ -121,7 +121,7 @@ impl Graph {
 
   /// Adds a new namespace with a specific prefix to the graph.
   ///
-  /// # Example
+  /// # Examples
   ///
   /// ```
   /// use rdf_rs::uri::Uri;
@@ -140,7 +140,7 @@ impl Graph {
 
   /// Returns the URI of a namespace with the provided prefix.
   ///
-  /// # Example
+  /// # Examples
   ///
   /// ```
   /// use rdf_rs::uri::Uri;
@@ -153,13 +153,18 @@ impl Graph {
   ///
   /// assert_eq!(graph.get_namespace_uri_by_prefix("example".to_string()).unwrap(), &uri);
   /// ```
+  ///
+  /// # Failures
+  ///
+  /// - No namespace with the provided prefix exists
+  ///
   pub fn get_namespace_uri_by_prefix(&self, prefix: String) -> Result<&Uri> {
     self.namespaces.get_uri_by_prefix(prefix)
   }
 
   /// Returns a literal node of the specified namespace.
   ///
-  /// # Example
+  /// # Examples
   ///
   /// ```
   /// use rdf_rs::graph::Graph;
@@ -184,7 +189,7 @@ impl Graph {
 
   /// Returns a literal node with a specified data type.
   ///
-  /// # Example
+  /// # Examples
   ///
   /// ```
   /// use rdf_rs::graph::Graph;
@@ -210,7 +215,7 @@ impl Graph {
 
   /// Returns a literal node with a specified language.
   ///
-  /// # Example
+  /// # Examples
   ///
   /// ```
   /// use rdf_rs::graph::Graph;
@@ -240,7 +245,7 @@ impl Graph {
 
   /// Creates a blank node with a unique ID.
   ///
-  /// # Example
+  /// # Examples
   ///
   /// ```
   /// use rdf_rs::graph::Graph;
@@ -265,7 +270,7 @@ impl Graph {
 
   /// Creates a blank node with the specified ID.
   ///
-  /// # Example
+  /// # Examples
   ///
   /// ```
   /// use rdf_rs::graph::Graph;
@@ -286,7 +291,7 @@ impl Graph {
 
   /// Creates a new URI node.
   ///
-  /// # Example
+  /// # Examples
   ///
   /// ```
   /// use rdf_rs::graph::Graph;
@@ -308,7 +313,7 @@ impl Graph {
 
   /// Adds a triple to the graph.
   ///
-  /// # Example
+  /// # Examples
   ///
   /// ```
   /// use rdf_rs::graph::Graph;
@@ -332,7 +337,7 @@ impl Graph {
 
   /// Adds a vector of triples.
   ///
-  /// # Example
+  /// # Examples
   ///
   /// ```
   /// use rdf_rs::graph::Graph;
@@ -360,7 +365,7 @@ impl Graph {
 
   /// Deletes the triple from the graph.
   ///
-  /// # Example
+  /// # Examples
   /// ```
   /// use rdf_rs::graph::Graph;
   /// use rdf_rs::uri::Uri;
@@ -384,7 +389,7 @@ impl Graph {
 
   /// Returns all triples from the store that have the specified subject node.
   ///
-  /// # Example
+  /// # Examples
   ///
   /// ```
   /// use rdf_rs::graph::Graph;
@@ -411,7 +416,7 @@ impl Graph {
 
   /// Returns all triples from the store that have the specified predicate node.
   ///
-  /// # Example
+  /// # Examples
   ///
   /// ```
   /// use rdf_rs::graph::Graph;
@@ -438,7 +443,7 @@ impl Graph {
 
   /// Returns all triples from the store that have the specified object node.
   ///
-  /// # Example
+  /// # Examples
   ///
   /// ```
   /// use rdf_rs::graph::Graph;
@@ -465,7 +470,7 @@ impl Graph {
 
   /// Returns all triples from the triple store where the subject and object nodes match the provided nodes.
   ///
-  /// # Example
+  /// # Examples
   ///
   /// ```
   /// use rdf_rs::graph::Graph;
@@ -492,7 +497,7 @@ impl Graph {
 
   /// Returns all triples from the triple store where the subject and predicate nodes match the provided nodes.
   ///
-  /// # Example
+  /// # Examples
   ///
   /// ```
   /// use rdf_rs::graph::Graph;
@@ -519,7 +524,7 @@ impl Graph {
 
   /// Returns all triples from the triple store where the predicate and object nodes match the provided nodes.
   ///
-  /// # Example
+  /// # Examples
   ///
   /// ```
   /// use rdf_rs::graph::Graph;

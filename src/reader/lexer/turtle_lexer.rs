@@ -17,7 +17,7 @@ pub struct TurtleLexer<R: Read> {
 impl<R: Read> RdfLexer<R> for TurtleLexer<R> {
   /// Constructor for `TurtleLexer`.
   ///
-  /// # Example
+  /// # Examples
   ///
   /// ```
   /// use rdf_rs::reader::lexer::rdf_lexer::RdfLexer;
@@ -36,7 +36,7 @@ impl<R: Read> RdfLexer<R> for TurtleLexer<R> {
 
   /// Determines the next token from the input and consumes the read input characters.
   ///
-  /// # Example
+  /// # Examples
   ///
   /// ```
   /// use rdf_rs::reader::lexer::rdf_lexer::RdfLexer;
@@ -131,7 +131,7 @@ impl<R: Read> RdfLexer<R> for TurtleLexer<R> {
 
   /// Determines the next token without consuming the input.
   ///
-  /// # Examples
+  /// # Exampless
   ///
   ///
   /// ```
@@ -543,16 +543,17 @@ mod tests {
 
     assert_eq!(lexer.get_next_token().unwrap(), Token::TripleDelimiter);
     assert_eq!(lexer.get_next_token().unwrap(), Token::BlankNode("auto".to_string()));
-
   }
 
   #[test]
   fn parse_qname() {
-    let input = " abc:def:ghij gggg:gggg abc:dd .".as_bytes();
+    let input = " abc:def:ghij  gggg:gggg   abc:dd .".as_bytes();
 
     let mut lexer = TurtleLexer::new(input);
 
     assert_eq!(lexer.get_next_token().unwrap(), Token::QName("abc:".to_string(), "def:ghij".to_string()));
+    assert_eq!(lexer.get_next_token().unwrap(), Token::QName("gggg:".to_string(), "gggg".to_string()));
+    assert_eq!(lexer.get_next_token().unwrap(), Token::QName("abc:".to_string(), "dd".to_string()));
   }
 
   #[test]

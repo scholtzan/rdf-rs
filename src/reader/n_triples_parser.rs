@@ -22,7 +22,7 @@ impl<R: Read> RdfParser for NTriplesParser<R> {
   ///
   /// Returns an error in case invalid N-Triples syntax is provided.
   ///
-  /// # Example
+  /// # Examples
   ///
   /// ```
   /// use rdf_rs::reader::n_triples_parser::NTriplesParser;

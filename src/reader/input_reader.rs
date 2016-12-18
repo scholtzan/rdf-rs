@@ -96,7 +96,7 @@ pub struct InputReader<R: Read> {
 impl<R: Read> InputReader<R> {
   /// Constructor for `InputReader`.
   ///
-  /// # Examples
+  /// # Exampless
   ///
   /// todo
   ///
@@ -141,7 +141,7 @@ impl<R: Read> InputReader<R> {
 
   /// Returns the next character of an input source.
   ///
-  /// # Example
+  /// # Examples
   /// ```
   /// use rdf_rs::reader::input_reader::InputReader;
   ///
@@ -200,7 +200,7 @@ impl<R: Read> InputReader<R> {
 
   /// Returns the next character of an input source that is not a whitespace.
   ///
-  /// # Example
+  /// # Examples
   /// ```
   /// use rdf_rs::reader::input_reader::InputReader;
   ///
@@ -244,7 +244,7 @@ impl<R: Read> InputReader<R> {
   ///
   /// The delimiter itself is skipped.
   ///
-  /// # Example
+  /// # Examples
   /// ```
   /// use rdf_rs::reader::input_reader::InputReader;
   ///
@@ -276,7 +276,7 @@ impl<R: Read> InputReader<R> {
   ///
   /// The delimiter itself is skipped.
   ///
-  /// # Example
+  /// # Examples
   /// ```
   /// use rdf_rs::reader::input_reader::InputReader;
   ///
