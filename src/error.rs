@@ -2,24 +2,30 @@ use std::fmt;
 use std::error::Error as StdError;
 use reader::input_reader::InputChars;
 
-/// todo
+/// Different types of errors that can occur.
 #[derive(Debug)]
 pub enum ErrorType {
+  /// RDF writer produces invalid RDF (e.g. if invalid node types are provided).
   InvalidWriterOutput,
+
+  /// RDF lexer reads invalid RDF (e.g. non-closing string).
   InvalidReaderInput,
+
+  /// RDF reader reads an invalid token (e.g. invalid node type).
   InvalidToken,
+
+  /// RDF reader reaches the end of the input and stores the characters that were read last.
   EndOfInput(InputChars),
+
+  /// Input reader encounters invalid byte encoding.
   InvalidByteEncoding,
+
+  /// Incorrect namespace.
   InvalidNamespace
 }
 
 
 /// An error related to the rdf-rs module.
-///
-/// # Example
-///
-/// todo
-///
 #[derive(Debug)]
 pub struct Error {
   error_type: ErrorType,
@@ -28,6 +34,7 @@ pub struct Error {
 
 
 impl Error {
+  /// Constructor of `Error`.
   pub fn new<E>(error_type: ErrorType, error: E) -> Error
     where E: Into<Box<StdError>> {
     Error {
@@ -36,6 +43,7 @@ impl Error {
     }
   }
 
+  /// Returns the type of the error.
   pub fn error_type(&self) -> &ErrorType {
     &self.error_type
   }
