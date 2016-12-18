@@ -26,6 +26,14 @@ pub struct Graph {
 
 impl Graph {
   /// Constructor for the RDF graph.
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use rdf_rs::graph::Graph;
+  ///
+  /// let graph = Graph::new(None);
+  /// ```
   pub fn new(base_uri: Option<&Uri>) -> Graph {
     let cloned_uri = match base_uri {
       None => None,
@@ -41,11 +49,31 @@ impl Graph {
   }
 
   /// Returns `true` if the graph does not contain any triples.
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use rdf_rs::graph::Graph;
+  ///
+  /// let graph = Graph::new(None);
+  ///
+  /// assert_eq!(graph.is_empty(), true);
+  /// ```
   pub fn is_empty(&self) -> bool {
     self.triples.is_empty()
   }
 
   /// Returns the number of triples that are stored in the graph.
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use rdf_rs::graph::Graph;
+  ///
+  /// let graph = Graph::new(None);
+  ///
+  /// assert_eq!(graph.count(), 0);
+  /// ```
   pub fn count(&self) -> usize {
     self.triples.count()
   }
@@ -71,13 +99,22 @@ impl Graph {
   ///
   /// # Example
   ///
-  /// todo
+  /// ```
+  /// use rdf_rs::uri::Uri;
+  /// use rdf_rs::graph::Graph;
   ///
+  /// let base_uri = Uri::new("http://base.example.org/".to_string());
+  /// let mut graph = Graph::new(None);
+  ///
+  /// graph.set_base_uri(&base_uri);
+  ///
+  /// assert_eq!(graph.base_uri(), &Some(base_uri));
+  /// ```
   pub fn set_base_uri(&mut self, uri: &Uri) {
     self.base_uri = Some(uri.clone());
   }
 
-  /// Returns a hashmap of namespaces and prefixes.
+  /// Returns a hash map of namespaces and prefixes.
   pub fn namespaces(&self) -> &HashMap<String, Uri> {
     self.namespaces.namespaces()
   }
@@ -100,7 +137,21 @@ impl Graph {
     self.namespaces.add(ns);
   }
 
-  /// todo
+  /// Returns the URI of a namespace with the provided prefix.
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use rdf_rs::uri::Uri;
+  /// use rdf_rs::graph::Graph;
+  /// use rdf_rs::namespace::Namespace;
+  ///
+  /// let mut graph = Graph::new(None);
+  /// let uri = Uri::new("http://example.org/".to_string());
+  /// graph.add_namespace(&Namespace::new("example".to_string(), uri.to_owned()));
+  ///
+  /// assert_eq!(graph.get_namespace_uri_by_prefix("example".to_string()).unwrap(), &uri);
+  /// ```
   pub fn get_namespace_uri_by_prefix(&self, prefix: String) -> Result<&Uri> {
     self.namespaces.get_uri_by_prefix(prefix)
   }
@@ -108,6 +159,7 @@ impl Graph {
   /// Returns a literal node of the specified namespace.
   ///
   /// # Example
+  ///
   /// ```
   /// use rdf_rs::graph::Graph;
   /// use rdf_rs::node::Node;
@@ -132,6 +184,7 @@ impl Graph {
   /// Returns a literal node with a specified data type.
   ///
   /// # Example
+  ///
   /// ```
   /// use rdf_rs::graph::Graph;
   /// use rdf_rs::node::Node;
@@ -157,6 +210,7 @@ impl Graph {
   /// Returns a literal node with a specified language.
   ///
   /// # Example
+  ///
   /// ```
   /// use rdf_rs::graph::Graph;
   /// use rdf_rs::node::Node;
@@ -186,6 +240,7 @@ impl Graph {
   /// Creates a blank node with a unique ID.
   ///
   /// # Example
+  ///
   /// ```
   /// use rdf_rs::graph::Graph;
   /// use rdf_rs::node::Node;
@@ -210,6 +265,7 @@ impl Graph {
   /// Creates a blank node with the specified ID.
   ///
   /// # Example
+  ///
   /// ```
   /// use rdf_rs::graph::Graph;
   /// use rdf_rs::node::Node;
@@ -230,6 +286,7 @@ impl Graph {
   /// Creates a new URI node.
   ///
   /// # Example
+  ///
   /// ```
   /// use rdf_rs::graph::Graph;
   /// use rdf_rs::node::Node;
@@ -251,6 +308,7 @@ impl Graph {
   /// Adds a triple to the graph.
   ///
   /// # Example
+  ///
   /// ```
   /// use rdf_rs::graph::Graph;
   /// use rdf_rs::uri::Uri;
@@ -275,8 +333,24 @@ impl Graph {
   ///
   /// # Example
   ///
-  /// todo
+  /// ```
+  /// use rdf_rs::graph::Graph;
+  /// use rdf_rs::uri::Uri;
+  /// use rdf_rs::triple::Triple;
   ///
+  /// let mut graph = Graph::new(None);
+  ///
+  /// let subject = graph.create_blank_node();
+  /// let predicate = graph.create_uri_node(&Uri::new("http://example.org/show/localName".to_string()));
+  /// let object = graph.create_blank_node();
+  ///
+  /// let triple1 = Triple::new(&subject, &predicate, &object);
+  /// let triple2 = Triple::new(&subject, &predicate, &object);
+  ///
+  /// graph.add_triples(&vec![triple1, triple2]);
+  ///
+  /// assert_eq!(graph.count(), 2);
+  /// ```
   pub fn add_triples(&mut self, triples: &Vec<Triple>) {
     for triple in triples {
       self.add_triple(triple);
@@ -308,31 +382,163 @@ impl Graph {
   }
 
   /// Returns all triples from the store that have the specified subject node.
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use rdf_rs::graph::Graph;
+  /// use rdf_rs::uri::Uri;
+  /// use rdf_rs::triple::Triple;
+  ///
+  /// let mut graph = Graph::new(None);
+  ///
+  /// let subject1 = graph.create_blank_node();
+  /// let subject2 = graph.create_blank_node();
+  /// let predicate = graph.create_uri_node(&Uri::new("http://example.org/show/localName".to_string()));
+  /// let object = graph.create_blank_node();
+  ///
+  /// let triple1 = Triple::new(&subject1, &predicate, &object);
+  /// let triple2 = Triple::new(&subject2, &predicate, &object);
+  ///
+  /// graph.add_triples(&vec![triple1.to_owned(), triple2]);
+  ///
+  /// assert_eq!(graph.get_triples_with_subject(&subject1), vec![&triple1]);
+  /// ```
   pub fn get_triples_with_subject(&self, node: &Node) -> Vec<&Triple> {
     self.triples.get_triples_with_subject(node)
   }
 
   /// Returns all triples from the store that have the specified predicate node.
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use rdf_rs::graph::Graph;
+  /// use rdf_rs::uri::Uri;
+  /// use rdf_rs::triple::Triple;
+  ///
+  /// let mut graph = Graph::new(None);
+  ///
+  /// let subject1 = graph.create_blank_node();
+  /// let subject2 = graph.create_blank_node();
+  /// let predicate = graph.create_uri_node(&Uri::new("http://example.org/show/localName".to_string()));
+  /// let object = graph.create_blank_node();
+  ///
+  /// let triple1 = Triple::new(&subject1, &predicate, &object);
+  /// let triple2 = Triple::new(&subject2, &predicate, &object);
+  ///
+  /// graph.add_triples(&vec![triple1.to_owned(), triple2.to_owned()]);
+  ///
+  /// assert_eq!(graph.get_triples_with_predicate(&predicate), vec![&triple1, &triple2]);
+  /// ```
   pub fn get_triples_with_predicate(&self, node: &Node) -> Vec<&Triple> {
     self.triples.get_triples_with_predicate(node)
   }
 
   /// Returns all triples from the store that have the specified object node.
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use rdf_rs::graph::Graph;
+  /// use rdf_rs::uri::Uri;
+  /// use rdf_rs::triple::Triple;
+  ///
+  /// let mut graph = Graph::new(None);
+  ///
+  /// let subject1 = graph.create_blank_node();
+  /// let subject2 = graph.create_blank_node();
+  /// let predicate = graph.create_uri_node(&Uri::new("http://example.org/show/localName".to_string()));
+  /// let object = graph.create_blank_node();
+  ///
+  /// let triple1 = Triple::new(&subject1, &predicate, &object);
+  /// let triple2 = Triple::new(&subject2, &predicate, &object);
+  ///
+  /// graph.add_triples(&vec![triple1.to_owned(), triple2.to_owned()]);
+  ///
+  /// assert_eq!(graph.get_triples_with_object(&object), vec![&triple1, &triple2]);
+  /// ```
   pub fn get_triples_with_object(&self, node: &Node) -> Vec<&Triple> {
     self.triples.get_triples_with_object(node)
   }
 
   /// Returns all triples from the triple store where the subject and object nodes match the provided nodes.
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use rdf_rs::graph::Graph;
+  /// use rdf_rs::uri::Uri;
+  /// use rdf_rs::triple::Triple;
+  ///
+  /// let mut graph = Graph::new(None);
+  ///
+  /// let subject1 = graph.create_blank_node();
+  /// let subject2 = graph.create_blank_node();
+  /// let predicate = graph.create_uri_node(&Uri::new("http://example.org/show/localName".to_string()));
+  /// let object = graph.create_blank_node();
+  ///
+  /// let triple1 = Triple::new(&subject1, &predicate, &object);
+  /// let triple2 = Triple::new(&subject2, &predicate, &object);
+  ///
+  /// graph.add_triples(&vec![triple1.to_owned(), triple2]);
+  ///
+  /// assert_eq!(graph.get_triples_with_subject_and_object(&subject1, &object), vec![&triple1]);
+  /// ```
   pub fn get_triples_with_subject_and_object(&self, subject_node: &Node, object_node: &Node) -> Vec<&Triple> {
     self.triples.get_triples_with_subject_and_object(subject_node, object_node)
   }
 
   /// Returns all triples from the triple store where the subject and predicate nodes match the provided nodes.
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use rdf_rs::graph::Graph;
+  /// use rdf_rs::uri::Uri;
+  /// use rdf_rs::triple::Triple;
+  ///
+  /// let mut graph = Graph::new(None);
+  ///
+  /// let subject1 = graph.create_blank_node();
+  /// let subject2 = graph.create_blank_node();
+  /// let predicate = graph.create_uri_node(&Uri::new("http://example.org/show/localName".to_string()));
+  /// let object = graph.create_blank_node();
+  ///
+  /// let triple1 = Triple::new(&subject1, &predicate, &object);
+  /// let triple2 = Triple::new(&subject2, &predicate, &object);
+  ///
+  /// graph.add_triples(&vec![triple1.to_owned(), triple2]);
+  ///
+  /// assert_eq!(graph.get_triples_with_subject_and_predicate(&subject1, &predicate), vec![&triple1]);
+  /// ```
   pub fn get_triples_with_subject_and_predicate(&self, subject_node: &Node, predicate_node: &Node) -> Vec<&Triple> {
     self.triples.get_triples_with_subject_and_predicate(subject_node, predicate_node)
   }
 
   /// Returns all triples from the triple store where the predicate and object nodes match the provided nodes.
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use rdf_rs::graph::Graph;
+  /// use rdf_rs::uri::Uri;
+  /// use rdf_rs::triple::Triple;
+  ///
+  /// let mut graph = Graph::new(None);
+  ///
+  /// let subject1 = graph.create_blank_node();
+  /// let subject2 = graph.create_blank_node();
+  /// let predicate = graph.create_uri_node(&Uri::new("http://example.org/show/localName".to_string()));
+  /// let object = graph.create_blank_node();
+  ///
+  /// let triple1 = Triple::new(&subject1, &predicate, &object);
+  /// let triple2 = Triple::new(&subject2, &predicate, &object);
+  ///
+  /// graph.add_triples(&vec![triple1.to_owned(), triple2.to_owned()]);
+  ///
+  /// assert_eq!(graph.get_triples_with_predicate_and_object(&predicate, &object), vec![&triple1, &triple2]);
+  /// ```
   pub fn get_triples_with_predicate_and_object(&self, predicate_node: &Node, object_node: &Node) -> Vec<&Triple> {
     self.triples.get_triples_with_predicate_and_object(predicate_node, object_node)
   }
