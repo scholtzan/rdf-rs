@@ -129,7 +129,8 @@ impl Graph {
   /// use rdf_rs::namespace::Namespace;
   ///
   /// let mut graph = Graph::new(None);
-  /// graph.add_namespace(&Namespace::new("example".to_string(), Uri::new("http://example.org/".to_string())));
+  /// graph.add_namespace(&Namespace::new("example".to_string(),
+  ///                                     Uri::new("http://example.org/".to_string())));
   ///
   /// assert_eq!(graph.namespaces().len(), 1);
   /// ```
