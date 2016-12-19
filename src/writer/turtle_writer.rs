@@ -18,38 +18,48 @@ pub struct TurtleWriter<'a> {
 }
 
 // todo: decide if grouping should be done or ignored based on number of distinct subjects
+
 impl<'a> RdfWriter for TurtleWriter<'a> {
   /// Generates the Turtle syntax for each triple stored in the provided graph.
   ///
   /// Returns an error if invalid Turtle syntax would be generated.
   ///
+  /// # Examples
+  ///
+  /// ```
+  /// use rdf_rs::writer::turtle_writer::TurtleWriter;
+  /// use rdf_rs::writer::rdf_writer::RdfWriter;
+  /// use rdf_rs::graph::Graph;
+  /// use rdf_rs::node::Node;
+  /// use rdf_rs::uri::Uri;
+  /// use rdf_rs::triple::Triple;
+  ///
+  /// let mut graph = Graph::new(None);
+  ///
+  /// let subject = graph.create_blank_node();
+  /// let object = graph.create_blank_node();
+  /// let predicate = graph.create_uri_node(&Uri::new("http://example.org/show/localName".to_string()));
+  ///
+  /// let trip = Triple::new(&subject, &predicate, &object);
+  /// graph.add_triple(&trip);
+  ///
+  ///
+  /// let writer = TurtleWriter::new(graph.namespaces());
+  /// writer.write_to_string(&graph);
+  /// ```
+  ///
+  /// # Failures
+  ///
+  /// - The node type is invalid for the triple segment.
+  ///
   fn write_to_string(&self, graph: &Graph) -> Result<String> {
     let mut output_string = "".to_string();
 
-    // todo extra function
-    // write base URI
-    match graph.base_uri() {
-      &Some(ref base) => {
-        output_string.push_str("@base ");
-        output_string.push_str(&self.formatter.format_uri(base));
-        output_string.push_str(" .\n");
-      },
-      &None => {}
-    }
-
-    // write prefixes
-    for (prefix, namespace_uri) in graph.namespaces() {
-      output_string.push_str("@prefix ");
-      output_string.push_str(&prefix);
-      output_string.push_str(": <");
-      output_string.push_str(namespace_uri.to_string());
-      output_string.push_str("> .\n");
-    }
+    output_string.push_str(&self.write_base_uri(graph));
+    output_string.push_str(&self.write_prefixes(graph));
 
     let mut triples_vec: Vec<Triple> = graph.triples_iter().cloned().collect();
     triples_vec.sort();
-
-    // todo: check if compression should be used or not
 
     // store subjects and predicates for grouping
     let mut previous_subject: Option<&Node> = None;
@@ -117,15 +127,51 @@ impl<'a> RdfWriter for TurtleWriter<'a> {
 
 impl<'a> TurtleWriter<'a> {
   /// Constructor of `TurtleWriter`.
-  fn new(namespaces: &'a HashMap<String, Uri>) -> TurtleWriter<'a> {
+  pub fn new(namespaces: &'a HashMap<String, Uri>) -> TurtleWriter<'a> {
     TurtleWriter {
       formatter: TurtleFormatter::new(namespaces)
     }
   }
 
+  /// Returns the formatted base URI as string.
+  fn write_base_uri(&self, graph: &Graph) -> String {
+    let mut output_string = "".to_string();
+
+    match graph.base_uri() {
+      &Some(ref base) => {
+        output_string.push_str("@base ");
+        output_string.push_str(&self.formatter.format_uri(base));
+        output_string.push_str(" .\n");
+      },
+      &None => {}
+    }
+
+    output_string
+  }
+
+  /// Returns all prefixes as formatted string.
+  fn write_prefixes(&self, graph: &Graph) -> String {
+    let mut output_string = "".to_string();
+
+    // write prefixes
+    for (prefix, namespace_uri) in graph.namespaces() {
+      output_string.push_str("@prefix ");
+      output_string.push_str(&prefix);
+      output_string.push_str(": <");
+      output_string.push_str(namespace_uri.to_string());
+      output_string.push_str("> .\n");
+    }
+
+    output_string
+  }
+
   /// Converts a single node to its corresponding Turtle representation.
   ///
   /// Checks if the node type is valid considering the triple segment.
+  ///
+  /// # Failures
+  ///
+  /// - The node type is invalid for the triple segment.
   ///
   fn node_to_turtle(&self, node: &Node, segment: TripleSegment) -> Result<String> {
     match node {
@@ -156,6 +202,7 @@ impl<'a> TurtleWriter<'a> {
   }
 }
 
+
 #[cfg(test)]
 mod tests {
   use triple::*;
@@ -163,6 +210,8 @@ mod tests {
   use graph::Graph;
   use writer::rdf_writer::RdfWriter;
   use writer::turtle_writer::TurtleWriter;
+  use namespace::Namespace;
+
 
   #[test]
   fn test_turtle_writer() {
@@ -185,7 +234,7 @@ mod tests {
   }
 
   #[test]
-  fn predicate_grouping() {
+  fn test_turtle_writer_predicate_grouping() {
     let mut graph = Graph::new(None);
 
     let subject1 = graph.create_blank_node();
@@ -215,7 +264,7 @@ _:auto2 <http://example.org/show/localName> _:auto1 ;
 
 
   #[test]
-  fn object_grouping() {
+  fn test_turtle_writer_object_grouping() {
     let mut graph = Graph::new(None);
 
     let subject1 = graph.create_blank_node();
@@ -243,10 +292,26 @@ _:auto2 <http://example.org/show/localName> _:auto1 ,
   }
 
   #[test]
-  fn turtle_base_uri() {
+  fn test_turtle_writer_base_uri() {
     let graph = Graph::new(Some(&Uri::new("http://example.org/".to_string())));
 
     let result = "@base <http://example.org/> .\n".to_string();
+
+    let writer = TurtleWriter::new(graph.namespaces());
+    match writer.write_to_string(&graph) {
+      Ok(str) => assert_eq!(result, str),
+      Err(_) => assert!(false)
+    }
+  }
+
+  #[test]
+  fn test_turtle_writer_prefixes() {
+    let mut graph = Graph::new(None);
+
+    graph.add_namespace(&Namespace::new("example".to_string(), Uri::new("http://example.org/".to_string())));
+    graph.add_namespace(&Namespace::new("foo".to_string(), Uri::new("http://foo.bar/".to_string())));
+
+    let result = "@prefix foo: <http://foo.bar/> .\n@prefix example: <http://example.org/> .\n".to_string();
 
     let writer = TurtleWriter::new(graph.namespaces());
     match writer.write_to_string(&graph) {
