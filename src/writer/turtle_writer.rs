@@ -80,7 +80,7 @@ impl<'a> RdfWriter for TurtleWriter<'a> {
           output_string.push_str(" ;\n");
 
           // write predicate
-          let turtle_predicate = try!(self.node_to_turtle(triple.predicate(), TripleSegment::Predicate));
+          let turtle_predicate = self.node_to_turtle(triple.predicate(), TripleSegment::Predicate)?;
           // indent predicate
           output_string.push_str(&repeat(" ").take(predicate_indentation).collect::<String>());
           output_string.push_str(&turtle_predicate);
@@ -98,12 +98,12 @@ impl<'a> RdfWriter for TurtleWriter<'a> {
         }
 
         // start new group
-        let turtle_subject = try!(self.node_to_turtle(triple.subject(), TripleSegment::Subject));
+        let turtle_subject = self.node_to_turtle(triple.subject(), TripleSegment::Subject)?;
         output_string.push_str(&turtle_subject);
         previous_subject = Some(triple.subject());
 
         output_string.push_str(" ");
-        let turtle_predicate = try!(self.node_to_turtle(triple.predicate(), TripleSegment::Predicate));
+        let turtle_predicate = self.node_to_turtle(triple.predicate(), TripleSegment::Predicate)?;
         output_string.push_str(&turtle_predicate);
         previous_predicate = Some(triple.predicate());
         output_string.push_str(" ");
@@ -113,7 +113,7 @@ impl<'a> RdfWriter for TurtleWriter<'a> {
       }
 
       // write object
-      let turtle_object = try!(self.node_to_turtle(triple.object(), TripleSegment::Object));
+      let turtle_object = self.node_to_turtle(triple.object(), TripleSegment::Object)?;
       output_string.push_str(&turtle_object);
     }
 

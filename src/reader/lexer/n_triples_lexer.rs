@@ -64,7 +64,7 @@ impl<R: Read> RdfLexer<R> for NTriplesLexer<R> {
       None => { }
     }
 
-    match try!(self.input_reader.peek_next_char_discard_leading_spaces()) {
+    match self.input_reader.peek_next_char_discard_leading_spaces()? {
       Some('#') => self.get_comment(),
       Some('"') => self.get_literal(),
       Some('<') => self.get_uri(),
@@ -107,7 +107,7 @@ impl<R: Read> RdfLexer<R> for NTriplesLexer<R> {
     match self.peeked_token.clone() {
       Some(token) => Ok(token),
       None => {
-        let next = try!(self.get_next_token());
+        let next = self.get_next_token()?;
         self.peeked_token = Some(next.clone());
         return Ok(next)
       }
@@ -207,7 +207,7 @@ impl<R: Read> NTriplesLexer<R> {
     self.consume_next_char();    // consume '_'
 
     // get colon after under score
-    match try!(self.input_reader.get_next_char()) {
+    match self.input_reader.get_next_char()? {
       Some(':') => { }
       Some(c) => return Err(Error::new(ErrorType::InvalidReaderInput,
                                            "Invalid character while parsing NTriples blank node: ". to_string() + &c.to_string())),
@@ -236,7 +236,7 @@ mod tests {
   use reader::lexer::token::Token;
 
   #[test]
-  fn parse_comment() {
+  fn test_n_triples_parse_comment() {
     let input = "# Hello World!\n# Foo".as_bytes();
 
     let mut lexer = NTriplesLexer::new(input);
@@ -246,7 +246,7 @@ mod tests {
   }
 
   #[test]
-  fn parse_literal() {
+  fn test_n_triples_parse_literal() {
     let input = "\"a\"".as_bytes();
 
     let mut lexer = NTriplesLexer::new(input);
@@ -255,7 +255,7 @@ mod tests {
   }
 
   #[test]
-  fn parse_uri() {
+  fn test_n_triples_parse_uri() {
     let input = "<example.org/a>".as_bytes();
 
     let mut lexer = NTriplesLexer::new(input);
@@ -264,7 +264,7 @@ mod tests {
   }
 
   #[test]
-  fn parse_literal_with_language_specification() {
+  fn test_n_triples_parse_literal_with_language_specification() {
     let input = "\"a\"@abc".as_bytes();
 
     let mut lexer = NTriplesLexer::new(input);
@@ -274,7 +274,7 @@ mod tests {
   }
 
   #[test]
-  fn parse_blank_node() {
+  fn test_n_triples_parse_blank_node() {
     let input = "_:auto".as_bytes();
 
     let mut lexer = NTriplesLexer::new(input);
@@ -283,7 +283,7 @@ mod tests {
   }
 
   #[test]
-  fn parse_literal_with_data_type() {
+  fn test_n_triples_parse_literal_with_data_type() {
     let input = "\"a\"^^<example.org/abc>".as_bytes();
 
     let mut lexer = NTriplesLexer::new(input);
@@ -293,7 +293,7 @@ mod tests {
   }
 
   #[test]
-  fn parse_triple_delimiter() {
+  fn test_n_triples_parse_triple_delimiter() {
     let input = ".   \"a\"   .".as_bytes();
 
     let mut lexer = NTriplesLexer::new(input);

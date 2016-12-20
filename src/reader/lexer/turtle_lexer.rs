@@ -8,6 +8,7 @@ use specs::turtle_specs::TurtleSpecs;
 use specs::xml_specs::XmlDataTypes;
 
 
+/// Produces tokens from Turtle syntax input.
 pub struct TurtleLexer<R: Read> {
   input_reader: InputReader<R>,
   peeked_token: Option<Token>
@@ -52,6 +53,11 @@ impl<R: Read> RdfLexer<R> for TurtleLexer<R> {
   /// assert_eq!(lexer.get_next_token().unwrap(), Token::Literal("test".to_string()));
   /// assert_eq!(lexer.get_next_token().unwrap(), Token::TripleDelimiter);
   /// ```
+  ///
+  /// # Failures
+  ///
+  /// - Input that does not conform to the Turtle syntax standard.
+  ///
   fn get_next_token(&mut self) -> Result<Token> {
     // first read peeked characters
     match self.peeked_token.clone() {
@@ -131,8 +137,7 @@ impl<R: Read> RdfLexer<R> for TurtleLexer<R> {
 
   /// Determines the next token without consuming the input.
   ///
-  /// # Exampless
-  ///
+  /// # Examples
   ///
   /// ```
   /// use rdf_rs::reader::lexer::rdf_lexer::RdfLexer;
@@ -148,6 +153,12 @@ impl<R: Read> RdfLexer<R> for TurtleLexer<R> {
   /// assert_eq!(lexer.get_next_token().unwrap(), Token::BlankNode("auto".to_string()));
   /// assert_eq!(lexer.get_next_token().unwrap(), Token::Uri("example.org/b".to_string()));
   /// ```
+  ///
+  ///  # Failures
+  ///
+  /// - End of input reached.
+  /// - Invalid input that does not conform with NTriples standard.
+  ///
   fn peek_next_token(&mut self) -> Result<Token> {
     match self.peeked_token.clone() {
       Some(token) => Ok(token),
@@ -323,7 +334,6 @@ impl<R: Read> TurtleLexer<R> {
   }
 
   /// Parses a literal from the input and returns it as token.
-  /// todo: escaped characters
   fn get_literal(&mut self) -> Result<Token> {
     let literal_delimiter = self.input_reader.get_next_char()?;
     let mut is_multiline = false;
@@ -409,7 +419,7 @@ impl<R: Read> TurtleLexer<R> {
     self.consume_next_char();    // consume '_'
 
     // get colon after under score
-    match try!(self.input_reader.get_next_char()) {
+    match self.input_reader.get_next_char()? {
       Some(':') => { }
       Some(c) => return Err(Error::new(ErrorType::InvalidReaderInput,
                                        "Invalid character while parsing Turtle blank node: ".to_string() + &c.to_string())),

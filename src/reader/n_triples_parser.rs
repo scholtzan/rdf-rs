@@ -48,7 +48,7 @@ impl<R: Read> RdfParser for NTriplesParser<R> {
     let mut graph = Graph::new(None);
 
     loop {
-      match try!(self.lexer.peek_next_token()) {
+      match self.lexer.peek_next_token()? {
         Token::Comment(_) => {  // ignore comments
           let _ = self.lexer.get_next_token();
           continue
@@ -117,9 +117,9 @@ impl<R: Read> NTriplesParser<R> {
 
   /// Creates a triple from the parsed tokens.
   fn read_triple(&mut self) -> Result<Triple> {
-    let subject = try!(self.read_subject());
-    let predicate = try!(self.read_predicate());
-    let object = try!(self.read_object());
+    let subject = self.read_subject()?;
+    let predicate = self.read_predicate()?;
+    let object = self.read_object()?;
 
     match self.lexer.get_next_token() {
       Ok(Token::TripleDelimiter) => {},
@@ -148,7 +148,7 @@ impl<R: Read> NTriplesParser<R> {
 
   /// Get the next token and check if it is a valid object and create a new object node.
   fn read_object(&mut self) -> Result<Node> {
-    match try!(self.lexer.get_next_token()) {
+    match self.lexer.get_next_token()? {
       Token::BlankNode(id) => Ok(Node::BlankNode { id: id }),
       Token::Uri(uri) => Ok(Node::UriNode { uri: Uri::new(uri) }),
       Token::LiteralWithLanguageSpecification(literal, lang) =>
@@ -169,7 +169,7 @@ mod tests {
   use reader::rdf_parser::RdfParser;
 
   #[test]
-  fn read_n_triples_from_string() {
+  fn test_read_n_triples_from_string() {
     let input = "<http://www.w3.org/2001/sw/RDFCore/ntriples/> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Document> .
                  <http://www.w3.org/2001/sw/RDFCore/ntriples/> <http://purl.org/dc/terms/title> \"N-Triples\"@en-US .
                  <http://www.w3.org/2001/sw/RDFCore/ntriples/> <http://xmlns.com/foaf/0.1/maker> _:art .

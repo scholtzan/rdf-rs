@@ -132,7 +132,7 @@ impl<R: Read> InputReader<R> {
     if self.peeked_chars.len() >= k {
       Ok(InputChars::new(self.peeked_chars.to_vec()[0..k].to_vec()))
     } else {
-      let next_k_chars = try!(self.get_next_k_chars(k));
+      let next_k_chars = self.get_next_k_chars(k)?;
       self.peeked_chars = next_k_chars.clone();
       Ok(next_k_chars)
     }
@@ -263,7 +263,7 @@ impl<R: Read> InputReader<R> {
     let mut next_k_chars = Vec::new();
 
     for _ in 0..k {
-      let next_char = try!(self.get_next_char());
+      let next_char = self.get_next_char()?;
       next_k_chars.push(next_char);
     }
 

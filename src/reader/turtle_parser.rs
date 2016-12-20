@@ -39,6 +39,12 @@ impl<R: Read> RdfParser for TurtleParser<R> {
   ///   Err(_) => assert!(false)
   /// }
   /// ```
+  ///
+  /// # Failures
+  ///
+  /// - Invalid input that does not conform with NTriples standard.
+  /// - Invalid node type for triple segment.
+  ///
   fn decode(&mut self) -> Result<Graph> {
     let mut graph = Graph::new(None);
 
@@ -80,6 +86,18 @@ impl<R: Read> RdfParser for TurtleParser<R> {
 
 impl TurtleParser<Cursor<Vec<u8>>> {
   /// Constructor of `TurtleParser` from input string.
+  ///
+  /// # Examples
+  ///
+  /// ```
+  /// use rdf_rs::reader::turtle_parser::TurtleParser;
+  /// use rdf_rs::reader::rdf_parser::RdfParser;
+  ///
+  /// let input = "<http://www.w3.org/2001/sw/RDFCore/ntriples/> <http://xmlns.com/foaf/0.1/maker> _:art .
+  ///              _:art <http://xmlns.com/foaf/0.1/name> \"Art Barstow\" .";
+  ///
+  /// let reader = TurtleParser::from_string(input.to_string());
+  /// ```
   pub fn from_string<S>(input: S) -> TurtleParser<Cursor<Vec<u8>>> where S: Into<String> {
     TurtleParser::from_reader(Cursor::new(input.into().into_bytes()))
   }
@@ -88,6 +106,18 @@ impl TurtleParser<Cursor<Vec<u8>>> {
 
 impl<R: Read> TurtleParser<R> {
   /// Constructor of `TurtleParser` from input reader.
+  ///
+  /// # Examples
+  ///
+  /// ```
+  /// use rdf_rs::reader::turtle_parser::TurtleParser;
+  /// use rdf_rs::reader::rdf_parser::RdfParser;
+  ///
+  /// let input = "<http://www.w3.org/2001/sw/RDFCore/ntriples/> <http://xmlns.com/foaf/0.1/maker> _:art .
+  ///              _:art <http://xmlns.com/foaf/0.1/name> \"Art Barstow\" .";
+  ///
+  /// let reader = TurtleParser::from_reader(input.as_bytes());
+  /// ```
   pub fn from_reader(input: R) -> TurtleParser<R> {
     TurtleParser {
       lexer: TurtleLexer::new(input)
@@ -148,7 +178,7 @@ impl<R: Read> TurtleParser<R> {
     }
   }
 
-  // todo
+  /// Reads a list or a single pair of predicate and object nodes.
   fn read_predicate_object_list(&mut self, subject: &Node, graph: &mut Graph) -> Result<Vec<Triple>> {
     let mut triples: Vec<Triple> = Vec::new();
 
@@ -214,14 +244,13 @@ impl<R: Read> TurtleParser<R> {
         Ok(Node::LiteralNode { literal: literal, data_type: None, language: None }),
       Token::CollectionStart => self.read_collection(graph),
       Token::UnlabeledBlankNodeStart => self.read_unlabeled_blank_node(graph),
-      t => {
-          println!("Token {:?}", t);
-          Err(Error::new(ErrorType::InvalidToken, "Invalid token for Turtle object."))
-      }
+      _ => Err(Error::new(ErrorType::InvalidToken, "Invalid token for Turtle object."))
     }
   }
 
-  // todo
+  /// Reads a unlabeled blank node.
+  ///
+  /// Returns the subject node and add all other nested nodes to the graph.
   fn read_unlabeled_blank_node(&mut self, graph: &mut Graph) -> Result<Node> {
     let subject = graph.create_blank_node();
 
@@ -235,7 +264,9 @@ impl<R: Read> TurtleParser<R> {
     Ok(subject)
   }
 
-  // todo
+  /// Reads a collection and returns the collection start as node.
+  ///
+  /// The remaining elements are implicitly added to the graph.
   fn read_collection(&mut self, graph: &mut Graph) -> Result<Node> {
     // check if the list is empty and return list:nil
     if self.lexer.peek_next_token()? == Token::CollectionEnd {
@@ -288,7 +319,7 @@ mod tests {
   use uri::Uri;
 
   #[test]
-  fn read_n_triples_as_turtle_from_string() {
+  fn test_read_n_triples_as_turtle_from_string() {
     let input = "<http://www.w3.org/2001/sw/RDFCore/ntriples/> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Document> .
                  <http://www.w3.org/2001/sw/RDFCore/ntriples/> <http://purl.org/dc/terms/title> \"N-Triples\"@en-US .
                  <http://www.w3.org/2001/sw/RDFCore/ntriples/> <http://xmlns.com/foaf/0.1/maker> _:art .
@@ -307,7 +338,7 @@ mod tests {
 
 
   #[test]
-  fn read_uncompressed_turtle_from_string() {
+  fn test_read_uncompressed_turtle_from_string() {
     let input = "@base <http://example.org/> .
                  @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
                  @prefix foaf: <http://xmlns.com/foaf/0.1/> .
@@ -334,7 +365,7 @@ mod tests {
 
 
   #[test]
-  fn read_compressed_turtle_from_string() {
+  fn test_read_compressed_turtle_from_string() {
     let input = "@base <http://example.org/> .
                  @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
                  @prefix foaf: <http://xmlns.com/foaf/0.1/> .
@@ -363,7 +394,63 @@ mod tests {
   }
 
   #[test]
-  fn read_turtle_with_empty_prefix_from_string() {
+  fn test_parsing_turtle_base_uri() {
+    let input = "@base <http://example/> .";
+    let mut reader = TurtleParser::from_string(input.to_string());
+
+    match reader.decode() {
+      Ok(graph) => assert_eq!(graph.base_uri(), &Some(Uri::new("http://example/".to_string()))),
+      Err(e) => {
+        println!("Err {}", e.to_string());
+        assert!(false)
+      }
+    }
+  }
+
+  #[test]
+  fn test_parsing_turtle_sparql_base_uri() {
+    let input = "BASE <http://example/> .";
+    let mut reader = TurtleParser::from_string(input.to_string());
+
+    match reader.decode() {
+      Ok(graph) => assert_eq!(graph.base_uri(), &Some(Uri::new("http://example/".to_string()))),
+      Err(e) => {
+        println!("Err {}", e.to_string());
+        assert!(false)
+      }
+    }
+  }
+
+  #[test]
+  fn test_parsing_turtle_prefix() {
+    let input = "@prefix p: <http://p.example/> .";
+    let mut reader = TurtleParser::from_string(input.to_string());
+
+    match reader.decode() {
+      Ok(graph) => assert_eq!(graph.namespaces().len(), 1),
+      Err(e) => {
+        println!("Err {}", e.to_string());
+        assert!(false)
+      }
+    }
+  }
+
+  #[test]
+  fn test_parsing_turtle_sparql_prefix() {
+    let input = "PREFIX p: <http://p.example/> .";
+    let mut reader = TurtleParser::from_string(input.to_string());
+
+    match reader.decode() {
+      Ok(graph) => assert_eq!(graph.namespaces().len(), 1),
+      Err(e) => {
+        println!("Err {}", e.to_string());
+        assert!(false)
+      }
+    }
+  }
+
+  #[test]
+  fn test_read_turtle_with_empty_prefix_from_string() {
     let input = "@prefix : <http://example/> .
                  :subject :predicate :object .";
 
