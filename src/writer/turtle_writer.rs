@@ -309,9 +309,8 @@ _:auto2 <http://example.org/show/localName> _:auto1 ,
     let mut graph = Graph::new(None);
 
     graph.add_namespace(&Namespace::new("example".to_string(), Uri::new("http://example.org/".to_string())));
-    graph.add_namespace(&Namespace::new("foo".to_string(), Uri::new("http://foo.bar/".to_string())));
 
-    let result = "@prefix foo: <http://foo.bar/> .\n@prefix example: <http://example.org/> .\n".to_string();
+    let result = "@prefix example: <http://example.org/> .\n".to_string();
 
     let writer = TurtleWriter::new(graph.namespaces());
     match writer.write_to_string(&graph) {

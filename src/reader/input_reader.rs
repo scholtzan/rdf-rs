@@ -4,24 +4,27 @@ use Result;
 use std::str;
 use std::ops::Index;
 
-pub struct InputReaderHelper {
 
-}
+/// Collection of several helper methods that can be used when reading input.
+pub struct InputReaderHelper {}
 
-// todo
 impl InputReaderHelper {
+  /// Returns `true` if the provided character is a whitespace.
   pub fn whitespace(c: char) -> bool {
     c == '\n' || c == '\r' || c == ' '
   }
 
+  /// Returns `true` if the provided character is a line break.
   pub fn line_break(c: char) -> bool {
     c == '\n' || c == '\r'
   }
 
+  /// Returns `true` if the provided character can be used to separate two nodes.
   pub fn node_delimiter(c: char) -> bool {
     c == '\n' || c == '\r' || c == ' ' || c == '.'
   }
 
+  /// Returns `true` if the provided character is a digit.
   pub fn digit(c: char) -> bool {
     c >= '0' && c <= '9'
   }
@@ -30,8 +33,8 @@ impl InputReaderHelper {
 type InputChar = Option<char>;
 
 
-// todo
 #[derive(Debug, Clone)]
+/// Represents a sequence of read input characters.
 pub struct InputChars {
   input_chars: Vec<InputChar>
 }
@@ -42,7 +45,6 @@ impl ToString for InputChars {
     s
   }
 }
-
 
 impl Index<usize> for InputChars {
   type Output = InputChar;
@@ -86,8 +88,7 @@ impl InputChars {
 }
 
 
-// todo
-// todo: specific return type that can be mapped to string and vec
+/// Reads input and transforms it to `InputChars`.
 pub struct InputReader<R: Read> {
   input: R,
   peeked_chars: InputChars
@@ -96,10 +97,13 @@ pub struct InputReader<R: Read> {
 impl<R: Read> InputReader<R> {
   /// Constructor for `InputReader`.
   ///
-  /// # Exampless
+  /// # Examples
   ///
-  /// todo
+  /// ```
+  /// use rdf_rs::reader::input_reader::InputReader;
   ///
+  /// let reader = InputReader::new("_:auto0".as_bytes());
+  /// ```
   pub fn new(input: R) -> InputReader<R> {
     InputReader {
       input: input,
@@ -107,7 +111,23 @@ impl<R: Read> InputReader<R> {
     }
   }
 
-  // todo
+  /// Returns the next `k` characters but does not consume them.
+  ///
+  /// # Examples
+  ///
+  /// ```
+  /// use rdf_rs::reader::input_reader::InputReader;
+  /// use rdf_rs::reader::input_reader::InputChars;
+  ///
+  /// let mut reader = InputReader::new("_:auto0".as_bytes());
+  /// assert_eq!(reader.peek_next_k_chars(2).unwrap().to_vec(), vec![Some('_'), Some(':')]);
+  /// assert_eq!(reader.peek_next_k_chars(2).unwrap().to_vec(), vec![Some('_'), Some(':')]);
+  /// ```
+  ///
+  /// # Failures
+  ///
+  /// - End of input reached.
+  ///
   pub fn peek_next_k_chars(&mut self, k: usize) -> Result<InputChars> {
     if self.peeked_chars.len() >= k {
       Ok(InputChars::new(self.peeked_chars.to_vec()[0..k].to_vec()))
@@ -118,13 +138,45 @@ impl<R: Read> InputReader<R> {
     }
   }
 
-  // todo
+  /// Returns the next character but does not consume it.
+  ///
+  /// # Examples
+  ///
+  /// ```
+  /// use rdf_rs::reader::input_reader::InputReader;
+  /// use rdf_rs::reader::input_reader::InputChars;
+  ///
+  /// let mut reader = InputReader::new("_:auto0".as_bytes());
+  /// assert_eq!(reader.peek_next_char().unwrap(), Some('_'));
+  /// assert_eq!(reader.peek_next_char().unwrap(), Some('_'));
+  /// ```
+  ///
+  /// # Failures
+  ///
+  /// - End of input reached.
+  ///
   pub fn peek_next_char(&mut self) -> Result<InputChar> {
     let peeked_char = try!(self.peek_next_k_chars(1));
     Ok(peeked_char.to_vec()[0])
   }
 
-  // todo
+  /// Returns the next character that is not a whitespace but does not consume it.
+  ///
+  /// # Examples
+  ///
+  /// ```
+  /// use rdf_rs::reader::input_reader::InputReader;
+  /// use rdf_rs::reader::input_reader::InputChars;
+  ///
+  /// let mut reader = InputReader::new(" \n _:auto0".as_bytes());
+  /// assert_eq!(reader.peek_next_char_discard_leading_spaces().unwrap(), Some('_'));
+  /// assert_eq!(reader.peek_next_char_discard_leading_spaces().unwrap(), Some('_'));
+  /// ```
+  ///
+  /// # Failures
+  ///
+  /// - End of input reached.
+  ///
   pub fn peek_next_char_discard_leading_spaces(&mut self) -> Result<InputChar> {
     match self.get_next_char_discard_leading_spaces() {
       Ok(Some(next_char)) => {
@@ -151,6 +203,11 @@ impl<R: Read> InputReader<R> {
   /// assert_eq!(Some('H'), input_reader.get_next_char().unwrap());
   /// assert_eq!(Some('e'), input_reader.get_next_char().unwrap());
   /// ```
+  ///
+  /// # Failures
+  ///
+  /// - End of input reached.
+  ///
   pub fn get_next_char(&mut self) -> Result<InputChar> {
     if self.peeked_chars.len() > 0 {
       return Ok(self.peeked_chars.remove(0));
@@ -185,7 +242,23 @@ impl<R: Read> InputReader<R> {
   }
 
 
-  // todo
+  /// Returns the next `k` characters of an input source and consumes them.
+  ///
+  /// # Examples
+  ///
+  /// ```
+  /// use rdf_rs::reader::input_reader::InputReader;
+  /// use rdf_rs::reader::input_reader::InputChars;
+  ///
+  /// let mut reader = InputReader::new("_:auto0".as_bytes());
+  /// assert_eq!(reader.get_next_k_chars(2).unwrap().to_vec(), vec![Some('_'), Some(':')]);
+  /// assert_eq!(reader.get_next_k_chars(2).unwrap().to_vec(), vec![Some('a'), Some('u')]);
+  /// ```
+  ///
+  /// # Failures
+  ///
+  /// - End of input reached.
+  ///
   pub fn get_next_k_chars(&mut self, k: usize) -> Result<InputChars> {
     let mut next_k_chars = Vec::new();
 
@@ -210,6 +283,11 @@ impl<R: Read> InputReader<R> {
   /// assert_eq!(Some('H'), input_reader.get_next_char_discard_leading_spaces().unwrap());
   /// assert_eq!(Some('e'), input_reader.get_next_char_discard_leading_spaces().unwrap());
   /// ```
+  ///
+  /// # Failures
+  ///
+  /// - End of input reached.
+  ///
   pub fn get_next_char_discard_leading_spaces(&mut self) -> Result<InputChar> {
     loop {
       match self.get_next_char() {
@@ -222,7 +300,26 @@ impl<R: Read> InputReader<R> {
     }
   }
 
-  // todo
+  /// Returns all characters of a input source until a certain delimiter occurs but does not consume them.
+  ///
+  /// The delimiter itself is skipped.
+  ///
+  /// # Examples
+  ///
+  /// ```
+  /// use rdf_rs::reader::input_reader::InputReader;
+  ///
+  /// let mut input = "Hello World!".as_bytes();
+  /// let mut input_reader = InputReader::new(input);
+  ///
+  /// assert_eq!("Hello".to_string(), input_reader.peek_until(|c| c == ' ').unwrap().to_string());
+  /// assert_eq!("Hello".to_string(), input_reader.peek_until(|c| c == ' ').unwrap().to_string());
+  /// ```
+  ///
+  /// # Failures
+  ///
+  /// - End of input reached.
+  ///
   pub fn peek_until<F: Fn(char) -> bool>(&mut self, delimiter: F) -> Result<InputChars> {
     let mut chars = self.get_until(delimiter)?;
     let result = chars.clone();
@@ -231,7 +328,27 @@ impl<R: Read> InputReader<R> {
     Ok(result)
   }
 
-  // todo
+  /// Returns all characters without consuming them of a input source until a certain delimiter
+  /// occurs and removes leading whitespaces.
+  ///
+  /// The delimiter itself is skipped.
+  ///
+  /// # Examples
+  ///
+  /// ```
+  /// use rdf_rs::reader::input_reader::InputReader;
+  ///
+  /// let mut input = "   Hello    World!".as_bytes();
+  /// let mut input_reader = InputReader::new(input);
+  ///
+  /// assert_eq!("Hello".to_string(), input_reader.peek_until_discard_leading_spaces(|c| c == ' ').unwrap().to_string());
+  /// assert_eq!("Hello".to_string(), input_reader.peek_until_discard_leading_spaces(|c| c == ' ').unwrap().to_string());
+  /// ```
+  ///
+  /// # Failures
+  ///
+  /// - End of input reached.
+  ///
   pub fn peek_until_discard_leading_spaces<F: Fn(char) -> bool>(&mut self, delimiter: F) -> Result<InputChars> {
     let mut chars = self.get_until_discard_leading_spaces(delimiter)?;
     let result = chars.clone();
@@ -245,6 +362,7 @@ impl<R: Read> InputReader<R> {
   /// The delimiter itself is skipped.
   ///
   /// # Examples
+  ///
   /// ```
   /// use rdf_rs::reader::input_reader::InputReader;
   ///
@@ -254,6 +372,11 @@ impl<R: Read> InputReader<R> {
   /// assert_eq!("Hello".to_string(), input_reader.get_until(|c| c == ' ').unwrap().to_string());
   /// assert_eq!(" World".to_string(), input_reader.get_until(|c| c == '!').unwrap().to_string());
   /// ```
+  ///
+  /// # Failures
+  ///
+  /// - End of input reached.
+  ///
   pub fn get_until<F: Fn(char) -> bool>(&mut self, delimiter: F) -> Result<InputChars> {
     let mut buf = Vec::new();
 
@@ -277,6 +400,7 @@ impl<R: Read> InputReader<R> {
   /// The delimiter itself is skipped.
   ///
   /// # Examples
+  ///
   /// ```
   /// use rdf_rs::reader::input_reader::InputReader;
   ///
@@ -286,6 +410,11 @@ impl<R: Read> InputReader<R> {
   /// assert_eq!("Hello".to_string(), input_reader.get_until_discard_leading_spaces(|c| c == ' ').unwrap().to_string());
   /// assert_eq!("World".to_string(), input_reader.get_until_discard_leading_spaces(|c| c == '!').unwrap().to_string());
   /// ```
+  ///
+  /// # Failures
+  ///
+  /// - End of input reached.
+  ///
   pub fn get_until_discard_leading_spaces<F: Fn(char) -> bool>(&mut self, delimiter: F) -> Result<InputChars> {
     let whitespaces = InputReaderHelper::whitespace;
 
