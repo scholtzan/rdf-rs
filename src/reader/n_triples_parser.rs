@@ -38,12 +38,18 @@ impl<R: Read> RdfParser for NTriplesParser<R> {
   ///   Err(_) => assert!(false)
   /// }
   /// ```
+  ///
+  /// # Failures
+  ///
+  /// - Invalid input that does not conform with NTriples standard.
+  /// - Invalid node type for triple segment.
+  ///
   fn decode(&mut self) -> Result<Graph> {
     let mut graph = Graph::new(None);
 
     loop {
       match try!(self.lexer.peek_next_token()) {
-        Token::Comment(_) => {
+        Token::Comment(_) => {  // ignore comments
           let _ = self.lexer.get_next_token();
           continue
         },
@@ -71,6 +77,18 @@ impl<R: Read> RdfParser for NTriplesParser<R> {
 
 impl NTriplesParser<Cursor<Vec<u8>>> {
   /// Constructor of `NTriplesParser` from input string.
+  ///
+  /// # Examples
+  ///
+  /// ```
+  /// use rdf_rs::reader::n_triples_parser::NTriplesParser;
+  /// use rdf_rs::reader::rdf_parser::RdfParser;
+  ///
+  /// let input = "<http://www.w3.org/2001/sw/RDFCore/ntriples/> <http://xmlns.com/foaf/0.1/maker> _:art .
+  ///              _:art <http://xmlns.com/foaf/0.1/name> \"Art Barstow\" .";
+  ///
+  /// let reader = NTriplesParser::from_string(input.to_string());
+  /// ```
   pub fn from_string<S>(input: S) -> NTriplesParser<Cursor<Vec<u8>>> where S: Into<String> {
     NTriplesParser::from_reader(Cursor::new(input.into().into_bytes()))
   }
@@ -79,6 +97,18 @@ impl NTriplesParser<Cursor<Vec<u8>>> {
 
 impl<R: Read> NTriplesParser<R> {
   /// Constructor of `NTriplesParser` from input reader.
+  ///
+  /// # Examples
+  ///
+  /// ```
+  /// use rdf_rs::reader::n_triples_parser::NTriplesParser;
+  /// use rdf_rs::reader::rdf_parser::RdfParser;
+  ///
+  /// let input = "<http://www.w3.org/2001/sw/RDFCore/ntriples/> <http://xmlns.com/foaf/0.1/maker> _:art .
+  ///              _:art <http://xmlns.com/foaf/0.1/name> \"Art Barstow\" .";
+  ///
+  /// let reader = NTriplesParser::from_reader(input.as_bytes());
+  /// ```
   pub fn from_reader(input: R) -> NTriplesParser<R> {
     NTriplesParser {
       lexer: NTriplesLexer::new(input)

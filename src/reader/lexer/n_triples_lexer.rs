@@ -5,7 +5,7 @@ use std::io::Read;
 use error::{Error, ErrorType};
 use Result;
 
-
+/// Produces tokens from NTriples input.
 pub struct NTriplesLexer<R: Read> {
   input_reader: InputReader<R>,
   peeked_token: Option<Token>
@@ -50,6 +50,11 @@ impl<R: Read> RdfLexer<R> for NTriplesLexer<R> {
   /// assert_eq!(lexer.get_next_token().unwrap(), Token::Literal("test".to_string()));
   /// assert_eq!(lexer.get_next_token().unwrap(), Token::TripleDelimiter);
   /// ```
+  ///
+  /// # Failures
+  ///
+  /// - Input that does not conform to the NTriples standard.
+  ///
   fn get_next_token(&mut self) -> Result<Token> {
     match self.peeked_token.clone() {
       Some(token) => {
@@ -76,7 +81,7 @@ impl<R: Read> RdfLexer<R> for NTriplesLexer<R> {
 
   /// Determines the next token without consuming it.
   ///
-  /// # Exampless
+  /// # Examples
   ///
   /// ```
   /// use rdf_rs::reader::lexer::rdf_lexer::RdfLexer;
@@ -92,6 +97,12 @@ impl<R: Read> RdfLexer<R> for NTriplesLexer<R> {
   /// assert_eq!(lexer.get_next_token().unwrap(), Token::BlankNode("auto".to_string()));
   /// assert_eq!(lexer.peek_next_token().unwrap(), Token::Uri("example.org/b".to_string()));
   /// ```
+  ///
+  /// # Failures
+  ///
+  /// - End of input reached.
+  /// - Invalid input that does not conform with NTriples standard.
+  ///
   fn peek_next_token(&mut self) -> Result<Token> {
     match self.peeked_token.clone() {
       Some(token) => Ok(token),
@@ -147,6 +158,7 @@ impl<R: Read> NTriplesLexer<R> {
   /// Parses a literal from the input and returns it as token.
   fn get_literal(&mut self) -> Result<Token> {
     self.consume_next_char();  // consume '"'
+    // todo: escaped characters
     let literal = self.input_reader.get_until(|c| c == '"')?.to_string();
     self.consume_next_char(); // consume '"'
 
@@ -257,7 +269,8 @@ mod tests {
 
     let mut lexer = NTriplesLexer::new(input);
 
-    assert_eq!(lexer.get_next_token().unwrap(), Token::LiteralWithLanguageSpecification("a".to_string(), "abc".to_string()));
+    assert_eq!(lexer.get_next_token().unwrap(), Token::LiteralWithLanguageSpecification("a".to_string(),
+                                                                                        "abc".to_string()));
   }
 
   #[test]
@@ -275,7 +288,8 @@ mod tests {
 
     let mut lexer = NTriplesLexer::new(input);
 
-    assert_eq!(lexer.get_next_token().unwrap(), Token::LiteralWithUrlDatatype("a".to_string(), "example.org/abc".to_string()));
+    assert_eq!(lexer.get_next_token().unwrap(), Token::LiteralWithUrlDatatype("a".to_string(),
+                                                                              "example.org/abc".to_string()));
   }
 
   #[test]
