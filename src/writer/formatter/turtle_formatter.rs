@@ -3,6 +3,7 @@ use uri::Uri;
 use writer::formatter::rdf_formatter::RdfFormatter;
 use specs::turtle_specs::TurtleSpecs;
 use std::collections::HashMap;
+use specs::rdf_syntax_specs::RdfSyntaxSpecs;
 
 
 /// Formatter for formatting nodes to Turtle syntax.
@@ -43,14 +44,12 @@ impl<'a> RdfFormatter for TurtleFormatter<'a> {
   fn format_literal(&self, literal: &String, data_type: &Option<Uri>, language: &Option<String>) -> String {
     let mut output_string = "".to_string();
 
-    // todo: escaping
-
     if TurtleSpecs::is_plain_literal(literal, data_type) && *language == None {
       // some number or boolean
       output_string.push_str(&literal);
     } else {
       output_string.push_str("\"");
-      output_string.push_str(&literal);
+      output_string.push_str(&RdfSyntaxSpecs::escape_literal(&literal));
       output_string.push_str("\"");
     }
 
@@ -156,6 +155,19 @@ mod tests {
     };
 
     assert_eq!(formatter.format_node(&node), "\"literal\"".to_string());
+  }
+
+  #[test]
+  fn test_turtle_escaped_literal_node_formatting() {
+    let hashmap = HashMap::new();
+    let formatter = TurtleFormatter::new(&hashmap);
+    let node = Node::LiteralNode {
+      literal: "literal ' \" ".to_string(),
+      data_type: None,
+      language: None
+    };
+
+    assert_eq!(formatter.format_node(&node), "\"literal \' \" \"".to_string());
   }
 
   #[test]

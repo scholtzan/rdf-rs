@@ -1,6 +1,6 @@
 [package]
 name = "rdf-rs"
-version = "0.0.1"
+version = "0.0.2"
 authors = ["Anna Scholtz <anna@scholtzan.net>"]
 
 [dependencies]

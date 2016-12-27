@@ -353,18 +353,19 @@ impl<R: Read> TurtleLexer<R> {
     while !found_literal_end {
       literal.push_str(&self.input_reader.get_until(|c| c == literal_delimiter.unwrap())?.to_string());
 
-      if is_multiline {
+      if is_multiline {   // if not escaped check if the literal is complete
         let potential_literal_delimiters = self.input_reader.peek_next_k_chars(2)?.to_vec();
 
         if potential_literal_delimiters[0] == literal_delimiter &&
-          potential_literal_delimiters [1] == literal_delimiter {
+          potential_literal_delimiters[1] == literal_delimiter {
           self.consume_next_char();
           self.consume_next_char();
 
           found_literal_end = true;
+        } else {
+          literal.push_str(&self.input_reader.get_next_k_chars(1)?.to_string());
         }
       } else {
-        // todo: escaping
         found_literal_end = true;
       }
     }
@@ -594,6 +595,16 @@ mod tests {
     assert_eq!(lexer.get_next_token().unwrap(), Token::Literal("a".to_string()));
     assert_eq!(lexer.get_next_token().unwrap(), Token::TripleDelimiter);
   }
+
+  #[test]
+  fn parse_multiline_literal_delimiter() {
+    let input = "'''don't do \"this\"\''''".as_bytes();
+
+    let mut lexer = TurtleLexer::new(input);
+
+    assert_eq!(lexer.get_next_token().unwrap(), Token::Literal("don't do \"this\"".to_string()));
+  }
+
 
   #[test]
   fn parse_numeric_literals() {

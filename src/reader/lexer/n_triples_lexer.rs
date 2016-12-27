@@ -158,7 +158,6 @@ impl<R: Read> NTriplesLexer<R> {
   /// Parses a literal from the input and returns it as token.
   fn get_literal(&mut self) -> Result<Token> {
     self.consume_next_char();  // consume '"'
-    // todo: escaped characters
     let literal = self.input_reader.get_until(|c| c == '"')?.to_string();
     self.consume_next_char(); // consume '"'
 

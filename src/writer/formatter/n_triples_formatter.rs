@@ -1,6 +1,7 @@
 use writer::formatter::rdf_formatter::RdfFormatter;
 use node::Node;
 use uri::Uri;
+use specs::rdf_syntax_specs::RdfSyntaxSpecs;
 
 
 /// Formatter for formatting nodes to N-Triple syntax.
@@ -37,8 +38,7 @@ impl RdfFormatter for NTriplesFormatter {
   ///
   fn format_literal(&self, literal: &String, data_type: &Option<Uri>, language: &Option<String>) -> String {
     let mut output_string = "\"".to_string();
-    // todo: escaping
-    output_string.push_str(&literal);
+    output_string.push_str(&RdfSyntaxSpecs::escape_literal(&literal));
     output_string.push_str("\"");
 
     match language {
@@ -122,6 +122,18 @@ mod tests {
     };
 
     assert_eq!(formatter.format_node(&node), "\"literal\"^^<http://example.org/show/localName>".to_string());
+  }
+
+  #[test]
+  fn test_n_triples_escaped_literal_node_formatting() {
+    let formatter = NTriplesFormatter::new();
+    let node = Node::LiteralNode {
+      literal: "literal ' \" ".to_string(),
+      data_type: None,
+      language: None
+    };
+
+    assert_eq!(formatter.format_node(&node), "\"literal \' \" \"".to_string());
   }
 
   #[test]
