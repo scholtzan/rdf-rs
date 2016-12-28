@@ -70,8 +70,8 @@
 //! @prefix foaf: <http://xmlns.com/foaf/0.1/> .
 //!
 //! <http://www.w3.org/2001/sw/RDFCore/ntriples/> rdf:type foaf:Document ;
-//! <http://purl.org/dc/terms/title> \"N-Triples\"@en-US ;
-//! foaf:maker _:art .";
+//!     <http://purl.org/dc/terms/title> \"N-Triples\"@en-US ;
+//!     foaf:maker _:art .";
 //!
 //! let mut reader = TurtleParser::from_string(input.to_string());
 //!
@@ -131,7 +131,7 @@ pub mod specs {
 
 #[cfg(test)]
 mod tests {
-    #[test]
-    fn it_works() {
-    }
+  #[test]
+  fn it_works() {
+  }
 }
