@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="rustdoc">
+    <meta name="description" content="API documentation for the Rust `NTriplesParser` struct in crate `rdf_rs`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, NTriplesParser">
+
+    <title>rdf_rs::reader::n_triples_parser::NTriplesParser - Rust</title>
+
+    <link rel="stylesheet" type="text/css" href="../../../rustdoc.css">
+    <link rel="stylesheet" type="text/css" href="../../../main.css">
+    
+
+    
+    
+</head>
+<body class="rustdoc">
+    <!--[if lte IE 8]>
+    <div class="warning">
+        This old browser is unsupported and will most likely display funky
+        things.
+    </div>
+    <![endif]-->
+
+    
+
+    <nav class="sidebar">
+        
+        <p class='location'><a href='../../index.html'>rdf_rs</a>::<wbr><a href='../index.html'>reader</a>::<wbr><a href='index.html'>n_triples_parser</a></p><script>window.sidebarCurrent = {name: 'NTriplesParser', ty: 'struct', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+    </nav>
+
+    <nav class="sub">
+        <form class="search-form js-only">
+            <div class="search-container">
+                <input class="search-input" name="search"
+                       autocomplete="off"
+                       placeholder="Click or press ‘S’ to search, ‘?’ for more options…"
+                       type="search">
+            </div>
+        </form>
+    </nav>
+
+    <section id='main' class="content struct">
+<h1 class='fqn'><span class='in-band'>Struct <a href='../../index.html'>rdf_rs</a>::<wbr><a href='../index.html'>reader</a>::<wbr><a href='index.html'>n_triples_parser</a>::<wbr><a class='struct' href=''>NTriplesParser</a></span><span class='out-of-band'><span id='render-detail'>
+                   <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
+                       [<span class='inner'>&#x2212;</span>]
+                   </a>
+               </span><a id='src-638' class='srclink' href='../../../src/rdf_rs/src/reader/n_triples_parser.rs.html#15-17' title='goto source code'>[src]</a></span></h1>
+<pre class='rust struct'>pub struct NTriplesParser&lt;R:&nbsp;<a class='trait' href='https://doc.rust-lang.org/nightly/std/io/trait.Read.html' title='std::io::Read'>Read</a>&gt; { /* fields omitted */ }</pre><div class='docblock'><p>RDF parser to generate an RDF graph from N-Triples syntax.</p>
+</div><h2 id='methods'>Methods</h2><h3 class='impl'><span class='in-band'><code>impl <a class='struct' href='../../../rdf_rs/reader/n_triples_parser/struct.NTriplesParser.html' title='rdf_rs::reader::n_triples_parser::NTriplesParser'>NTriplesParser</a>&lt;<a class='struct' href='https://doc.rust-lang.org/nightly/std/io/cursor/struct.Cursor.html' title='std::io::cursor::Cursor'>Cursor</a>&lt;<a class='struct' href='https://doc.rust-lang.org/nightly/collections/vec/struct.Vec.html' title='collections::vec::Vec'>Vec</a>&lt;<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u8.html'>u8</a>&gt;&gt;&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a id='src-648' class='srclink' href='../../../src/rdf_rs/src/reader/n_triples_parser.rs.html#78-95' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.from_string' class='method'><span id='from_string.v' class='invisible'><code>fn <a href='#method.from_string' class='fnname'>from_string</a>&lt;S&gt;(input: S) -&gt; <a class='struct' href='../../../rdf_rs/reader/n_triples_parser/struct.NTriplesParser.html' title='rdf_rs::reader::n_triples_parser::NTriplesParser'>NTriplesParser</a>&lt;<a class='struct' href='https://doc.rust-lang.org/nightly/std/io/cursor/struct.Cursor.html' title='std::io::cursor::Cursor'>Cursor</a>&lt;<a class='struct' href='https://doc.rust-lang.org/nightly/collections/vec/struct.Vec.html' title='collections::vec::Vec'>Vec</a>&lt;<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u8.html'>u8</a>&gt;&gt;&gt; <span class='where'>where S: <a class='trait' href='https://doc.rust-lang.org/nightly/core/convert/trait.Into.html' title='core::convert::Into'>Into</a>&lt;<a class='struct' href='https://doc.rust-lang.org/nightly/collections/string/struct.String.html' title='collections::string::String'>String</a>&gt;</span></code></span></h4>
+<div class='docblock'><p>Constructor of <code>NTriplesParser</code> from input string.</p>
+
+<h1 id='examples' class='section-header'><a href='#examples'>Examples</a></h1>
+<pre class='rust rust-example-rendered'>
+<span class='kw'>use</span> <span class='ident'>rdf_rs</span>::<span class='ident'>reader</span>::<span class='ident'>n_triples_parser</span>::<span class='ident'>NTriplesParser</span>;
+<span class='kw'>use</span> <span class='ident'>rdf_rs</span>::<span class='ident'>reader</span>::<span class='ident'>rdf_parser</span>::<span class='ident'>RdfParser</span>;
+
+<span class='kw'>let</span> <span class='ident'>input</span> <span class='op'>=</span> <span class='string'>&quot;&lt;http://www.w3.org/2001/sw/RDFCore/ntriples/&gt; &lt;http://xmlns.com/foaf/0.1/maker&gt; _:art .
+             _:art &lt;http://xmlns.com/foaf/0.1/name&gt; \&quot;Art Barstow\&quot; .&quot;</span>;
+
+<span class='kw'>let</span> <span class='ident'>reader</span> <span class='op'>=</span> <span class='ident'>NTriplesParser</span>::<span class='ident'>from_string</span>(<span class='ident'>input</span>.<span class='ident'>to_string</span>());</pre>
+</div></div><h3 class='impl'><span class='in-band'><code>impl&lt;R:&nbsp;<a class='trait' href='https://doc.rust-lang.org/nightly/std/io/trait.Read.html' title='std::io::Read'>Read</a>&gt; <a class='struct' href='../../../rdf_rs/reader/n_triples_parser/struct.NTriplesParser.html' title='rdf_rs::reader::n_triples_parser::NTriplesParser'>NTriplesParser</a>&lt;R&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a id='src-652' class='srclink' href='../../../src/rdf_rs/src/reader/n_triples_parser.rs.html#98-163' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.from_reader' class='method'><span id='from_reader.v' class='invisible'><code>fn <a href='#method.from_reader' class='fnname'>from_reader</a>(input: R) -&gt; <a class='struct' href='../../../rdf_rs/reader/n_triples_parser/struct.NTriplesParser.html' title='rdf_rs::reader::n_triples_parser::NTriplesParser'>NTriplesParser</a>&lt;R&gt;</code></span></h4>
+<div class='docblock'><p>Constructor of <code>NTriplesParser</code> from input reader.</p>
+
+<h1 id='examples-1' class='section-header'><a href='#examples-1'>Examples</a></h1>
+<pre class='rust rust-example-rendered'>
+<span class='kw'>use</span> <span class='ident'>rdf_rs</span>::<span class='ident'>reader</span>::<span class='ident'>n_triples_parser</span>::<span class='ident'>NTriplesParser</span>;
+<span class='kw'>use</span> <span class='ident'>rdf_rs</span>::<span class='ident'>reader</span>::<span class='ident'>rdf_parser</span>::<span class='ident'>RdfParser</span>;
+
+<span class='kw'>let</span> <span class='ident'>input</span> <span class='op'>=</span> <span class='string'>&quot;&lt;http://www.w3.org/2001/sw/RDFCore/ntriples/&gt; &lt;http://xmlns.com/foaf/0.1/maker&gt; _:art .
+             _:art &lt;http://xmlns.com/foaf/0.1/name&gt; \&quot;Art Barstow\&quot; .&quot;</span>;
+
+<span class='kw'>let</span> <span class='ident'>reader</span> <span class='op'>=</span> <span class='ident'>NTriplesParser</span>::<span class='ident'>from_reader</span>(<span class='ident'>input</span>.<span class='ident'>as_bytes</span>());</pre>
+</div></div><h2 id='implementations'>Trait Implementations</h2><h3 class='impl'><span class='in-band'><code>impl&lt;R:&nbsp;<a class='trait' href='https://doc.rust-lang.org/nightly/std/io/trait.Read.html' title='std::io::Read'>Read</a>&gt; <a class='trait' href='../../../rdf_rs/reader/rdf_parser/trait.RdfParser.html' title='rdf_rs::reader::rdf_parser::RdfParser'>RdfParser</a> for <a class='struct' href='../../../rdf_rs/reader/n_triples_parser/struct.NTriplesParser.html' title='rdf_rs::reader::n_triples_parser::NTriplesParser'>NTriplesParser</a>&lt;R&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a id='src-641' class='srclink' href='../../../src/rdf_rs/src/reader/n_triples_parser.rs.html#20-75' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.decode' class='method'><span id='decode.v' class='invisible'><code>fn <a href='../../../rdf_rs/reader/rdf_parser/trait.RdfParser.html#tymethod.decode' class='fnname'>decode</a>(&amp;mut self) -&gt; <a class='type' href='../../../rdf_rs/type.Result.html' title='rdf_rs::Result'>Result</a>&lt;<a class='struct' href='../../../rdf_rs/graph/struct.Graph.html' title='rdf_rs::graph::Graph'>Graph</a>&gt;</code></span></h4>
+<div class='docblock'><p>Generates an RDF graph from a string containing N-Triples syntax.</p>
+
+<p>Returns an error in case invalid N-Triples syntax is provided.</p>
+
+<h1 id='examples-2' class='section-header'><a href='#examples-2'>Examples</a></h1>
+<pre class='rust rust-example-rendered'>
+<span class='kw'>use</span> <span class='ident'>rdf_rs</span>::<span class='ident'>reader</span>::<span class='ident'>n_triples_parser</span>::<span class='ident'>NTriplesParser</span>;
+<span class='kw'>use</span> <span class='ident'>rdf_rs</span>::<span class='ident'>reader</span>::<span class='ident'>rdf_parser</span>::<span class='ident'>RdfParser</span>;
+
+<span class='kw'>let</span> <span class='ident'>input</span> <span class='op'>=</span> <span class='string'>&quot;&lt;http://www.w3.org/2001/sw/RDFCore/ntriples/&gt; &lt;http://xmlns.com/foaf/0.1/maker&gt; _:art .
+             _:art &lt;http://xmlns.com/foaf/0.1/name&gt; \&quot;Art Barstow\&quot; .&quot;</span>;
+
+<span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>reader</span> <span class='op'>=</span> <span class='ident'>NTriplesParser</span>::<span class='ident'>from_string</span>(<span class='ident'>input</span>.<span class='ident'>to_string</span>());
+
+<span class='kw'>match</span> <span class='ident'>reader</span>.<span class='ident'>decode</span>() {
+  <span class='prelude-val'>Ok</span>(<span class='ident'>graph</span>) <span class='op'>=&gt;</span> <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>graph</span>.<span class='ident'>count</span>(), <span class='number'>2</span>),
+  <span class='prelude-val'>Err</span>(_) <span class='op'>=&gt;</span> <span class='macro'>assert</span><span class='macro'>!</span>(<span class='bool-val'>false</span>)
+}</pre>
+
+<h1 id='failures' class='section-header'><a href='#failures'>Failures</a></h1>
+<ul>
+<li>Invalid input that does not conform with NTriples standard.</li>
+<li>Invalid node type for triple segment.</li>
+</ul>
+</div></div></section>
+    <section id='search' class="content hidden"></section>
+
+    <section class="footer"></section>
+
+    <aside id="help" class="hidden">
+        <div>
+            <h1 class="hidden">Help</h1>
+
+            <div class="shortcuts">
+                <h2>Keyboard Shortcuts</h2>
+
+                <dl>
+                    <dt>?</dt>
+                    <dd>Show this help dialog</dd>
+                    <dt>S</dt>
+                    <dd>Focus the search field</dd>
+                    <dt>&larrb;</dt>
+                    <dd>Move up in search results</dd>
+                    <dt>&rarrb;</dt>
+                    <dd>Move down in search results</dd>
+                    <dt>&#9166;</dt>
+                    <dd>Go to active search result</dd>
+                    <dt>+</dt>
+                    <dd>Collapse/expand all sections</dd>
+                </dl>
+            </div>
+
+            <div class="infos">
+                <h2>Search Tricks</h2>
+
+                <p>
+                    Prefix searches with a type followed by a colon (e.g.
+                    <code>fn:</code>) to restrict the search to a given type.
+                </p>
+
+                <p>
+                    Accepted types are: <code>fn</code>, <code>mod</code>,
+                    <code>struct</code>, <code>enum</code>,
+                    <code>trait</code>, <code>type</code>, <code>macro</code>,
+                    and <code>const</code>.
+                </p>
+
+                <p>
+                    Search functions by type signature (e.g.
+                    <code>vec -> usize</code> or <code>* -> vec</code>)
+                </p>
+            </div>
+        </div>
+    </aside>
+
+    
+
+    <script>
+        window.rootPath = "../../../";
+        window.currentCrate = "rdf_rs";
+    </script>
+    <script src="../../../jquery.js"></script>
+    <script src="../../../main.js"></script>
+    <script defer src="../../../search-index.js"></script>
+</body>
+</html>

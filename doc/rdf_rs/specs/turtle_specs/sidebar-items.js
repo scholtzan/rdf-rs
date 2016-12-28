@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["TurtleSpecs","Contains specifications for validating turtle syntax."]]});

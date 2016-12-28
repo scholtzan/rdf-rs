@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="rustdoc">
+    <meta name="description" content="API documentation for the Rust `TripleStore` struct in crate `rdf_rs`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, TripleStore">
+
+    <title>rdf_rs::triple::TripleStore - Rust</title>
+
+    <link rel="stylesheet" type="text/css" href="../../rustdoc.css">
+    <link rel="stylesheet" type="text/css" href="../../main.css">
+    
+
+    
+    
+</head>
+<body class="rustdoc">
+    <!--[if lte IE 8]>
+    <div class="warning">
+        This old browser is unsupported and will most likely display funky
+        things.
+    </div>
+    <![endif]-->
+
+    
+
+    <nav class="sidebar">
+        
+        <p class='location'><a href='../index.html'>rdf_rs</a>::<wbr><a href='index.html'>triple</a></p><script>window.sidebarCurrent = {name: 'TripleStore', ty: 'struct', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+    </nav>
+
+    <nav class="sub">
+        <form class="search-form js-only">
+            <div class="search-container">
+                <input class="search-input" name="search"
+                       autocomplete="off"
+                       placeholder="Click or press ‘S’ to search, ‘?’ for more options…"
+                       type="search">
+            </div>
+        </form>
+    </nav>
+
+    <section id='main' class="content struct">
+<h1 class='fqn'><span class='in-band'>Struct <a href='../index.html'>rdf_rs</a>::<wbr><a href='index.html'>triple</a>::<wbr><a class='struct' href=''>TripleStore</a></span><span class='out-of-band'><span id='render-detail'>
+                   <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
+                       [<span class='inner'>&#x2212;</span>]
+                   </a>
+               </span><a id='src-1292' class='srclink' href='../../src/rdf_rs/src/triple.rs.html#82-84' title='goto source code'>[src]</a></span></h1>
+<pre class='rust struct'>pub struct TripleStore { /* fields omitted */ }</pre><div class='docblock'><p>Storage for triples.</p>
+</div><h2 id='methods'>Methods</h2><h3 class='impl'><span class='in-band'><code>impl <a class='struct' href='../../rdf_rs/triple/struct.TripleStore.html' title='rdf_rs::triple::TripleStore'>TripleStore</a></code></span><span class='out-of-band'><div class='ghost'></div><a id='src-62' class='srclink' href='../../src/rdf_rs/src/triple.rs.html#87-183' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.new' class='method'><span id='new.v' class='invisible'><code>fn <a href='#method.new' class='fnname'>new</a>() -&gt; <a class='struct' href='../../rdf_rs/triple/struct.TripleStore.html' title='rdf_rs::triple::TripleStore'>TripleStore</a></code></span></h4>
+<div class='docblock'><p>Constructs a new triple store.</p>
+</div><h4 id='method.count' class='method'><span id='count.v' class='invisible'><code>fn <a href='#method.count' class='fnname'>count</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a></code></span></h4>
+<div class='docblock'><p>Returns the number of triples that are stored.</p>
+</div><h4 id='method.is_empty' class='method'><span id='is_empty.v' class='invisible'><code>fn <a href='#method.is_empty' class='fnname'>is_empty</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></span></h4>
+<div class='docblock'><p>Checks if the triple store is empty.</p>
+</div><h4 id='method.add_triple' class='method'><span id='add_triple.v' class='invisible'><code>fn <a href='#method.add_triple' class='fnname'>add_triple</a>(&amp;mut self, triple: &amp;<a class='struct' href='../../rdf_rs/triple/struct.Triple.html' title='rdf_rs::triple::Triple'>Triple</a>)</code></span></h4>
+<div class='docblock'><p>Adds a new triple to the store.</p>
+</div><h4 id='method.remove_triple' class='method'><span id='remove_triple.v' class='invisible'><code>fn <a href='#method.remove_triple' class='fnname'>remove_triple</a>(&amp;mut self, triple: &amp;<a class='struct' href='../../rdf_rs/triple/struct.Triple.html' title='rdf_rs::triple::Triple'>Triple</a>)</code></span></h4>
+<div class='docblock'><p>Deletes the triple from the store.</p>
+</div><h4 id='method.get_triples_with_subject' class='method'><span id='get_triples_with_subject.v' class='invisible'><code>fn <a href='#method.get_triples_with_subject' class='fnname'>get_triples_with_subject</a>(&amp;self, node: &amp;<a class='enum' href='../../rdf_rs/node/enum.Node.html' title='rdf_rs::node::Node'>Node</a>) -&gt; <a class='struct' href='https://doc.rust-lang.org/nightly/collections/vec/struct.Vec.html' title='collections::vec::Vec'>Vec</a>&lt;&amp;<a class='struct' href='../../rdf_rs/triple/struct.Triple.html' title='rdf_rs::triple::Triple'>Triple</a>&gt;</code></span></h4>
+<div class='docblock'><p>Returns all triples where the subject node matches the provided node.</p>
+</div><h4 id='method.get_triples_with_predicate' class='method'><span id='get_triples_with_predicate.v' class='invisible'><code>fn <a href='#method.get_triples_with_predicate' class='fnname'>get_triples_with_predicate</a>(&amp;self, node: &amp;<a class='enum' href='../../rdf_rs/node/enum.Node.html' title='rdf_rs::node::Node'>Node</a>) -&gt; <a class='struct' href='https://doc.rust-lang.org/nightly/collections/vec/struct.Vec.html' title='collections::vec::Vec'>Vec</a>&lt;&amp;<a class='struct' href='../../rdf_rs/triple/struct.Triple.html' title='rdf_rs::triple::Triple'>Triple</a>&gt;</code></span></h4>
+<div class='docblock'><p>Returns all triples where the predicate node matches the provided node.</p>
+</div><h4 id='method.get_triples_with_object' class='method'><span id='get_triples_with_object.v' class='invisible'><code>fn <a href='#method.get_triples_with_object' class='fnname'>get_triples_with_object</a>(&amp;self, node: &amp;<a class='enum' href='../../rdf_rs/node/enum.Node.html' title='rdf_rs::node::Node'>Node</a>) -&gt; <a class='struct' href='https://doc.rust-lang.org/nightly/collections/vec/struct.Vec.html' title='collections::vec::Vec'>Vec</a>&lt;&amp;<a class='struct' href='../../rdf_rs/triple/struct.Triple.html' title='rdf_rs::triple::Triple'>Triple</a>&gt;</code></span></h4>
+<div class='docblock'><p>Returns all triples where the object node matches the provided node.</p>
+</div><h4 id='method.get_triples_with_subject_and_object' class='method'><span id='get_triples_with_subject_and_object.v' class='invisible'><code>fn <a href='#method.get_triples_with_subject_and_object' class='fnname'>get_triples_with_subject_and_object</a>(&amp;self,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; subject_node: &amp;<a class='enum' href='../../rdf_rs/node/enum.Node.html' title='rdf_rs::node::Node'>Node</a>,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; object_node: &amp;<a class='enum' href='../../rdf_rs/node/enum.Node.html' title='rdf_rs::node::Node'>Node</a>)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -&gt; <a class='struct' href='https://doc.rust-lang.org/nightly/collections/vec/struct.Vec.html' title='collections::vec::Vec'>Vec</a>&lt;&amp;<a class='struct' href='../../rdf_rs/triple/struct.Triple.html' title='rdf_rs::triple::Triple'>Triple</a>&gt;</code></span></h4>
+<div class='docblock'><p>Returns all triples where the subject and object nodes match the provided nodes.</p>
+</div><h4 id='method.get_triples_with_subject_and_predicate' class='method'><span id='get_triples_with_subject_and_predicate.v' class='invisible'><code>fn <a href='#method.get_triples_with_subject_and_predicate' class='fnname'>get_triples_with_subject_and_predicate</a>(&amp;self,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; subject_node: &amp;<a class='enum' href='../../rdf_rs/node/enum.Node.html' title='rdf_rs::node::Node'>Node</a>,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; predicate_node: &amp;<a class='enum' href='../../rdf_rs/node/enum.Node.html' title='rdf_rs::node::Node'>Node</a>)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -&gt; <a class='struct' href='https://doc.rust-lang.org/nightly/collections/vec/struct.Vec.html' title='collections::vec::Vec'>Vec</a>&lt;&amp;<a class='struct' href='../../rdf_rs/triple/struct.Triple.html' title='rdf_rs::triple::Triple'>Triple</a>&gt;</code></span></h4>
+<div class='docblock'><p>Returns all triples where the subject and predicate nodes match the provided nodes.</p>
+</div><h4 id='method.get_triples_with_predicate_and_object' class='method'><span id='get_triples_with_predicate_and_object.v' class='invisible'><code>fn <a href='#method.get_triples_with_predicate_and_object' class='fnname'>get_triples_with_predicate_and_object</a>(&amp;self,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; predicate_node: &amp;<a class='enum' href='../../rdf_rs/node/enum.Node.html' title='rdf_rs::node::Node'>Node</a>,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; object_node: &amp;<a class='enum' href='../../rdf_rs/node/enum.Node.html' title='rdf_rs::node::Node'>Node</a>)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -&gt; <a class='struct' href='https://doc.rust-lang.org/nightly/collections/vec/struct.Vec.html' title='collections::vec::Vec'>Vec</a>&lt;&amp;<a class='struct' href='../../rdf_rs/triple/struct.Triple.html' title='rdf_rs::triple::Triple'>Triple</a>&gt;</code></span></h4>
+<div class='docblock'><p>Returns all triples where the predicate and object nodes match the provided nodes.</p>
+</div><h4 id='method.get_blank_nodes' class='method'><span id='get_blank_nodes.v' class='invisible'><code>fn <a href='#method.get_blank_nodes' class='fnname'>get_blank_nodes</a>(&amp;self) -&gt; <a class='struct' href='https://doc.rust-lang.org/nightly/collections/vec/struct.Vec.html' title='collections::vec::Vec'>Vec</a>&lt;&amp;<a class='enum' href='../../rdf_rs/node/enum.Node.html' title='rdf_rs::node::Node'>Node</a>&gt;</code></span></h4>
+<div class='docblock'><p>Returns all blank nodes of the store.</p>
+</div><h4 id='method.into_vec' class='method'><span id='into_vec.v' class='invisible'><code>fn <a href='#method.into_vec' class='fnname'>into_vec</a>(self) -&gt; <a class='struct' href='https://doc.rust-lang.org/nightly/collections/vec/struct.Vec.html' title='collections::vec::Vec'>Vec</a>&lt;<a class='struct' href='../../rdf_rs/triple/struct.Triple.html' title='rdf_rs::triple::Triple'>Triple</a>&gt;</code></span></h4>
+<div class='docblock'><p>Returns the stored triples as vector.</p>
+</div><h4 id='method.iter' class='method'><span id='iter.v' class='invisible'><code>fn <a href='#method.iter' class='fnname'>iter</a>(&amp;self) -&gt; <a class='struct' href='https://doc.rust-lang.org/nightly/core/slice/struct.Iter.html' title='core::slice::Iter'>Iter</a>&lt;<a class='struct' href='../../rdf_rs/triple/struct.Triple.html' title='rdf_rs::triple::Triple'>Triple</a>&gt;</code></span></h4>
+<div class='docblock'><p>Returns an iterator over the stored triples.</p>
+</div></div><h2 id='implementations'>Trait Implementations</h2><h3 class='impl'><span class='in-band'><code>impl <a class='trait' href='https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html' title='core::fmt::Debug'>Debug</a> for <a class='struct' href='../../rdf_rs/triple/struct.TripleStore.html' title='rdf_rs::triple::TripleStore'>TripleStore</a></code></span><span class='out-of-band'><div class='ghost'></div><a id='src-1294' class='srclink' href='../../src/rdf_rs/src/triple.rs.html#81' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.fmt' class='method'><span id='fmt.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html#tymethod.fmt' class='fnname'>fmt</a>(&amp;self, __arg_0: &amp;mut <a class='struct' href='https://doc.rust-lang.org/nightly/core/fmt/struct.Formatter.html' title='core::fmt::Formatter'>Formatter</a>) -&gt; <a class='type' href='https://doc.rust-lang.org/nightly/core/fmt/type.Result.html' title='core::fmt::Result'>Result</a></code></span></h4>
+<div class='docblock'><p>Formats the value using the given formatter.</p>
+</div></div><h3 class='impl'><span class='in-band'><code>impl <a class='trait' href='https://doc.rust-lang.org/nightly/core/iter/traits/trait.IntoIterator.html' title='core::iter::traits::IntoIterator'>IntoIterator</a> for <a class='struct' href='../../rdf_rs/triple/struct.TripleStore.html' title='rdf_rs::triple::TripleStore'>TripleStore</a></code></span><span class='out-of-band'><div class='ghost'></div><a id='src-117' class='srclink' href='../../src/rdf_rs/src/triple.rs.html#186-193' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='associatedtype.Item' class='type'><span id='Item.t' class='invisible'><code>type <a href='https://doc.rust-lang.org/nightly/core/iter/traits/trait.IntoIterator.html#associatedtype.Item' class='type'>Item</a> = <a class='struct' href='../../rdf_rs/triple/struct.Triple.html' title='rdf_rs::triple::Triple'>Triple</a></code></span></h4>
+<div class='docblock'><p>The type of the elements being iterated over.</p>
+</div><h4 id='associatedtype.IntoIter' class='type'><span id='IntoIter.t' class='invisible'><code>type <a href='https://doc.rust-lang.org/nightly/core/iter/traits/trait.IntoIterator.html#associatedtype.IntoIter' class='type'>IntoIter</a> = <a class='struct' href='https://doc.rust-lang.org/nightly/collections/vec/struct.IntoIter.html' title='collections::vec::IntoIter'>IntoIter</a>&lt;<a class='struct' href='../../rdf_rs/triple/struct.Triple.html' title='rdf_rs::triple::Triple'>Triple</a>&gt;</code></span></h4>
+<div class='docblock'><p>Which kind of iterator are we turning this into?</p>
+</div><h4 id='method.into_iter' class='method'><span id='into_iter.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/iter/traits/trait.IntoIterator.html#tymethod.into_iter' class='fnname'>into_iter</a>(self) -&gt; Self::IntoIter</code></span></h4>
+<div class='docblock'><p>Creates an iterator from a value. <a href="https://doc.rust-lang.org/nightly/core/iter/traits/trait.IntoIterator.html#tymethod.into_iter">Read more</a></p>
+</div></div></section>
+    <section id='search' class="content hidden"></section>
+
+    <section class="footer"></section>
+
+    <aside id="help" class="hidden">
+        <div>
+            <h1 class="hidden">Help</h1>
+
+            <div class="shortcuts">
+                <h2>Keyboard Shortcuts</h2>
+
+                <dl>
+                    <dt>?</dt>
+                    <dd>Show this help dialog</dd>
+                    <dt>S</dt>
+                    <dd>Focus the search field</dd>
+                    <dt>&larrb;</dt>
+                    <dd>Move up in search results</dd>
+                    <dt>&rarrb;</dt>
+                    <dd>Move down in search results</dd>
+                    <dt>&#9166;</dt>
+                    <dd>Go to active search result</dd>
+                    <dt>+</dt>
+                    <dd>Collapse/expand all sections</dd>
+                </dl>
+            </div>
+
+            <div class="infos">
+                <h2>Search Tricks</h2>
+
+                <p>
+                    Prefix searches with a type followed by a colon (e.g.
+                    <code>fn:</code>) to restrict the search to a given type.
+                </p>
+
+                <p>
+                    Accepted types are: <code>fn</code>, <code>mod</code>,
+                    <code>struct</code>, <code>enum</code>,
+                    <code>trait</code>, <code>type</code>, <code>macro</code>,
+                    and <code>const</code>.
+                </p>
+
+                <p>
+                    Search functions by type signature (e.g.
+                    <code>vec -> usize</code> or <code>* -> vec</code>)
+                </p>
+            </div>
+        </div>
+    </aside>
+
+    
+
+    <script>
+        window.rootPath = "../../";
+        window.currentCrate = "rdf_rs";
+    </script>
+    <script src="../../jquery.js"></script>
+    <script src="../../main.js"></script>
+    <script defer src="../../search-index.js"></script>
+</body>
+</html>

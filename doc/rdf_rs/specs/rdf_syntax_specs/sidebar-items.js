@@ -1,0 +1,1 @@
+initSidebarItems({"enum":[["RdfSyntaxDataTypes","RDF Schema data types and vocabulary."]],"struct":[["RdfSyntaxSpecs","Contains general RDF specification rules and helpers."]]});

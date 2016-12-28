@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["Namespace","Representation of a specific namespace."],["NamespaceStore","Storage for multiple namespaces."]]});

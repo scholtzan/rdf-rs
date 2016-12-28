@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["TurtleFormatter","Formatter for formatting nodes to Turtle syntax. This formatter is used by `TurtleWriter`."]]});

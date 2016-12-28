@@ -1,0 +1,1 @@
+initSidebarItems({"enum":[["ErrorType","Different types of errors that can occur."]],"struct":[["Error","An error related to the rdf-rs module."]]});

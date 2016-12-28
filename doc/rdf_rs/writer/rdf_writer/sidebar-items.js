@@ -1,0 +1,1 @@
+initSidebarItems({"trait":[["RdfWriter","Trait implemented by RDF writers to generate a specific syntax."]]});

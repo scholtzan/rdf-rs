@@ -1,0 +1,1 @@
+initSidebarItems({"enum":[["TripleSegment","Triple segment."]],"struct":[["Triple","Triple representation."],["TripleStore","Storage for triples."]]});

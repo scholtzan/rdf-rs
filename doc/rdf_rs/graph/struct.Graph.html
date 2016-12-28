@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="rustdoc">
+    <meta name="description" content="API documentation for the Rust `Graph` struct in crate `rdf_rs`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, Graph">
+
+    <title>rdf_rs::graph::Graph - Rust</title>
+
+    <link rel="stylesheet" type="text/css" href="../../rustdoc.css">
+    <link rel="stylesheet" type="text/css" href="../../main.css">
+    
+
+    
+    
+</head>
+<body class="rustdoc">
+    <!--[if lte IE 8]>
+    <div class="warning">
+        This old browser is unsupported and will most likely display funky
+        things.
+    </div>
+    <![endif]-->
+
+    
+
+    <nav class="sidebar">
+        
+        <p class='location'><a href='../index.html'>rdf_rs</a>::<wbr><a href='index.html'>graph</a></p><script>window.sidebarCurrent = {name: 'Graph', ty: 'struct', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+    </nav>
+
+    <nav class="sub">
+        <form class="search-form js-only">
+            <div class="search-container">
+                <input class="search-input" name="search"
+                       autocomplete="off"
+                       placeholder="Click or press ‘S’ to search, ‘?’ for more options…"
+                       type="search">
+            </div>
+        </form>
+    </nav>
+
+    <section id='main' class="content struct">
+<h1 class='fqn'><span class='in-band'>Struct <a href='../index.html'>rdf_rs</a>::<wbr><a href='index.html'>graph</a>::<wbr><a class='struct' href=''>Graph</a></span><span class='out-of-band'><span id='render-detail'>
+                   <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
+                       [<span class='inner'>&#x2212;</span>]
+                   </a>
+               </span><a id='src-1300' class='srclink' href='../../src/rdf_rs/src/graph.rs.html#12-24' title='goto source code'>[src]</a></span></h1>
+<pre class='rust struct'>pub struct Graph { /* fields omitted */ }</pre><div class='docblock'><p>Representation of an RDF graph.</p>
+</div><h2 id='methods'>Methods</h2><h3 class='impl'><span class='in-band'><code>impl <a class='struct' href='../../rdf_rs/graph/struct.Graph.html' title='rdf_rs::graph::Graph'>Graph</a></code></span><span class='out-of-band'><div class='ghost'></div><a id='src-130' class='srclink' href='../../src/rdf_rs/src/graph.rs.html#27-556' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.new' class='method'><span id='new.v' class='invisible'><code>fn <a href='#method.new' class='fnname'>new</a>(base_uri: <a class='enum' href='https://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;&amp;<a class='struct' href='../../rdf_rs/uri/struct.Uri.html' title='rdf_rs::uri::Uri'>Uri</a>&gt;) -&gt; <a class='struct' href='../../rdf_rs/graph/struct.Graph.html' title='rdf_rs::graph::Graph'>Graph</a></code></span></h4>
+<div class='docblock'><p>Constructor for the RDF graph.</p>
+
+<h1 id='examples' class='section-header'><a href='#examples'>Examples</a></h1>
+<pre class='rust rust-example-rendered'>
+<span class='kw'>use</span> <span class='ident'>rdf_rs</span>::<span class='ident'>graph</span>::<span class='ident'>Graph</span>;
+
+<span class='kw'>let</span> <span class='ident'>graph</span> <span class='op'>=</span> <span class='ident'>Graph</span>::<span class='ident'>new</span>(<span class='prelude-val'>None</span>);</pre>
+</div><h4 id='method.is_empty' class='method'><span id='is_empty.v' class='invisible'><code>fn <a href='#method.is_empty' class='fnname'>is_empty</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></span></h4>
+<div class='docblock'><p>Returns <code>true</code> if the graph does not contain any triples.</p>
+
+<h1 id='examples-1' class='section-header'><a href='#examples-1'>Examples</a></h1>
+<pre class='rust rust-example-rendered'>
+<span class='kw'>use</span> <span class='ident'>rdf_rs</span>::<span class='ident'>graph</span>::<span class='ident'>Graph</span>;
+
+<span class='kw'>let</span> <span class='ident'>graph</span> <span class='op'>=</span> <span class='ident'>Graph</span>::<span class='ident'>new</span>(<span class='prelude-val'>None</span>);
+
+<span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>graph</span>.<span class='ident'>is_empty</span>(), <span class='bool-val'>true</span>);</pre>
+</div><h4 id='method.count' class='method'><span id='count.v' class='invisible'><code>fn <a href='#method.count' class='fnname'>count</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.usize.html'>usize</a></code></span></h4>
+<div class='docblock'><p>Returns the number of triples that are stored in the graph.</p>
+
+<h1 id='examples-2' class='section-header'><a href='#examples-2'>Examples</a></h1>
+<pre class='rust rust-example-rendered'>
+<span class='kw'>use</span> <span class='ident'>rdf_rs</span>::<span class='ident'>graph</span>::<span class='ident'>Graph</span>;
+
+<span class='kw'>let</span> <span class='ident'>graph</span> <span class='op'>=</span> <span class='ident'>Graph</span>::<span class='ident'>new</span>(<span class='prelude-val'>None</span>);
+
+<span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>graph</span>.<span class='ident'>count</span>(), <span class='number'>0</span>);</pre>
+</div><h4 id='method.base_uri' class='method'><span id='base_uri.v' class='invisible'><code>fn <a href='#method.base_uri' class='fnname'>base_uri</a>(&amp;self) -&gt; &amp;<a class='enum' href='https://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;<a class='struct' href='../../rdf_rs/uri/struct.Uri.html' title='rdf_rs::uri::Uri'>Uri</a>&gt;</code></span></h4>
+<div class='docblock'><p>Returns the base URI of the graph.</p>
+
+<h1 id='examples-3' class='section-header'><a href='#examples-3'>Examples</a></h1>
+<pre class='rust rust-example-rendered'>
+<span class='kw'>use</span> <span class='ident'>rdf_rs</span>::<span class='ident'>uri</span>::<span class='ident'>Uri</span>;
+<span class='kw'>use</span> <span class='ident'>rdf_rs</span>::<span class='ident'>graph</span>::<span class='ident'>Graph</span>;
+
+<span class='kw'>let</span> <span class='ident'>base_uri</span> <span class='op'>=</span> <span class='ident'>Uri</span>::<span class='ident'>new</span>(<span class='string'>&quot;http://example.org/&quot;</span>.<span class='ident'>to_string</span>());
+<span class='kw'>let</span> <span class='ident'>graph</span> <span class='op'>=</span> <span class='ident'>Graph</span>::<span class='ident'>new</span>(<span class='prelude-val'>Some</span>(<span class='kw-2'>&amp;</span><span class='ident'>base_uri</span>));
+
+<span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>graph</span>.<span class='ident'>base_uri</span>(), <span class='kw-2'>&amp;</span><span class='prelude-val'>Some</span>(<span class='ident'>base_uri</span>));</pre>
+</div><h4 id='method.set_base_uri' class='method'><span id='set_base_uri.v' class='invisible'><code>fn <a href='#method.set_base_uri' class='fnname'>set_base_uri</a>(&amp;mut self, uri: &amp;<a class='struct' href='../../rdf_rs/uri/struct.Uri.html' title='rdf_rs::uri::Uri'>Uri</a>)</code></span></h4>
+<div class='docblock'><p>Sets the base URI of the graph.</p>
+
+<h1 id='examples-4' class='section-header'><a href='#examples-4'>Examples</a></h1>
+<pre class='rust rust-example-rendered'>
+<span class='kw'>use</span> <span class='ident'>rdf_rs</span>::<span class='ident'>uri</span>::<span class='ident'>Uri</span>;
+<span class='kw'>use</span> <span class='ident'>rdf_rs</span>::<span class='ident'>graph</span>::<span class='ident'>Graph</span>;
+
+<span class='kw'>let</span> <span class='ident'>base_uri</span> <span class='op'>=</span> <span class='ident'>Uri</span>::<span class='ident'>new</span>(<span class='string'>&quot;http://base.example.org/&quot;</span>.<span class='ident'>to_string</span>());
+<span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>graph</span> <span class='op'>=</span> <span class='ident'>Graph</span>::<span class='ident'>new</span>(<span class='prelude-val'>None</span>);
+
+<span class='ident'>graph</span>.<span class='ident'>set_base_uri</span>(<span class='kw-2'>&amp;</span><span class='ident'>base_uri</span>);
+
+<span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>graph</span>.<span class='ident'>base_uri</span>(), <span class='kw-2'>&amp;</span><span class='prelude-val'>Some</span>(<span class='ident'>base_uri</span>));</pre>
+</div><h4 id='method.namespaces' class='method'><span id='namespaces.v' class='invisible'><code>fn <a href='#method.namespaces' class='fnname'>namespaces</a>(&amp;self) -&gt; &amp;<a class='struct' href='https://doc.rust-lang.org/nightly/std/collections/hash/map/struct.HashMap.html' title='std::collections::hash::map::HashMap'>HashMap</a>&lt;<a class='struct' href='https://doc.rust-lang.org/nightly/collections/string/struct.String.html' title='collections::string::String'>String</a>, <a class='struct' href='../../rdf_rs/uri/struct.Uri.html' title='rdf_rs::uri::Uri'>Uri</a>&gt;</code></span></h4>
+<div class='docblock'><p>Returns a hash map of namespaces and prefixes.</p>
+</div><h4 id='method.add_namespace' class='method'><span id='add_namespace.v' class='invisible'><code>fn <a href='#method.add_namespace' class='fnname'>add_namespace</a>(&amp;mut self, ns: &amp;<a class='struct' href='../../rdf_rs/namespace/struct.Namespace.html' title='rdf_rs::namespace::Namespace'>Namespace</a>)</code></span></h4>
+<div class='docblock'><p>Adds a new namespace with a specific prefix to the graph.</p>
+
+<h1 id='examples-5' class='section-header'><a href='#examples-5'>Examples</a></h1>
+<pre class='rust rust-example-rendered'>
+<span class='kw'>use</span> <span class='ident'>rdf_rs</span>::<span class='ident'>uri</span>::<span class='ident'>Uri</span>;
+<span class='kw'>use</span> <span class='ident'>rdf_rs</span>::<span class='ident'>graph</span>::<span class='ident'>Graph</span>;
+<span class='kw'>use</span> <span class='ident'>rdf_rs</span>::<span class='ident'>namespace</span>::<span class='ident'>Namespace</span>;
+
+<span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>graph</span> <span class='op'>=</span> <span class='ident'>Graph</span>::<span class='ident'>new</span>(<span class='prelude-val'>None</span>);
+<span class='ident'>graph</span>.<span class='ident'>add_namespace</span>(<span class='kw-2'>&amp;</span><span class='ident'>Namespace</span>::<span class='ident'>new</span>(<span class='string'>&quot;example&quot;</span>.<span class='ident'>to_string</span>(),
+                                    <span class='ident'>Uri</span>::<span class='ident'>new</span>(<span class='string'>&quot;http://example.org/&quot;</span>.<span class='ident'>to_string</span>())));
+
+<span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>graph</span>.<span class='ident'>namespaces</span>().<span class='ident'>len</span>(), <span class='number'>1</span>);</pre>
+</div><h4 id='method.get_namespace_uri_by_prefix' class='method'><span id='get_namespace_uri_by_prefix.v' class='invisible'><code>fn <a href='#method.get_namespace_uri_by_prefix' class='fnname'>get_namespace_uri_by_prefix</a>(&amp;self, prefix: <a class='struct' href='https://doc.rust-lang.org/nightly/collections/string/struct.String.html' title='collections::string::String'>String</a>) -&gt; <a class='type' href='../../rdf_rs/type.Result.html' title='rdf_rs::Result'>Result</a>&lt;&amp;<a class='struct' href='../../rdf_rs/uri/struct.Uri.html' title='rdf_rs::uri::Uri'>Uri</a>&gt;</code></span></h4>
+<div class='docblock'><p>Returns the URI of a namespace with the provided prefix.</p>
+
+<h1 id='examples-6' class='section-header'><a href='#examples-6'>Examples</a></h1>
+<pre class='rust rust-example-rendered'>
+<span class='kw'>use</span> <span class='ident'>rdf_rs</span>::<span class='ident'>uri</span>::<span class='ident'>Uri</span>;
+<span class='kw'>use</span> <span class='ident'>rdf_rs</span>::<span class='ident'>graph</span>::<span class='ident'>Graph</span>;
+<span class='kw'>use</span> <span class='ident'>rdf_rs</span>::<span class='ident'>namespace</span>::<span class='ident'>Namespace</span>;
+
+<span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>graph</span> <span class='op'>=</span> <span class='ident'>Graph</span>::<span class='ident'>new</span>(<span class='prelude-val'>None</span>);
+<span class='kw'>let</span> <span class='ident'>uri</span> <span class='op'>=</span> <span class='ident'>Uri</span>::<span class='ident'>new</span>(<span class='string'>&quot;http://example.org/&quot;</span>.<span class='ident'>to_string</span>());
+<span class='ident'>graph</span>.<span class='ident'>add_namespace</span>(<span class='kw-2'>&amp;</span><span class='ident'>Namespace</span>::<span class='ident'>new</span>(<span class='string'>&quot;example&quot;</span>.<span class='ident'>to_string</span>(), <span class='ident'>uri</span>.<span class='ident'>to_owned</span>()));
+
+<span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>graph</span>.<span class='ident'>get_namespace_uri_by_prefix</span>(<span class='string'>&quot;example&quot;</span>.<span class='ident'>to_string</span>()).<span class='ident'>unwrap</span>(), <span class='kw-2'>&amp;</span><span class='ident'>uri</span>);</pre>
+
+<h1 id='failures' class='section-header'><a href='#failures'>Failures</a></h1>
+<ul>
+<li>No namespace with the provided prefix exists</li>
+</ul>
+</div><h4 id='method.create_literal_node' class='method'><span id='create_literal_node.v' class='invisible'><code>fn <a href='#method.create_literal_node' class='fnname'>create_literal_node</a>(&amp;self, literal: <a class='struct' href='https://doc.rust-lang.org/nightly/collections/string/struct.String.html' title='collections::string::String'>String</a>) -&gt; <a class='enum' href='../../rdf_rs/node/enum.Node.html' title='rdf_rs::node::Node'>Node</a></code></span></h4>
+<div class='docblock'><p>Returns a literal node of the specified namespace.</p>
+
+<h1 id='examples-7' class='section-header'><a href='#examples-7'>Examples</a></h1>
+<pre class='rust rust-example-rendered'>
+<span class='kw'>use</span> <span class='ident'>rdf_rs</span>::<span class='ident'>graph</span>::<span class='ident'>Graph</span>;
+<span class='kw'>use</span> <span class='ident'>rdf_rs</span>::<span class='ident'>node</span>::<span class='ident'>Node</span>;
+
+<span class='kw'>let</span> <span class='ident'>graph</span> <span class='op'>=</span> <span class='ident'>Graph</span>::<span class='ident'>new</span>(<span class='prelude-val'>None</span>);
+<span class='kw'>let</span> <span class='ident'>literal_node</span> <span class='op'>=</span> <span class='ident'>graph</span>.<span class='ident'>create_literal_node</span>(<span class='string'>&quot;literal&quot;</span>.<span class='ident'>to_string</span>());
+
+<span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>literal_node</span>, <span class='ident'>Node</span>::<span class='ident'>LiteralNode</span> {
+  <span class='ident'>literal</span>: <span class='string'>&quot;literal&quot;</span>.<span class='ident'>to_string</span>(),
+  <span class='ident'>data_type</span>: <span class='prelude-val'>None</span>,
+  <span class='ident'>language</span>: <span class='prelude-val'>None</span>
+});</pre>
+</div><h4 id='method.create_literal_node_with_data_type' class='method'><span id='create_literal_node_with_data_type.v' class='invisible'><code>fn <a href='#method.create_literal_node_with_data_type' class='fnname'>create_literal_node_with_data_type</a>(&amp;self,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; literal: <a class='struct' href='https://doc.rust-lang.org/nightly/collections/string/struct.String.html' title='collections::string::String'>String</a>,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; data_type: &amp;<a class='struct' href='../../rdf_rs/uri/struct.Uri.html' title='rdf_rs::uri::Uri'>Uri</a>)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -&gt; <a class='enum' href='../../rdf_rs/node/enum.Node.html' title='rdf_rs::node::Node'>Node</a></code></span></h4>
+<div class='docblock'><p>Returns a literal node with a specified data type.</p>
+
+<h1 id='examples-8' class='section-header'><a href='#examples-8'>Examples</a></h1>
+<pre class='rust rust-example-rendered'>
+<span class='kw'>use</span> <span class='ident'>rdf_rs</span>::<span class='ident'>graph</span>::<span class='ident'>Graph</span>;
+<span class='kw'>use</span> <span class='ident'>rdf_rs</span>::<span class='ident'>node</span>::<span class='ident'>Node</span>;
+<span class='kw'>use</span> <span class='ident'>rdf_rs</span>::<span class='ident'>uri</span>::<span class='ident'>Uri</span>;
+
+<span class='kw'>let</span> <span class='ident'>graph</span> <span class='op'>=</span> <span class='ident'>Graph</span>::<span class='ident'>new</span>(<span class='prelude-val'>None</span>);
+<span class='kw'>let</span> <span class='ident'>literal_node</span> <span class='op'>=</span> <span class='ident'>graph</span>.<span class='ident'>create_literal_node_with_data_type</span>(<span class='string'>&quot;literal&quot;</span>.<span class='ident'>to_string</span>(), <span class='kw-2'>&amp;</span><span class='ident'>Uri</span>::<span class='ident'>new</span>(<span class='string'>&quot;http://example.org/show/localName&quot;</span>.<span class='ident'>to_string</span>()));
+
+<span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>literal_node</span>, <span class='ident'>Node</span>::<span class='ident'>LiteralNode</span> {
+  <span class='ident'>literal</span>: <span class='string'>&quot;literal&quot;</span>.<span class='ident'>to_string</span>(),
+  <span class='ident'>data_type</span>: <span class='prelude-val'>Some</span>(<span class='ident'>Uri</span>::<span class='ident'>new</span>(<span class='string'>&quot;http://example.org/show/localName&quot;</span>.<span class='ident'>to_string</span>())),
+  <span class='ident'>language</span>: <span class='prelude-val'>None</span>
+});</pre>
+</div><h4 id='method.create_literal_node_with_language' class='method'><span id='create_literal_node_with_language.v' class='invisible'><code>fn <a href='#method.create_literal_node_with_language' class='fnname'>create_literal_node_with_language</a>(&amp;self,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; literal: <a class='struct' href='https://doc.rust-lang.org/nightly/collections/string/struct.String.html' title='collections::string::String'>String</a>,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; language: <a class='struct' href='https://doc.rust-lang.org/nightly/collections/string/struct.String.html' title='collections::string::String'>String</a>)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -&gt; <a class='enum' href='../../rdf_rs/node/enum.Node.html' title='rdf_rs::node::Node'>Node</a></code></span></h4>
+<div class='docblock'><p>Returns a literal node with a specified language.</p>
+
+<h1 id='examples-9' class='section-header'><a href='#examples-9'>Examples</a></h1>
+<pre class='rust rust-example-rendered'>
+<span class='kw'>use</span> <span class='ident'>rdf_rs</span>::<span class='ident'>graph</span>::<span class='ident'>Graph</span>;
+<span class='kw'>use</span> <span class='ident'>rdf_rs</span>::<span class='ident'>node</span>::<span class='ident'>Node</span>;
+
+<span class='kw'>let</span> <span class='ident'>graph</span> <span class='op'>=</span> <span class='ident'>Graph</span>::<span class='ident'>new</span>(<span class='prelude-val'>None</span>);
+<span class='kw'>let</span> <span class='ident'>literal_node</span> <span class='op'>=</span> <span class='ident'>graph</span>.<span class='ident'>create_literal_node_with_language</span>(<span class='string'>&quot;literal&quot;</span>.<span class='ident'>to_string</span>(), <span class='string'>&quot;en&quot;</span>.<span class='ident'>to_string</span>());
+
+<span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>literal_node</span>, <span class='ident'>Node</span>::<span class='ident'>LiteralNode</span> {
+  <span class='ident'>literal</span>: <span class='string'>&quot;literal&quot;</span>.<span class='ident'>to_string</span>(),
+  <span class='ident'>data_type</span>: <span class='prelude-val'>None</span>,
+  <span class='ident'>language</span>: <span class='prelude-val'>Some</span>(<span class='string'>&quot;en&quot;</span>.<span class='ident'>to_string</span>())
+});</pre>
+</div><h4 id='method.create_blank_node' class='method'><span id='create_blank_node.v' class='invisible'><code>fn <a href='#method.create_blank_node' class='fnname'>create_blank_node</a>(&amp;mut self) -&gt; <a class='enum' href='../../rdf_rs/node/enum.Node.html' title='rdf_rs::node::Node'>Node</a></code></span></h4>
+<div class='docblock'><p>Creates a blank node with a unique ID.</p>
+
+<h1 id='examples-10' class='section-header'><a href='#examples-10'>Examples</a></h1>
+<pre class='rust rust-example-rendered'>
+<span class='kw'>use</span> <span class='ident'>rdf_rs</span>::<span class='ident'>graph</span>::<span class='ident'>Graph</span>;
+<span class='kw'>use</span> <span class='ident'>rdf_rs</span>::<span class='ident'>node</span>::<span class='ident'>Node</span>;
+
+<span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>graph</span> <span class='op'>=</span> <span class='ident'>Graph</span>::<span class='ident'>new</span>(<span class='prelude-val'>None</span>);
+<span class='kw'>let</span> <span class='ident'>blank_node</span> <span class='op'>=</span> <span class='ident'>graph</span>.<span class='ident'>create_blank_node</span>();
+
+<span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>blank_node</span>, <span class='ident'>Node</span>::<span class='ident'>BlankNode</span> {
+  <span class='ident'>id</span>: <span class='string'>&quot;auto0&quot;</span>.<span class='ident'>to_string</span>()
+});</pre>
+</div><h4 id='method.create_blank_node_with_id' class='method'><span id='create_blank_node_with_id.v' class='invisible'><code>fn <a href='#method.create_blank_node_with_id' class='fnname'>create_blank_node_with_id</a>(&amp;self, id: <a class='struct' href='https://doc.rust-lang.org/nightly/collections/string/struct.String.html' title='collections::string::String'>String</a>) -&gt; <a class='enum' href='../../rdf_rs/node/enum.Node.html' title='rdf_rs::node::Node'>Node</a></code></span></h4>
+<div class='docblock'><p>Creates a blank node with the specified ID.</p>
+
+<h1 id='examples-11' class='section-header'><a href='#examples-11'>Examples</a></h1>
+<pre class='rust rust-example-rendered'>
+<span class='kw'>use</span> <span class='ident'>rdf_rs</span>::<span class='ident'>graph</span>::<span class='ident'>Graph</span>;
+<span class='kw'>use</span> <span class='ident'>rdf_rs</span>::<span class='ident'>node</span>::<span class='ident'>Node</span>;
+
+<span class='kw'>let</span> <span class='ident'>graph</span> <span class='op'>=</span> <span class='ident'>Graph</span>::<span class='ident'>new</span>(<span class='prelude-val'>None</span>);
+<span class='kw'>let</span> <span class='ident'>blank_node</span> <span class='op'>=</span> <span class='ident'>graph</span>.<span class='ident'>create_blank_node_with_id</span>(<span class='string'>&quot;foobar&quot;</span>.<span class='ident'>to_string</span>());
+
+<span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>blank_node</span>, <span class='ident'>Node</span>::<span class='ident'>BlankNode</span> {
+  <span class='ident'>id</span>: <span class='string'>&quot;foobar&quot;</span>.<span class='ident'>to_string</span>()
+});</pre>
+</div><h4 id='method.create_uri_node' class='method'><span id='create_uri_node.v' class='invisible'><code>fn <a href='#method.create_uri_node' class='fnname'>create_uri_node</a>(&amp;self, uri: &amp;<a class='struct' href='../../rdf_rs/uri/struct.Uri.html' title='rdf_rs::uri::Uri'>Uri</a>) -&gt; <a class='enum' href='../../rdf_rs/node/enum.Node.html' title='rdf_rs::node::Node'>Node</a></code></span></h4>
+<div class='docblock'><p>Creates a new URI node.</p>
+
+<h1 id='examples-12' class='section-header'><a href='#examples-12'>Examples</a></h1>
+<pre class='rust rust-example-rendered'>
+<span class='kw'>use</span> <span class='ident'>rdf_rs</span>::<span class='ident'>graph</span>::<span class='ident'>Graph</span>;
+<span class='kw'>use</span> <span class='ident'>rdf_rs</span>::<span class='ident'>node</span>::<span class='ident'>Node</span>;
+<span class='kw'>use</span> <span class='ident'>rdf_rs</span>::<span class='ident'>uri</span>::<span class='ident'>Uri</span>;
+
+<span class='kw'>let</span> <span class='ident'>graph</span> <span class='op'>=</span> <span class='ident'>Graph</span>::<span class='ident'>new</span>(<span class='prelude-val'>None</span>);
+<span class='kw'>let</span> <span class='ident'>uri_node</span> <span class='op'>=</span> <span class='ident'>graph</span>.<span class='ident'>create_uri_node</span>(<span class='kw-2'>&amp;</span><span class='ident'>Uri</span>::<span class='ident'>new</span>(<span class='string'>&quot;http://example.org/show/localName&quot;</span>.<span class='ident'>to_string</span>()));
+
+<span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>uri_node</span>, <span class='ident'>Node</span>::<span class='ident'>UriNode</span> {
+  <span class='ident'>uri</span>: <span class='ident'>Uri</span>::<span class='ident'>new</span>(<span class='string'>&quot;http://example.org/show/localName&quot;</span>.<span class='ident'>to_string</span>())
+});</pre>
+</div><h4 id='method.add_triple' class='method'><span id='add_triple.v' class='invisible'><code>fn <a href='#method.add_triple' class='fnname'>add_triple</a>(&amp;mut self, triple: &amp;<a class='struct' href='../../rdf_rs/triple/struct.Triple.html' title='rdf_rs::triple::Triple'>Triple</a>)</code></span></h4>
+<div class='docblock'><p>Adds a triple to the graph.</p>
+
+<h1 id='examples-13' class='section-header'><a href='#examples-13'>Examples</a></h1>
+<pre class='rust rust-example-rendered'>
+<span class='kw'>use</span> <span class='ident'>rdf_rs</span>::<span class='ident'>graph</span>::<span class='ident'>Graph</span>;
+<span class='kw'>use</span> <span class='ident'>rdf_rs</span>::<span class='ident'>uri</span>::<span class='ident'>Uri</span>;
+<span class='kw'>use</span> <span class='ident'>rdf_rs</span>::<span class='ident'>triple</span>::<span class='ident'>Triple</span>;
+
+<span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>graph</span> <span class='op'>=</span> <span class='ident'>Graph</span>::<span class='ident'>new</span>(<span class='prelude-val'>None</span>);
+
+<span class='kw'>let</span> <span class='ident'>subject</span> <span class='op'>=</span> <span class='ident'>graph</span>.<span class='ident'>create_blank_node</span>();
+<span class='kw'>let</span> <span class='ident'>predicate</span> <span class='op'>=</span> <span class='ident'>graph</span>.<span class='ident'>create_uri_node</span>(<span class='kw-2'>&amp;</span><span class='ident'>Uri</span>::<span class='ident'>new</span>(<span class='string'>&quot;http://example.org/show/localName&quot;</span>.<span class='ident'>to_string</span>()));
+<span class='kw'>let</span> <span class='ident'>object</span> <span class='op'>=</span> <span class='ident'>graph</span>.<span class='ident'>create_blank_node</span>();
+<span class='kw'>let</span> <span class='ident'>triple</span> <span class='op'>=</span> <span class='ident'>Triple</span>::<span class='ident'>new</span>(<span class='kw-2'>&amp;</span><span class='ident'>subject</span>, <span class='kw-2'>&amp;</span><span class='ident'>predicate</span>, <span class='kw-2'>&amp;</span><span class='ident'>object</span>);
+
+<span class='ident'>graph</span>.<span class='ident'>add_triple</span>(<span class='kw-2'>&amp;</span><span class='ident'>triple</span>);
+
+<span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>graph</span>.<span class='ident'>count</span>(), <span class='number'>1</span>);</pre>
+</div><h4 id='method.add_triples' class='method'><span id='add_triples.v' class='invisible'><code>fn <a href='#method.add_triples' class='fnname'>add_triples</a>(&amp;mut self, triples: &amp;<a class='struct' href='https://doc.rust-lang.org/nightly/collections/vec/struct.Vec.html' title='collections::vec::Vec'>Vec</a>&lt;<a class='struct' href='../../rdf_rs/triple/struct.Triple.html' title='rdf_rs::triple::Triple'>Triple</a>&gt;)</code></span></h4>
+<div class='docblock'><p>Adds a vector of triples.</p>
+
+<h1 id='examples-14' class='section-header'><a href='#examples-14'>Examples</a></h1>
+<pre class='rust rust-example-rendered'>
+<span class='kw'>use</span> <span class='ident'>rdf_rs</span>::<span class='ident'>graph</span>::<span class='ident'>Graph</span>;
+<span class='kw'>use</span> <span class='ident'>rdf_rs</span>::<span class='ident'>uri</span>::<span class='ident'>Uri</span>;
+<span class='kw'>use</span> <span class='ident'>rdf_rs</span>::<span class='ident'>triple</span>::<span class='ident'>Triple</span>;
+
+<span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>graph</span> <span class='op'>=</span> <span class='ident'>Graph</span>::<span class='ident'>new</span>(<span class='prelude-val'>None</span>);
+
+<span class='kw'>let</span> <span class='ident'>subject</span> <span class='op'>=</span> <span class='ident'>graph</span>.<span class='ident'>create_blank_node</span>();
+<span class='kw'>let</span> <span class='ident'>predicate</span> <span class='op'>=</span> <span class='ident'>graph</span>.<span class='ident'>create_uri_node</span>(<span class='kw-2'>&amp;</span><span class='ident'>Uri</span>::<span class='ident'>new</span>(<span class='string'>&quot;http://example.org/show/localName&quot;</span>.<span class='ident'>to_string</span>()));
+<span class='kw'>let</span> <span class='ident'>object</span> <span class='op'>=</span> <span class='ident'>graph</span>.<span class='ident'>create_blank_node</span>();
+
+<span class='kw'>let</span> <span class='ident'>triple1</span> <span class='op'>=</span> <span class='ident'>Triple</span>::<span class='ident'>new</span>(<span class='kw-2'>&amp;</span><span class='ident'>subject</span>, <span class='kw-2'>&amp;</span><span class='ident'>predicate</span>, <span class='kw-2'>&amp;</span><span class='ident'>object</span>);
+<span class='kw'>let</span> <span class='ident'>triple2</span> <span class='op'>=</span> <span class='ident'>Triple</span>::<span class='ident'>new</span>(<span class='kw-2'>&amp;</span><span class='ident'>subject</span>, <span class='kw-2'>&amp;</span><span class='ident'>predicate</span>, <span class='kw-2'>&amp;</span><span class='ident'>object</span>);
+
+<span class='ident'>graph</span>.<span class='ident'>add_triples</span>(<span class='kw-2'>&amp;</span><span class='macro'>vec</span><span class='macro'>!</span>[<span class='ident'>triple1</span>, <span class='ident'>triple2</span>]);
+
+<span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>graph</span>.<span class='ident'>count</span>(), <span class='number'>2</span>);</pre>
+</div><h4 id='method.remove_triple' class='method'><span id='remove_triple.v' class='invisible'><code>fn <a href='#method.remove_triple' class='fnname'>remove_triple</a>(&amp;mut self, triple: &amp;<a class='struct' href='../../rdf_rs/triple/struct.Triple.html' title='rdf_rs::triple::Triple'>Triple</a>)</code></span></h4>
+<div class='docblock'><p>Deletes the triple from the graph.</p>
+
+<h1 id='examples-15' class='section-header'><a href='#examples-15'>Examples</a></h1>
+<pre class='rust rust-example-rendered'>
+<span class='kw'>use</span> <span class='ident'>rdf_rs</span>::<span class='ident'>graph</span>::<span class='ident'>Graph</span>;
+<span class='kw'>use</span> <span class='ident'>rdf_rs</span>::<span class='ident'>uri</span>::<span class='ident'>Uri</span>;
+<span class='kw'>use</span> <span class='ident'>rdf_rs</span>::<span class='ident'>triple</span>::<span class='ident'>Triple</span>;
+
+<span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>graph</span> <span class='op'>=</span> <span class='ident'>Graph</span>::<span class='ident'>new</span>(<span class='prelude-val'>None</span>);
+
+<span class='kw'>let</span> <span class='ident'>subject</span> <span class='op'>=</span> <span class='ident'>graph</span>.<span class='ident'>create_blank_node</span>();
+<span class='kw'>let</span> <span class='ident'>predicate</span> <span class='op'>=</span> <span class='ident'>graph</span>.<span class='ident'>create_uri_node</span>(<span class='kw-2'>&amp;</span><span class='ident'>Uri</span>::<span class='ident'>new</span>(<span class='string'>&quot;http://example.org/show/localName&quot;</span>.<span class='ident'>to_string</span>()));
+<span class='kw'>let</span> <span class='ident'>object</span> <span class='op'>=</span> <span class='ident'>graph</span>.<span class='ident'>create_blank_node</span>();
+<span class='kw'>let</span> <span class='ident'>triple</span> <span class='op'>=</span> <span class='ident'>Triple</span>::<span class='ident'>new</span>(<span class='kw-2'>&amp;</span><span class='ident'>subject</span>, <span class='kw-2'>&amp;</span><span class='ident'>predicate</span>, <span class='kw-2'>&amp;</span><span class='ident'>object</span>);
+
+<span class='ident'>graph</span>.<span class='ident'>add_triple</span>(<span class='kw-2'>&amp;</span><span class='ident'>triple</span>);
+<span class='ident'>graph</span>.<span class='ident'>remove_triple</span>(<span class='kw-2'>&amp;</span><span class='ident'>triple</span>);
+
+<span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>graph</span>.<span class='ident'>count</span>(), <span class='number'>0</span>);</pre>
+</div><h4 id='method.get_triples_with_subject' class='method'><span id='get_triples_with_subject.v' class='invisible'><code>fn <a href='#method.get_triples_with_subject' class='fnname'>get_triples_with_subject</a>(&amp;self, node: &amp;<a class='enum' href='../../rdf_rs/node/enum.Node.html' title='rdf_rs::node::Node'>Node</a>) -&gt; <a class='struct' href='https://doc.rust-lang.org/nightly/collections/vec/struct.Vec.html' title='collections::vec::Vec'>Vec</a>&lt;&amp;<a class='struct' href='../../rdf_rs/triple/struct.Triple.html' title='rdf_rs::triple::Triple'>Triple</a>&gt;</code></span></h4>
+<div class='docblock'><p>Returns all triples from the store that have the specified subject node.</p>
+
+<h1 id='examples-16' class='section-header'><a href='#examples-16'>Examples</a></h1>
+<pre class='rust rust-example-rendered'>
+<span class='kw'>use</span> <span class='ident'>rdf_rs</span>::<span class='ident'>graph</span>::<span class='ident'>Graph</span>;
+<span class='kw'>use</span> <span class='ident'>rdf_rs</span>::<span class='ident'>uri</span>::<span class='ident'>Uri</span>;
+<span class='kw'>use</span> <span class='ident'>rdf_rs</span>::<span class='ident'>triple</span>::<span class='ident'>Triple</span>;
+
+<span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>graph</span> <span class='op'>=</span> <span class='ident'>Graph</span>::<span class='ident'>new</span>(<span class='prelude-val'>None</span>);
+
+<span class='kw'>let</span> <span class='ident'>subject1</span> <span class='op'>=</span> <span class='ident'>graph</span>.<span class='ident'>create_blank_node</span>();
+<span class='kw'>let</span> <span class='ident'>subject2</span> <span class='op'>=</span> <span class='ident'>graph</span>.<span class='ident'>create_blank_node</span>();
+<span class='kw'>let</span> <span class='ident'>predicate</span> <span class='op'>=</span> <span class='ident'>graph</span>.<span class='ident'>create_uri_node</span>(<span class='kw-2'>&amp;</span><span class='ident'>Uri</span>::<span class='ident'>new</span>(<span class='string'>&quot;http://example.org/show/localName&quot;</span>.<span class='ident'>to_string</span>()));
+<span class='kw'>let</span> <span class='ident'>object</span> <span class='op'>=</span> <span class='ident'>graph</span>.<span class='ident'>create_blank_node</span>();
+
+<span class='kw'>let</span> <span class='ident'>triple1</span> <span class='op'>=</span> <span class='ident'>Triple</span>::<span class='ident'>new</span>(<span class='kw-2'>&amp;</span><span class='ident'>subject1</span>, <span class='kw-2'>&amp;</span><span class='ident'>predicate</span>, <span class='kw-2'>&amp;</span><span class='ident'>object</span>);
+<span class='kw'>let</span> <span class='ident'>triple2</span> <span class='op'>=</span> <span class='ident'>Triple</span>::<span class='ident'>new</span>(<span class='kw-2'>&amp;</span><span class='ident'>subject2</span>, <span class='kw-2'>&amp;</span><span class='ident'>predicate</span>, <span class='kw-2'>&amp;</span><span class='ident'>object</span>);
+
+<span class='ident'>graph</span>.<span class='ident'>add_triples</span>(<span class='kw-2'>&amp;</span><span class='macro'>vec</span><span class='macro'>!</span>[<span class='ident'>triple1</span>.<span class='ident'>to_owned</span>(), <span class='ident'>triple2</span>]);
+
+<span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>graph</span>.<span class='ident'>get_triples_with_subject</span>(<span class='kw-2'>&amp;</span><span class='ident'>subject1</span>), <span class='macro'>vec</span><span class='macro'>!</span>[<span class='kw-2'>&amp;</span><span class='ident'>triple1</span>]);</pre>
+</div><h4 id='method.get_triples_with_predicate' class='method'><span id='get_triples_with_predicate.v' class='invisible'><code>fn <a href='#method.get_triples_with_predicate' class='fnname'>get_triples_with_predicate</a>(&amp;self, node: &amp;<a class='enum' href='../../rdf_rs/node/enum.Node.html' title='rdf_rs::node::Node'>Node</a>) -&gt; <a class='struct' href='https://doc.rust-lang.org/nightly/collections/vec/struct.Vec.html' title='collections::vec::Vec'>Vec</a>&lt;&amp;<a class='struct' href='../../rdf_rs/triple/struct.Triple.html' title='rdf_rs::triple::Triple'>Triple</a>&gt;</code></span></h4>
+<div class='docblock'><p>Returns all triples from the store that have the specified predicate node.</p>
+
+<h1 id='examples-17' class='section-header'><a href='#examples-17'>Examples</a></h1>
+<pre class='rust rust-example-rendered'>
+<span class='kw'>use</span> <span class='ident'>rdf_rs</span>::<span class='ident'>graph</span>::<span class='ident'>Graph</span>;
+<span class='kw'>use</span> <span class='ident'>rdf_rs</span>::<span class='ident'>uri</span>::<span class='ident'>Uri</span>;
+<span class='kw'>use</span> <span class='ident'>rdf_rs</span>::<span class='ident'>triple</span>::<span class='ident'>Triple</span>;
+
+<span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>graph</span> <span class='op'>=</span> <span class='ident'>Graph</span>::<span class='ident'>new</span>(<span class='prelude-val'>None</span>);
+
+<span class='kw'>let</span> <span class='ident'>subject1</span> <span class='op'>=</span> <span class='ident'>graph</span>.<span class='ident'>create_blank_node</span>();
+<span class='kw'>let</span> <span class='ident'>subject2</span> <span class='op'>=</span> <span class='ident'>graph</span>.<span class='ident'>create_blank_node</span>();
+<span class='kw'>let</span> <span class='ident'>predicate</span> <span class='op'>=</span> <span class='ident'>graph</span>.<span class='ident'>create_uri_node</span>(<span class='kw-2'>&amp;</span><span class='ident'>Uri</span>::<span class='ident'>new</span>(<span class='string'>&quot;http://example.org/show/localName&quot;</span>.<span class='ident'>to_string</span>()));
+<span class='kw'>let</span> <span class='ident'>object</span> <span class='op'>=</span> <span class='ident'>graph</span>.<span class='ident'>create_blank_node</span>();
+
+<span class='kw'>let</span> <span class='ident'>triple1</span> <span class='op'>=</span> <span class='ident'>Triple</span>::<span class='ident'>new</span>(<span class='kw-2'>&amp;</span><span class='ident'>subject1</span>, <span class='kw-2'>&amp;</span><span class='ident'>predicate</span>, <span class='kw-2'>&amp;</span><span class='ident'>object</span>);
+<span class='kw'>let</span> <span class='ident'>triple2</span> <span class='op'>=</span> <span class='ident'>Triple</span>::<span class='ident'>new</span>(<span class='kw-2'>&amp;</span><span class='ident'>subject2</span>, <span class='kw-2'>&amp;</span><span class='ident'>predicate</span>, <span class='kw-2'>&amp;</span><span class='ident'>object</span>);
+
+<span class='ident'>graph</span>.<span class='ident'>add_triples</span>(<span class='kw-2'>&amp;</span><span class='macro'>vec</span><span class='macro'>!</span>[<span class='ident'>triple1</span>.<span class='ident'>to_owned</span>(), <span class='ident'>triple2</span>.<span class='ident'>to_owned</span>()]);
+
+<span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>graph</span>.<span class='ident'>get_triples_with_predicate</span>(<span class='kw-2'>&amp;</span><span class='ident'>predicate</span>), <span class='macro'>vec</span><span class='macro'>!</span>[<span class='kw-2'>&amp;</span><span class='ident'>triple1</span>, <span class='kw-2'>&amp;</span><span class='ident'>triple2</span>]);</pre>
+</div><h4 id='method.get_triples_with_object' class='method'><span id='get_triples_with_object.v' class='invisible'><code>fn <a href='#method.get_triples_with_object' class='fnname'>get_triples_with_object</a>(&amp;self, node: &amp;<a class='enum' href='../../rdf_rs/node/enum.Node.html' title='rdf_rs::node::Node'>Node</a>) -&gt; <a class='struct' href='https://doc.rust-lang.org/nightly/collections/vec/struct.Vec.html' title='collections::vec::Vec'>Vec</a>&lt;&amp;<a class='struct' href='../../rdf_rs/triple/struct.Triple.html' title='rdf_rs::triple::Triple'>Triple</a>&gt;</code></span></h4>
+<div class='docblock'><p>Returns all triples from the store that have the specified object node.</p>
+
+<h1 id='examples-18' class='section-header'><a href='#examples-18'>Examples</a></h1>
+<pre class='rust rust-example-rendered'>
+<span class='kw'>use</span> <span class='ident'>rdf_rs</span>::<span class='ident'>graph</span>::<span class='ident'>Graph</span>;
+<span class='kw'>use</span> <span class='ident'>rdf_rs</span>::<span class='ident'>uri</span>::<span class='ident'>Uri</span>;
+<span class='kw'>use</span> <span class='ident'>rdf_rs</span>::<span class='ident'>triple</span>::<span class='ident'>Triple</span>;
+
+<span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>graph</span> <span class='op'>=</span> <span class='ident'>Graph</span>::<span class='ident'>new</span>(<span class='prelude-val'>None</span>);
+
+<span class='kw'>let</span> <span class='ident'>subject1</span> <span class='op'>=</span> <span class='ident'>graph</span>.<span class='ident'>create_blank_node</span>();
+<span class='kw'>let</span> <span class='ident'>subject2</span> <span class='op'>=</span> <span class='ident'>graph</span>.<span class='ident'>create_blank_node</span>();
+<span class='kw'>let</span> <span class='ident'>predicate</span> <span class='op'>=</span> <span class='ident'>graph</span>.<span class='ident'>create_uri_node</span>(<span class='kw-2'>&amp;</span><span class='ident'>Uri</span>::<span class='ident'>new</span>(<span class='string'>&quot;http://example.org/show/localName&quot;</span>.<span class='ident'>to_string</span>()));
+<span class='kw'>let</span> <span class='ident'>object</span> <span class='op'>=</span> <span class='ident'>graph</span>.<span class='ident'>create_blank_node</span>();
+
+<span class='kw'>let</span> <span class='ident'>triple1</span> <span class='op'>=</span> <span class='ident'>Triple</span>::<span class='ident'>new</span>(<span class='kw-2'>&amp;</span><span class='ident'>subject1</span>, <span class='kw-2'>&amp;</span><span class='ident'>predicate</span>, <span class='kw-2'>&amp;</span><span class='ident'>object</span>);
+<span class='kw'>let</span> <span class='ident'>triple2</span> <span class='op'>=</span> <span class='ident'>Triple</span>::<span class='ident'>new</span>(<span class='kw-2'>&amp;</span><span class='ident'>subject2</span>, <span class='kw-2'>&amp;</span><span class='ident'>predicate</span>, <span class='kw-2'>&amp;</span><span class='ident'>object</span>);
+
+<span class='ident'>graph</span>.<span class='ident'>add_triples</span>(<span class='kw-2'>&amp;</span><span class='macro'>vec</span><span class='macro'>!</span>[<span class='ident'>triple1</span>.<span class='ident'>to_owned</span>(), <span class='ident'>triple2</span>.<span class='ident'>to_owned</span>()]);
+
+<span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>graph</span>.<span class='ident'>get_triples_with_object</span>(<span class='kw-2'>&amp;</span><span class='ident'>object</span>), <span class='macro'>vec</span><span class='macro'>!</span>[<span class='kw-2'>&amp;</span><span class='ident'>triple1</span>, <span class='kw-2'>&amp;</span><span class='ident'>triple2</span>]);</pre>
+</div><h4 id='method.get_triples_with_subject_and_object' class='method'><span id='get_triples_with_subject_and_object.v' class='invisible'><code>fn <a href='#method.get_triples_with_subject_and_object' class='fnname'>get_triples_with_subject_and_object</a>(&amp;self,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; subject_node: &amp;<a class='enum' href='../../rdf_rs/node/enum.Node.html' title='rdf_rs::node::Node'>Node</a>,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; object_node: &amp;<a class='enum' href='../../rdf_rs/node/enum.Node.html' title='rdf_rs::node::Node'>Node</a>)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -&gt; <a class='struct' href='https://doc.rust-lang.org/nightly/collections/vec/struct.Vec.html' title='collections::vec::Vec'>Vec</a>&lt;&amp;<a class='struct' href='../../rdf_rs/triple/struct.Triple.html' title='rdf_rs::triple::Triple'>Triple</a>&gt;</code></span></h4>
+<div class='docblock'><p>Returns all triples from the triple store where the subject and object nodes match the provided nodes.</p>
+
+<h1 id='examples-19' class='section-header'><a href='#examples-19'>Examples</a></h1>
+<pre class='rust rust-example-rendered'>
+<span class='kw'>use</span> <span class='ident'>rdf_rs</span>::<span class='ident'>graph</span>::<span class='ident'>Graph</span>;
+<span class='kw'>use</span> <span class='ident'>rdf_rs</span>::<span class='ident'>uri</span>::<span class='ident'>Uri</span>;
+<span class='kw'>use</span> <span class='ident'>rdf_rs</span>::<span class='ident'>triple</span>::<span class='ident'>Triple</span>;
+
+<span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>graph</span> <span class='op'>=</span> <span class='ident'>Graph</span>::<span class='ident'>new</span>(<span class='prelude-val'>None</span>);
+
+<span class='kw'>let</span> <span class='ident'>subject1</span> <span class='op'>=</span> <span class='ident'>graph</span>.<span class='ident'>create_blank_node</span>();
+<span class='kw'>let</span> <span class='ident'>subject2</span> <span class='op'>=</span> <span class='ident'>graph</span>.<span class='ident'>create_blank_node</span>();
+<span class='kw'>let</span> <span class='ident'>predicate</span> <span class='op'>=</span> <span class='ident'>graph</span>.<span class='ident'>create_uri_node</span>(<span class='kw-2'>&amp;</span><span class='ident'>Uri</span>::<span class='ident'>new</span>(<span class='string'>&quot;http://example.org/show/localName&quot;</span>.<span class='ident'>to_string</span>()));
+<span class='kw'>let</span> <span class='ident'>object</span> <span class='op'>=</span> <span class='ident'>graph</span>.<span class='ident'>create_blank_node</span>();
+
+<span class='kw'>let</span> <span class='ident'>triple1</span> <span class='op'>=</span> <span class='ident'>Triple</span>::<span class='ident'>new</span>(<span class='kw-2'>&amp;</span><span class='ident'>subject1</span>, <span class='kw-2'>&amp;</span><span class='ident'>predicate</span>, <span class='kw-2'>&amp;</span><span class='ident'>object</span>);
+<span class='kw'>let</span> <span class='ident'>triple2</span> <span class='op'>=</span> <span class='ident'>Triple</span>::<span class='ident'>new</span>(<span class='kw-2'>&amp;</span><span class='ident'>subject2</span>, <span class='kw-2'>&amp;</span><span class='ident'>predicate</span>, <span class='kw-2'>&amp;</span><span class='ident'>object</span>);
+
+<span class='ident'>graph</span>.<span class='ident'>add_triples</span>(<span class='kw-2'>&amp;</span><span class='macro'>vec</span><span class='macro'>!</span>[<span class='ident'>triple1</span>.<span class='ident'>to_owned</span>(), <span class='ident'>triple2</span>]);
+
+<span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>graph</span>.<span class='ident'>get_triples_with_subject_and_object</span>(<span class='kw-2'>&amp;</span><span class='ident'>subject1</span>, <span class='kw-2'>&amp;</span><span class='ident'>object</span>), <span class='macro'>vec</span><span class='macro'>!</span>[<span class='kw-2'>&amp;</span><span class='ident'>triple1</span>]);</pre>
+</div><h4 id='method.get_triples_with_subject_and_predicate' class='method'><span id='get_triples_with_subject_and_predicate.v' class='invisible'><code>fn <a href='#method.get_triples_with_subject_and_predicate' class='fnname'>get_triples_with_subject_and_predicate</a>(&amp;self,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; subject_node: &amp;<a class='enum' href='../../rdf_rs/node/enum.Node.html' title='rdf_rs::node::Node'>Node</a>,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; predicate_node: &amp;<a class='enum' href='../../rdf_rs/node/enum.Node.html' title='rdf_rs::node::Node'>Node</a>)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -&gt; <a class='struct' href='https://doc.rust-lang.org/nightly/collections/vec/struct.Vec.html' title='collections::vec::Vec'>Vec</a>&lt;&amp;<a class='struct' href='../../rdf_rs/triple/struct.Triple.html' title='rdf_rs::triple::Triple'>Triple</a>&gt;</code></span></h4>
+<div class='docblock'><p>Returns all triples from the triple store where the subject and predicate nodes match the provided nodes.</p>
+
+<h1 id='examples-20' class='section-header'><a href='#examples-20'>Examples</a></h1>
+<pre class='rust rust-example-rendered'>
+<span class='kw'>use</span> <span class='ident'>rdf_rs</span>::<span class='ident'>graph</span>::<span class='ident'>Graph</span>;
+<span class='kw'>use</span> <span class='ident'>rdf_rs</span>::<span class='ident'>uri</span>::<span class='ident'>Uri</span>;
+<span class='kw'>use</span> <span class='ident'>rdf_rs</span>::<span class='ident'>triple</span>::<span class='ident'>Triple</span>;
+
+<span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>graph</span> <span class='op'>=</span> <span class='ident'>Graph</span>::<span class='ident'>new</span>(<span class='prelude-val'>None</span>);
+
+<span class='kw'>let</span> <span class='ident'>subject1</span> <span class='op'>=</span> <span class='ident'>graph</span>.<span class='ident'>create_blank_node</span>();
+<span class='kw'>let</span> <span class='ident'>subject2</span> <span class='op'>=</span> <span class='ident'>graph</span>.<span class='ident'>create_blank_node</span>();
+<span class='kw'>let</span> <span class='ident'>predicate</span> <span class='op'>=</span> <span class='ident'>graph</span>.<span class='ident'>create_uri_node</span>(<span class='kw-2'>&amp;</span><span class='ident'>Uri</span>::<span class='ident'>new</span>(<span class='string'>&quot;http://example.org/show/localName&quot;</span>.<span class='ident'>to_string</span>()));
+<span class='kw'>let</span> <span class='ident'>object</span> <span class='op'>=</span> <span class='ident'>graph</span>.<span class='ident'>create_blank_node</span>();
+
+<span class='kw'>let</span> <span class='ident'>triple1</span> <span class='op'>=</span> <span class='ident'>Triple</span>::<span class='ident'>new</span>(<span class='kw-2'>&amp;</span><span class='ident'>subject1</span>, <span class='kw-2'>&amp;</span><span class='ident'>predicate</span>, <span class='kw-2'>&amp;</span><span class='ident'>object</span>);
+<span class='kw'>let</span> <span class='ident'>triple2</span> <span class='op'>=</span> <span class='ident'>Triple</span>::<span class='ident'>new</span>(<span class='kw-2'>&amp;</span><span class='ident'>subject2</span>, <span class='kw-2'>&amp;</span><span class='ident'>predicate</span>, <span class='kw-2'>&amp;</span><span class='ident'>object</span>);
+
+<span class='ident'>graph</span>.<span class='ident'>add_triples</span>(<span class='kw-2'>&amp;</span><span class='macro'>vec</span><span class='macro'>!</span>[<span class='ident'>triple1</span>.<span class='ident'>to_owned</span>(), <span class='ident'>triple2</span>]);
+
+<span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>graph</span>.<span class='ident'>get_triples_with_subject_and_predicate</span>(<span class='kw-2'>&amp;</span><span class='ident'>subject1</span>, <span class='kw-2'>&amp;</span><span class='ident'>predicate</span>), <span class='macro'>vec</span><span class='macro'>!</span>[<span class='kw-2'>&amp;</span><span class='ident'>triple1</span>]);</pre>
+</div><h4 id='method.get_triples_with_predicate_and_object' class='method'><span id='get_triples_with_predicate_and_object.v' class='invisible'><code>fn <a href='#method.get_triples_with_predicate_and_object' class='fnname'>get_triples_with_predicate_and_object</a>(&amp;self,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; predicate_node: &amp;<a class='enum' href='../../rdf_rs/node/enum.Node.html' title='rdf_rs::node::Node'>Node</a>,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; object_node: &amp;<a class='enum' href='../../rdf_rs/node/enum.Node.html' title='rdf_rs::node::Node'>Node</a>)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -&gt; <a class='struct' href='https://doc.rust-lang.org/nightly/collections/vec/struct.Vec.html' title='collections::vec::Vec'>Vec</a>&lt;&amp;<a class='struct' href='../../rdf_rs/triple/struct.Triple.html' title='rdf_rs::triple::Triple'>Triple</a>&gt;</code></span></h4>
+<div class='docblock'><p>Returns all triples from the triple store where the predicate and object nodes match the provided nodes.</p>
+
+<h1 id='examples-21' class='section-header'><a href='#examples-21'>Examples</a></h1>
+<pre class='rust rust-example-rendered'>
+<span class='kw'>use</span> <span class='ident'>rdf_rs</span>::<span class='ident'>graph</span>::<span class='ident'>Graph</span>;
+<span class='kw'>use</span> <span class='ident'>rdf_rs</span>::<span class='ident'>uri</span>::<span class='ident'>Uri</span>;
+<span class='kw'>use</span> <span class='ident'>rdf_rs</span>::<span class='ident'>triple</span>::<span class='ident'>Triple</span>;
+
+<span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>graph</span> <span class='op'>=</span> <span class='ident'>Graph</span>::<span class='ident'>new</span>(<span class='prelude-val'>None</span>);
+
+<span class='kw'>let</span> <span class='ident'>subject1</span> <span class='op'>=</span> <span class='ident'>graph</span>.<span class='ident'>create_blank_node</span>();
+<span class='kw'>let</span> <span class='ident'>subject2</span> <span class='op'>=</span> <span class='ident'>graph</span>.<span class='ident'>create_blank_node</span>();
+<span class='kw'>let</span> <span class='ident'>predicate</span> <span class='op'>=</span> <span class='ident'>graph</span>.<span class='ident'>create_uri_node</span>(<span class='kw-2'>&amp;</span><span class='ident'>Uri</span>::<span class='ident'>new</span>(<span class='string'>&quot;http://example.org/show/localName&quot;</span>.<span class='ident'>to_string</span>()));
+<span class='kw'>let</span> <span class='ident'>object</span> <span class='op'>=</span> <span class='ident'>graph</span>.<span class='ident'>create_blank_node</span>();
+
+<span class='kw'>let</span> <span class='ident'>triple1</span> <span class='op'>=</span> <span class='ident'>Triple</span>::<span class='ident'>new</span>(<span class='kw-2'>&amp;</span><span class='ident'>subject1</span>, <span class='kw-2'>&amp;</span><span class='ident'>predicate</span>, <span class='kw-2'>&amp;</span><span class='ident'>object</span>);
+<span class='kw'>let</span> <span class='ident'>triple2</span> <span class='op'>=</span> <span class='ident'>Triple</span>::<span class='ident'>new</span>(<span class='kw-2'>&amp;</span><span class='ident'>subject2</span>, <span class='kw-2'>&amp;</span><span class='ident'>predicate</span>, <span class='kw-2'>&amp;</span><span class='ident'>object</span>);
+
+<span class='ident'>graph</span>.<span class='ident'>add_triples</span>(<span class='kw-2'>&amp;</span><span class='macro'>vec</span><span class='macro'>!</span>[<span class='ident'>triple1</span>.<span class='ident'>to_owned</span>(), <span class='ident'>triple2</span>.<span class='ident'>to_owned</span>()]);
+
+<span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>graph</span>.<span class='ident'>get_triples_with_predicate_and_object</span>(<span class='kw-2'>&amp;</span><span class='ident'>predicate</span>, <span class='kw-2'>&amp;</span><span class='ident'>object</span>), <span class='macro'>vec</span><span class='macro'>!</span>[<span class='kw-2'>&amp;</span><span class='ident'>triple1</span>, <span class='kw-2'>&amp;</span><span class='ident'>triple2</span>]);</pre>
+</div><h4 id='method.triples_iter' class='method'><span id='triples_iter.v' class='invisible'><code>fn <a href='#method.triples_iter' class='fnname'>triples_iter</a>(&amp;self) -&gt; <a class='struct' href='https://doc.rust-lang.org/nightly/core/slice/struct.Iter.html' title='core::slice::Iter'>Iter</a>&lt;<a class='struct' href='../../rdf_rs/triple/struct.Triple.html' title='rdf_rs::triple::Triple'>Triple</a>&gt;</code></span></h4>
+<div class='docblock'><p>Returns an iterator over the triples of the graph.</p>
+</div></div><h2 id='implementations'>Trait Implementations</h2><h3 class='impl'><span class='in-band'><code>impl <a class='trait' href='https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html' title='core::fmt::Debug'>Debug</a> for <a class='struct' href='../../rdf_rs/graph/struct.Graph.html' title='rdf_rs::graph::Graph'>Graph</a></code></span><span class='out-of-band'><div class='ghost'></div><a id='src-1305' class='srclink' href='../../src/rdf_rs/src/graph.rs.html#11' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.fmt' class='method'><span id='fmt.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html#tymethod.fmt' class='fnname'>fmt</a>(&amp;self, __arg_0: &amp;mut <a class='struct' href='https://doc.rust-lang.org/nightly/core/fmt/struct.Formatter.html' title='core::fmt::Formatter'>Formatter</a>) -&gt; <a class='type' href='https://doc.rust-lang.org/nightly/core/fmt/type.Result.html' title='core::fmt::Result'>Result</a></code></span></h4>
+<div class='docblock'><p>Formats the value using the given formatter.</p>
+</div></div></section>
+    <section id='search' class="content hidden"></section>
+
+    <section class="footer"></section>
+
+    <aside id="help" class="hidden">
+        <div>
+            <h1 class="hidden">Help</h1>
+
+            <div class="shortcuts">
+                <h2>Keyboard Shortcuts</h2>
+
+                <dl>
+                    <dt>?</dt>
+                    <dd>Show this help dialog</dd>
+                    <dt>S</dt>
+                    <dd>Focus the search field</dd>
+                    <dt>&larrb;</dt>
+                    <dd>Move up in search results</dd>
+                    <dt>&rarrb;</dt>
+                    <dd>Move down in search results</dd>
+                    <dt>&#9166;</dt>
+                    <dd>Go to active search result</dd>
+                    <dt>+</dt>
+                    <dd>Collapse/expand all sections</dd>
+                </dl>
+            </div>
+
+            <div class="infos">
+                <h2>Search Tricks</h2>
+
+                <p>
+                    Prefix searches with a type followed by a colon (e.g.
+                    <code>fn:</code>) to restrict the search to a given type.
+                </p>
+
+                <p>
+                    Accepted types are: <code>fn</code>, <code>mod</code>,
+                    <code>struct</code>, <code>enum</code>,
+                    <code>trait</code>, <code>type</code>, <code>macro</code>,
+                    and <code>const</code>.
+                </p>
+
+                <p>
+                    Search functions by type signature (e.g.
+                    <code>vec -> usize</code> or <code>* -> vec</code>)
+                </p>
+            </div>
+        </div>
+    </aside>
+
+    
+
+    <script>
+        window.rootPath = "../../";
+        window.currentCrate = "rdf_rs";
+    </script>
+    <script src="../../jquery.js"></script>
+    <script src="../../main.js"></script>
+    <script defer src="../../search-index.js"></script>
+</body>
+</html>

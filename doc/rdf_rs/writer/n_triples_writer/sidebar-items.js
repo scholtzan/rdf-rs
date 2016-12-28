@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["NTriplesWriter","RDF writer to generate N-Triples syntax."]]});

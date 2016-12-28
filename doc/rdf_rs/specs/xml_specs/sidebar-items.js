@@ -1,0 +1,1 @@
+initSidebarItems({"enum":[["XmlDataTypes","XML schema data types."]]});

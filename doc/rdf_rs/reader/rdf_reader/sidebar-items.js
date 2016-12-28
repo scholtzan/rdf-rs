@@ -1,0 +1,1 @@
+initSidebarItems({"trait":[["RdfReader","Trait implemented by RDF readers to generate a RDF graph from RDF syntax."]]});

@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["Graph","Representation of an RDF graph."]]});

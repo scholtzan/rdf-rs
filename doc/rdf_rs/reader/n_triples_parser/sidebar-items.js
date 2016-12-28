@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["NTriplesParser","RDF parser to generate an RDF graph from N-Triples syntax."]]});

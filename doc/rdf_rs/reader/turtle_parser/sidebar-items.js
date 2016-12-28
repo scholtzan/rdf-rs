@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["TurtleParser","RDF parser to generate an RDF graph from Turtle syntax."]]});
