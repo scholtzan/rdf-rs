@@ -21,7 +21,10 @@ pub enum ErrorType {
   InvalidByteEncoding,
 
   /// Incorrect namespace.
-  InvalidNamespace
+  InvalidNamespace,
+
+  /// RDF SPARQL reader reads invalid SPARQL input.
+  InvalidSparqlInput
 }
 
 

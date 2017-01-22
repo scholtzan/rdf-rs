@@ -1,7 +1,5 @@
-
-
 #[derive(Debug, PartialEq, Clone)]
-/// Tokens are produces by RDF lexers.
+/// Tokens are produced by RDF lexers.
 pub enum Token {
   Comment(String),
   Literal(String),

@@ -115,6 +115,7 @@ pub mod reader {
     pub mod rdf_lexer;
     pub mod n_triples_lexer;
     pub mod turtle_lexer;
+    pub mod sparql_lexer;
   }
 
   pub mod rdf_parser;

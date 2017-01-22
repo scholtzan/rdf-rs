@@ -28,6 +28,11 @@ impl InputReaderHelper {
   pub fn digit(c: char) -> bool {
     c >= '0' && c <= '9'
   }
+
+  /// Returns `true` if the provided character is a letter.
+  pub fn letter(c: char) -> bool {
+    (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z')
+  }
 }
 
 type InputChar = Option<char>;
@@ -425,6 +430,4 @@ impl<R: Read> InputReader<R> {
 
     self.get_until(delimiter)
   }
-
-
 }
