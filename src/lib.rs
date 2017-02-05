@@ -122,12 +122,19 @@ pub mod reader {
   pub mod n_triples_parser;
   pub mod turtle_parser;
   pub mod input_reader;
+  pub mod sparql_parser;
 }
 
 pub mod specs {
   pub mod xml_specs;
   pub mod turtle_specs;
   pub mod rdf_syntax_specs;
+}
+
+pub mod sparql {
+  pub mod query;
+  pub mod query_processor;
+  pub mod result;
 }
 
 #[cfg(test)]
