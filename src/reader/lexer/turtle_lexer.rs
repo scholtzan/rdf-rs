@@ -288,7 +288,7 @@ impl<R: Read> RdfLexer<R> for TurtleLexer<R> {
       None => { }
     }
 
-    match try!(self.input_reader.peek_next_char_discard_leading_spaces()) {
+    match self.input_reader.peek_next_char_discard_leading_spaces()? {
       Some('#') => return TurtleLexer::get_comment(&mut self.input_reader),
       Some('@') => {
         TurtleLexer::consume_next_char(&mut self.input_reader);   // consume '@'

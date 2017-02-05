@@ -129,6 +129,7 @@ pub mod specs {
   pub mod xml_specs;
   pub mod turtle_specs;
   pub mod rdf_syntax_specs;
+  pub mod sparql_specs;
 }
 
 pub mod sparql {

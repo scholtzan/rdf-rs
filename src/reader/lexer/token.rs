@@ -21,4 +21,24 @@ pub enum Token {
   UnlabeledBlankNodeStart,  // e.g. for Turtle syntax -> [
   UnlabeledBlankNodeEnd,    // e.g. for Turtle syntax -> ]
   EndOfInput,
+
+  // SPARQL
+  Select,
+  Distinct,
+  Reduced,
+  Construct,
+  Describe,
+  Ask,
+  From,
+  Named,
+  Order,
+  By,
+  Asc,
+  Desc,
+  Offset,
+  Optional,
+  Filter,
+  Graph,
+  Union,
+  Regex
 }

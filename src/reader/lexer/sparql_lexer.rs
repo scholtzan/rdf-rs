@@ -1,11 +1,12 @@
 use reader::lexer::rdf_lexer::{RdfLexer, TokensFromRdf};
-use reader::input_reader::{InputReader};
+use reader::input_reader::{InputReader, InputReaderHelper};
 use reader::lexer::n_triples_lexer::TokensFromNTriples;
 use reader::lexer::turtle_lexer::TokensFromTurtle;
 use std::io::Read;
 use error::{Error, ErrorType};
 use Result;
 use reader::lexer::token::Token;
+use specs::sparql_specs::SparqlKeyword;
 
 /// Produces tokens from SPARQL input.
 pub struct SparqlLexer<R: Read> {
@@ -34,7 +35,6 @@ impl<R: Read> RdfLexer<R> for SparqlLexer<R> {
     }
   }
 
-  // todo
   /// Determines the next token from the input and consumes the read input characters.
   ///
   /// # Examples
@@ -63,14 +63,33 @@ impl<R: Read> RdfLexer<R> for SparqlLexer<R> {
       None => { }
     }
 
-    match try!(self.input_reader.peek_next_char_discard_leading_spaces()) {
-//      Some(c) if InputReaderHelper::letter(c) => {},
-      Some('#') => return Self::get_comment(&mut self.input_reader),
-      _ => Err(Error::new(ErrorType::InvalidSparqlInput, "Invalid SPARQL input."))
+    // todo
+    match self.input_reader.peek_next_char_discard_leading_spaces()? {
+      Some('#') => return SparqlLexer::get_comment(&mut self.input_reader),
+      Some('P') | Some('B') => {      // try parsing PREFIX or BASE
+        match <SparqlLexer<R> as TokensFromTurtle<R>>::get_base_or_prefix(&mut self.input_reader) {
+          Ok(token) => return Ok(token),
+          _ => {}     // continue, because it could still be a QName
+        }
+      },
+      Some('"') | Some('\'') => return <SparqlLexer<R> as TokensFromTurtle<R>>::get_literal(&mut self.input_reader),
+      Some('<') => return SparqlLexer::get_uri(&mut self.input_reader),
+      Some('_') => return SparqlLexer::get_blank_node(&mut self.input_reader),
+      Some('.') => {
+        // try to parse a decimal, if there is an error then it is a triple delimiter
+        return SparqlLexer::get_numeric(&mut self.input_reader).or_else(|_| {
+          Ok(Token::TripleDelimiter)
+        })
+      },
+      Some('+') | Some('-') => return SparqlLexer::get_numeric(&mut self.input_reader),
+      Some(c) if InputReaderHelper::digit(c) => return SparqlLexer::get_numeric(&mut self.input_reader),
+      Some(_) => {},
+      _ => return Err(Error::new(ErrorType::InvalidSparqlInput, "Invalid SPARQL input."))
     }
+
+    SparqlLexer::get_qname_or_keyword(&mut self.input_reader)
   }
 
-  // todo
   /// Determines the next token without consuming the input.
   ///
   /// # Examples
@@ -107,9 +126,54 @@ impl<R: Read> RdfLexer<R> for SparqlLexer<R> {
 }
 
 /// Contains all implemented rules for creating tokens from SPARQL syntax.
-pub trait TokensFromSparql<R: Read>: TokensFromTurtle<R> { }
+pub trait TokensFromSparql<R: Read>: TokensFromTurtle<R> {
+  /// Parses the base or prefix definition.
+  fn get_base_or_prefix(input_reader: &mut InputReader<R>) -> Result<Token> {
+    match input_reader.peek_next_char()? {
+      Some('B') => {
+        Self::get_base_directive(input_reader)
+      },
+      Some('P') => {
+        Self::get_prefix_directive(input_reader)
+      },
+      None | Some(_) => Err(Error::new(ErrorType::InvalidReaderInput,
+                                       "Invalid input while trying to parse base or prefix definition."))
+    }
+  }
+
+  /// Checks if the next word is a SPARQL keyword otherwise handles it as a QName.
+  fn get_qname_or_keyword(input_reader: &mut InputReader<R>) -> Result<Token> {
+    let input = input_reader.get_until(|c| c == ' ')?;
+
+    match input.to_string().parse::<SparqlKeyword>()? {
+      SparqlKeyword::Select => return Ok(Token::Select),
+      SparqlKeyword::Distinct => return Ok(Token::Distinct),
+      SparqlKeyword::Reduced => return Ok(Token::Reduced),
+      SparqlKeyword::Construct => return Ok(Token::Construct),
+      SparqlKeyword::Describe => return Ok(Token::Describe),
+      SparqlKeyword::Ask => return Ok(Token::Ask),
+      SparqlKeyword::From => return Ok(Token::From),
+      SparqlKeyword::Named => return Ok(Token::Named),
+      SparqlKeyword::Order => return Ok(Token::Order),
+      SparqlKeyword::By => return Ok(Token::By),
+      SparqlKeyword::Asc => return Ok(Token::Asc),
+      SparqlKeyword::Desc => return Ok(Token::Desc),
+      SparqlKeyword::Offset => return Ok(Token::Offset),
+      SparqlKeyword::Optional => return Ok(Token::Optional),
+      SparqlKeyword::Filter => return Ok(Token::Filter),
+      SparqlKeyword::Graph => return Ok(Token::Graph),
+      SparqlKeyword::Union => return Ok(Token::Union),
+      SparqlKeyword::Regex => return Ok(Token::Regex),
+      _ => {}
+    }
+
+    Self::get_qname(input_reader)
+  }
+}
 
 
 impl<R: Read> TokensFromRdf<R> for SparqlLexer<R> { }
 impl<R: Read> TokensFromNTriples<R> for SparqlLexer<R> { }
 impl<R: Read> TokensFromTurtle<R> for SparqlLexer<R> { }
+impl<R: Read> TokensFromSparql<R> for SparqlLexer<R> { }
+

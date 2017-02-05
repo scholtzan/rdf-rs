@@ -74,7 +74,7 @@ impl<R: Read> RdfParser for TurtleParser<R> {
             _ => return Err(Error::new(ErrorType::InvalidReaderInput,
                                        "Error while parsing Turtle syntax."))
           }
-        }
+        },
         Ok(_) => {
           return Err(Error::new(ErrorType::InvalidToken,
                                 "Invalid token while parsing Turtle syntax."))
