@@ -81,6 +81,10 @@ impl<R: Read> RdfLexer<R> for SparqlLexer<R> {
           Ok(Token::TripleDelimiter)
         })
       },
+      Some('?') | Some('$') => {
+        SparqlLexer::consume_next_char(&mut self.input_reader);   // consume either '?' or '$'
+        return SparqlLexer::get_variable(&mut self.input_reader)
+      },
       Some('+') | Some('-') => return SparqlLexer::get_numeric(&mut self.input_reader),
       Some(c) if InputReaderHelper::digit(c) => return SparqlLexer::get_numeric(&mut self.input_reader),
       Some(_) => {},
@@ -169,6 +173,13 @@ pub trait TokensFromSparql<R: Read>: TokensFromTurtle<R> {
 
     Self::get_qname(input_reader)
   }
+
+  /// Parses a SPARQL variable.
+  fn get_variable(input_reader: &mut InputReader<R>) -> Result<Token> {
+    let variable_name = input_reader.get_until_discard_leading_spaces(InputReaderHelper::node_delimiter)?;
+
+    Ok(Token::SparqlVariable(variable_name.to_string()))
+  }
 }
 
 
@@ -177,3 +188,19 @@ impl<R: Read> TokensFromNTriples<R> for SparqlLexer<R> { }
 impl<R: Read> TokensFromTurtle<R> for SparqlLexer<R> { }
 impl<R: Read> TokensFromSparql<R> for SparqlLexer<R> { }
 
+#[cfg(test)]
+mod tests {
+  use reader::lexer::rdf_lexer::RdfLexer;
+  use reader::lexer::token::Token;
+  use reader::lexer::sparql_lexer::SparqlLexer;
+
+  #[test]
+  fn parse_variable() {
+    let input = "?var1 $var2 ".as_bytes();
+
+    let mut lexer = SparqlLexer::new(input);
+
+    assert_eq!(lexer.get_next_token().unwrap(), Token::SparqlVariable("var1".to_string()));
+    assert_eq!(lexer.get_next_token().unwrap(), Token::SparqlVariable("var2".to_string()));
+  }
+}
