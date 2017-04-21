@@ -136,6 +136,7 @@ pub mod sparql {
   pub mod query;
   pub mod query_processor;
   pub mod result;
+  pub mod pattern;
 }
 
 #[cfg(test)]

@@ -18,6 +18,7 @@ pub enum SparqlKeyword {
   Order,
   By,
   Asc,
+  Where,
   Desc,
   Offset,
   Optional,
@@ -53,6 +54,7 @@ impl FromStr for SparqlKeyword {
       "GRAPH" => Ok(SparqlKeyword::Graph),
       "UNION" => Ok(SparqlKeyword::Union),
       "REGEX" => Ok(SparqlKeyword::Regex),
+      "WHERE" => Ok(SparqlKeyword::Where),
       _ => Err(Error::new(ErrorType::InvalidSparqlInput, "Unknown SPARQL keyword")),
     }
   }

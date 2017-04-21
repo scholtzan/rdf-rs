@@ -41,5 +41,9 @@ pub enum Token {
   Graph,
   Union,
   Regex,
+  Where,
+  GroupStart,
+  GroupEnd,
+  Asterisk,
   SparqlVariable(String)    // variable in SPARQL construct with name
 }

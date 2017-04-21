@@ -81,6 +81,34 @@ impl<R: Read> RdfLexer<R> for SparqlLexer<R> {
           Ok(Token::TripleDelimiter)
         })
       },
+      Some('[') => {
+        SparqlLexer::consume_next_char(&mut self.input_reader);  // consume '['
+        return Ok(Token::UnlabeledBlankNodeStart);
+      },
+      Some(']') => {
+        SparqlLexer::consume_next_char(&mut self.input_reader);  // consume ']'
+        return Ok(Token::UnlabeledBlankNodeEnd);
+      },
+      Some('{') => {
+        SparqlLexer::consume_next_char(&mut self.input_reader);  // consume '{'
+        return Ok(Token::GroupStart);
+      },
+      Some('}') => {
+        SparqlLexer::consume_next_char(&mut self.input_reader);  // consume '}'
+        return Ok(Token::GroupEnd);
+      },
+      Some(',') => {
+        SparqlLexer::consume_next_char(&mut self.input_reader);  // consume ','
+        return Ok(Token::ObjectListDelimiter);
+      },
+      Some(';') => {
+        SparqlLexer::consume_next_char(&mut self.input_reader);  // consume ';'
+        return Ok(Token::PredicateListDelimiter);
+      },
+      Some('*') => {
+        SparqlLexer::consume_next_char(&mut self.input_reader);  // consume '*'
+        return Ok(Token::Asterisk);
+      },
       Some('?') | Some('$') => {
         SparqlLexer::consume_next_char(&mut self.input_reader);   // consume either '?' or '$'
         return SparqlLexer::get_variable(&mut self.input_reader)

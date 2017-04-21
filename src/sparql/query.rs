@@ -1,11 +1,19 @@
 use uri::Uri;
 use namespace::*;
+use sparql::pattern::Pattern;
+use Result;
 
 
 /// Query type.
+#[derive(Clone, Debug)]
 pub enum SparqlQueryType {
   Ask,
   Select,
+  SelectDistinct,
+  SelectReduced,
+  SelectAll,
+  SelectAllDistinct,
+  SelectAllReduced,
   Construct,
   Describe
 }
@@ -20,9 +28,13 @@ pub struct SparqlQuery {
   base_uri: Option<Uri>,
 
   /// Namespaces stated in SPARQL query.
-  namespaces: Option<NamespaceStore>,
+  namespaces: NamespaceStore,
 
-  // todo: variables, order by, ...
+  // Variables used in the query.
+  variables: Vec<String>,
+
+  // Patterns used as constraints.
+  patterns: Vec<Box<Pattern>>
 }
 
 
@@ -32,7 +44,36 @@ impl SparqlQuery {
     SparqlQuery {
       query_type: query_type,
       base_uri: None,
-      namespaces: None
+      variables: Vec::new(),
+      patterns: Vec::new(),
+      namespaces: NamespaceStore::new()
     }
+  }
+
+  /// Add variables to the query.
+  /// Ordering in vector reflects position the variables appear.
+  pub fn add_variables(&mut self, variables: Vec<String>) {
+    self.variables = variables;
+  }
+
+  /// Add pattern to the query.
+  pub fn add_pattern(&mut self, pattern: Box<Pattern>) {
+    self.patterns.push(pattern);
+  }
+
+
+
+  /// Returns the URI of a namespace with the provided prefix.
+  ///
+  /// # Examples
+  ///
+  /// todo
+  ///
+  /// # Failures
+  ///
+  /// - No namespace with the provided prefix exists
+  ///
+  pub fn get_namespace_uri_by_prefix(&self, prefix: String) -> Result<&Uri> {
+    self.namespaces.get_uri_by_prefix(prefix)
   }
 }
