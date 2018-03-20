@@ -2,22 +2,9 @@
 
 > Note: This project is work in progress and currently not stable.
 
-`rdf-rs` is a library for the [Resource Description Framework](https://www.w3.org/RDF/) (RDF) and [SPARQL](https://www.w3.org/TR/rdf-sparql-query/) implemented in Rust.
+`rdf` is a library for the [Resource Description Framework](https://www.w3.org/RDF/) (RDF) and [SPARQL](https://www.w3.org/TR/rdf-sparql-query/) implemented in Rust.
 
 This project is a way for me to learn Rust and combine it with my interests in semantic web technologies.
-
-## Usage
-
-A comprehensive documentation of the API is available [**here**](https://scholtzan.github.io/rdf-rs/doc/rdf_rs/index.html).
-
-### Installation
-
-To use `rdf-rs`, add this to `Cargo.toml`:
-
-```toml
-[dependencies.rdf-rs]
-git = "https://github.com/scholtzan/rdf-rs"
-```
 
 
 ### Basic Examples
@@ -26,9 +13,9 @@ git = "https://github.com/scholtzan/rdf-rs"
 RDF triples can be stored and represented in a graph.
 
 ```rust
-use rdf_rs::graph::Graph;
-use rdf_rs::uri::Uri;
-use rdf_rs::triple::Triple;
+use rdf::graph::Graph;
+use rdf::uri::Uri;
+use rdf::triple::Triple;
 
 let mut graph = Graph::new(None);
 let subject = graph.create_blank_node();
@@ -42,11 +29,11 @@ graph.add_triple(&triple);
 RDF graphs can be serialized to a supported format.
 
 ```rust
-use rdf_rs::writer::n_triples_writer::NTriplesWriter;
-use rdf_rs::writer::rdf_writer::RdfWriter;
-use rdf_rs::graph::Graph;
-use rdf_rs::uri::Uri;
-use rdf_rs::triple::Triple;
+use rdf::writer::n_triples_writer::NTriplesWriter;
+use rdf::writer::rdf_writer::RdfWriter;
+use rdf::graph::Graph;
+use rdf::uri::Uri;
+use rdf::triple::Triple;
 
 let writer = NTriplesWriter::new();
 
@@ -64,9 +51,9 @@ assert_eq!(writer.write_to_string(&graph).unwrap(),
 RDF syntax can also be parsed and transformed into an RDF graph.
 
 ```rust
-use rdf_rs::reader::turtle_parser::TurtleParser;
-use rdf_rs::reader::rdf_parser::RdfParser;
-use rdf_rs::uri::Uri;
+use rdf::reader::turtle_parser::TurtleParser;
+use rdf::reader::rdf_parser::RdfParser;
+use rdf::uri::Uri;
 
 let input = "@base <http://example.org/> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .

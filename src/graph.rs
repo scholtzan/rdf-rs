@@ -30,7 +30,7 @@ impl Graph {
   /// # Examples
   ///
   /// ```
-  /// use rdf_rs::graph::Graph;
+  /// use rdf::graph::Graph;
   ///
   /// let graph = Graph::new(None);
   /// ```
@@ -53,7 +53,7 @@ impl Graph {
   /// # Examples
   ///
   /// ```
-  /// use rdf_rs::graph::Graph;
+  /// use rdf::graph::Graph;
   ///
   /// let graph = Graph::new(None);
   ///
@@ -68,7 +68,7 @@ impl Graph {
   /// # Examples
   ///
   /// ```
-  /// use rdf_rs::graph::Graph;
+  /// use rdf::graph::Graph;
   ///
   /// let graph = Graph::new(None);
   ///
@@ -83,8 +83,8 @@ impl Graph {
   /// # Examples
   ///
   /// ```
-  /// use rdf_rs::uri::Uri;
-  /// use rdf_rs::graph::Graph;
+  /// use rdf::uri::Uri;
+  /// use rdf::graph::Graph;
   ///
   /// let base_uri = Uri::new("http://example.org/".to_string());
   /// let graph = Graph::new(Some(&base_uri));
@@ -100,8 +100,8 @@ impl Graph {
   /// # Examples
   ///
   /// ```
-  /// use rdf_rs::uri::Uri;
-  /// use rdf_rs::graph::Graph;
+  /// use rdf::uri::Uri;
+  /// use rdf::graph::Graph;
   ///
   /// let base_uri = Uri::new("http://base.example.org/".to_string());
   /// let mut graph = Graph::new(None);
@@ -124,9 +124,9 @@ impl Graph {
   /// # Examples
   ///
   /// ```
-  /// use rdf_rs::uri::Uri;
-  /// use rdf_rs::graph::Graph;
-  /// use rdf_rs::namespace::Namespace;
+  /// use rdf::uri::Uri;
+  /// use rdf::graph::Graph;
+  /// use rdf::namespace::Namespace;
   ///
   /// let mut graph = Graph::new(None);
   /// graph.add_namespace(&Namespace::new("example".to_string(),
@@ -143,9 +143,9 @@ impl Graph {
   /// # Examples
   ///
   /// ```
-  /// use rdf_rs::uri::Uri;
-  /// use rdf_rs::graph::Graph;
-  /// use rdf_rs::namespace::Namespace;
+  /// use rdf::uri::Uri;
+  /// use rdf::graph::Graph;
+  /// use rdf::namespace::Namespace;
   ///
   /// let mut graph = Graph::new(None);
   /// let uri = Uri::new("http://example.org/".to_string());
@@ -167,8 +167,8 @@ impl Graph {
   /// # Examples
   ///
   /// ```
-  /// use rdf_rs::graph::Graph;
-  /// use rdf_rs::node::Node;
+  /// use rdf::graph::Graph;
+  /// use rdf::node::Node;
   ///
   /// let graph = Graph::new(None);
   /// let literal_node = graph.create_literal_node("literal".to_string());
@@ -192,9 +192,9 @@ impl Graph {
   /// # Examples
   ///
   /// ```
-  /// use rdf_rs::graph::Graph;
-  /// use rdf_rs::node::Node;
-  /// use rdf_rs::uri::Uri;
+  /// use rdf::graph::Graph;
+  /// use rdf::node::Node;
+  /// use rdf::uri::Uri;
   ///
   /// let graph = Graph::new(None);
   /// let literal_node = graph.create_literal_node_with_data_type("literal".to_string(), &Uri::new("http://example.org/show/localName".to_string()));
@@ -218,8 +218,8 @@ impl Graph {
   /// # Examples
   ///
   /// ```
-  /// use rdf_rs::graph::Graph;
-  /// use rdf_rs::node::Node;
+  /// use rdf::graph::Graph;
+  /// use rdf::node::Node;
   ///
   /// let graph = Graph::new(None);
   /// let literal_node = graph.create_literal_node_with_language("literal".to_string(), "en".to_string());
@@ -248,8 +248,8 @@ impl Graph {
   /// # Examples
   ///
   /// ```
-  /// use rdf_rs::graph::Graph;
-  /// use rdf_rs::node::Node;
+  /// use rdf::graph::Graph;
+  /// use rdf::node::Node;
   ///
   /// let mut graph = Graph::new(None);
   /// let blank_node = graph.create_blank_node();
@@ -273,8 +273,8 @@ impl Graph {
   /// # Examples
   ///
   /// ```
-  /// use rdf_rs::graph::Graph;
-  /// use rdf_rs::node::Node;
+  /// use rdf::graph::Graph;
+  /// use rdf::node::Node;
   ///
   /// let graph = Graph::new(None);
   /// let blank_node = graph.create_blank_node_with_id("foobar".to_string());
@@ -294,9 +294,9 @@ impl Graph {
   /// # Examples
   ///
   /// ```
-  /// use rdf_rs::graph::Graph;
-  /// use rdf_rs::node::Node;
-  /// use rdf_rs::uri::Uri;
+  /// use rdf::graph::Graph;
+  /// use rdf::node::Node;
+  /// use rdf::uri::Uri;
   ///
   /// let graph = Graph::new(None);
   /// let uri_node = graph.create_uri_node(&Uri::new("http://example.org/show/localName".to_string()));
@@ -316,9 +316,9 @@ impl Graph {
   /// # Examples
   ///
   /// ```
-  /// use rdf_rs::graph::Graph;
-  /// use rdf_rs::uri::Uri;
-  /// use rdf_rs::triple::Triple;
+  /// use rdf::graph::Graph;
+  /// use rdf::uri::Uri;
+  /// use rdf::triple::Triple;
   ///
   /// let mut graph = Graph::new(None);
   ///
@@ -340,9 +340,9 @@ impl Graph {
   /// # Examples
   ///
   /// ```
-  /// use rdf_rs::graph::Graph;
-  /// use rdf_rs::uri::Uri;
-  /// use rdf_rs::triple::Triple;
+  /// use rdf::graph::Graph;
+  /// use rdf::uri::Uri;
+  /// use rdf::triple::Triple;
   ///
   /// let mut graph = Graph::new(None);
   ///
@@ -367,9 +367,9 @@ impl Graph {
   ///
   /// # Examples
   /// ```
-  /// use rdf_rs::graph::Graph;
-  /// use rdf_rs::uri::Uri;
-  /// use rdf_rs::triple::Triple;
+  /// use rdf::graph::Graph;
+  /// use rdf::uri::Uri;
+  /// use rdf::triple::Triple;
   ///
   /// let mut graph = Graph::new(None);
   ///
@@ -392,9 +392,9 @@ impl Graph {
   /// # Examples
   ///
   /// ```
-  /// use rdf_rs::graph::Graph;
-  /// use rdf_rs::uri::Uri;
-  /// use rdf_rs::triple::Triple;
+  /// use rdf::graph::Graph;
+  /// use rdf::uri::Uri;
+  /// use rdf::triple::Triple;
   ///
   /// let mut graph = Graph::new(None);
   ///
@@ -419,9 +419,9 @@ impl Graph {
   /// # Examples
   ///
   /// ```
-  /// use rdf_rs::graph::Graph;
-  /// use rdf_rs::uri::Uri;
-  /// use rdf_rs::triple::Triple;
+  /// use rdf::graph::Graph;
+  /// use rdf::uri::Uri;
+  /// use rdf::triple::Triple;
   ///
   /// let mut graph = Graph::new(None);
   ///
@@ -446,9 +446,9 @@ impl Graph {
   /// # Examples
   ///
   /// ```
-  /// use rdf_rs::graph::Graph;
-  /// use rdf_rs::uri::Uri;
-  /// use rdf_rs::triple::Triple;
+  /// use rdf::graph::Graph;
+  /// use rdf::uri::Uri;
+  /// use rdf::triple::Triple;
   ///
   /// let mut graph = Graph::new(None);
   ///
@@ -473,9 +473,9 @@ impl Graph {
   /// # Examples
   ///
   /// ```
-  /// use rdf_rs::graph::Graph;
-  /// use rdf_rs::uri::Uri;
-  /// use rdf_rs::triple::Triple;
+  /// use rdf::graph::Graph;
+  /// use rdf::uri::Uri;
+  /// use rdf::triple::Triple;
   ///
   /// let mut graph = Graph::new(None);
   ///
@@ -500,9 +500,9 @@ impl Graph {
   /// # Examples
   ///
   /// ```
-  /// use rdf_rs::graph::Graph;
-  /// use rdf_rs::uri::Uri;
-  /// use rdf_rs::triple::Triple;
+  /// use rdf::graph::Graph;
+  /// use rdf::uri::Uri;
+  /// use rdf::triple::Triple;
   ///
   /// let mut graph = Graph::new(None);
   ///
@@ -527,9 +527,9 @@ impl Graph {
   /// # Examples
   ///
   /// ```
-  /// use rdf_rs::graph::Graph;
-  /// use rdf_rs::uri::Uri;
-  /// use rdf_rs::triple::Triple;
+  /// use rdf::graph::Graph;
+  /// use rdf::uri::Uri;
+  /// use rdf::triple::Triple;
   ///
   /// let mut graph = Graph::new(None);
   ///

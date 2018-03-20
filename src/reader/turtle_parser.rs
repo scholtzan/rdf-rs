@@ -26,8 +26,8 @@ impl<R: Read> RdfParser for TurtleParser<R> {
   /// # Examples
   ///
   /// ```
-  /// use rdf_rs::reader::turtle_parser::TurtleParser;
-  /// use rdf_rs::reader::rdf_parser::RdfParser;
+  /// use rdf::reader::turtle_parser::TurtleParser;
+  /// use rdf::reader::rdf_parser::RdfParser;
   ///
   /// let input = "<http://www.w3.org/2001/sw/RDFCore/ntriples/> <http://xmlns.com/foaf/0.1/maker> _:art .
   ///              _:art <http://xmlns.com/foaf/0.1/name> \"Art Barstow\" .";
@@ -90,8 +90,8 @@ impl TurtleParser<Cursor<Vec<u8>>> {
   /// # Examples
   ///
   /// ```
-  /// use rdf_rs::reader::turtle_parser::TurtleParser;
-  /// use rdf_rs::reader::rdf_parser::RdfParser;
+  /// use rdf::reader::turtle_parser::TurtleParser;
+  /// use rdf::reader::rdf_parser::RdfParser;
   ///
   /// let input = "<http://www.w3.org/2001/sw/RDFCore/ntriples/> <http://xmlns.com/foaf/0.1/maker> _:art .
   ///              _:art <http://xmlns.com/foaf/0.1/name> \"Art Barstow\" .";
@@ -110,8 +110,8 @@ impl<R: Read> TurtleParser<R> {
   /// # Examples
   ///
   /// ```
-  /// use rdf_rs::reader::turtle_parser::TurtleParser;
-  /// use rdf_rs::reader::rdf_parser::RdfParser;
+  /// use rdf::reader::turtle_parser::TurtleParser;
+  /// use rdf::reader::rdf_parser::RdfParser;
   ///
   /// let input = "<http://www.w3.org/2001/sw/RDFCore/ntriples/> <http://xmlns.com/foaf/0.1/maker> _:art .
   ///              _:art <http://xmlns.com/foaf/0.1/name> \"Art Barstow\" .";

@@ -21,9 +21,9 @@
 //! RDF triples can be stored and represented in a graph.
 //!
 //! ```
-//! use rdf_rs::graph::Graph;
-//! use rdf_rs::uri::Uri;
-//! use rdf_rs::triple::Triple;
+//! use rdf::graph::Graph;
+//! use rdf::uri::Uri;
+//! use rdf::triple::Triple;
 //!
 //! let mut graph = Graph::new(None);
 //!
@@ -38,11 +38,11 @@
 //! RDF graphs can be serialized to a supported format.
 //!
 //! ```
-//! use rdf_rs::writer::n_triples_writer::NTriplesWriter;
-//! use rdf_rs::writer::rdf_writer::RdfWriter;
-//! use rdf_rs::graph::Graph;
-//! use rdf_rs::uri::Uri;
-//! use rdf_rs::triple::Triple;
+//! use rdf::writer::n_triples_writer::NTriplesWriter;
+//! use rdf::writer::rdf_writer::RdfWriter;
+//! use rdf::graph::Graph;
+//! use rdf::uri::Uri;
+//! use rdf::triple::Triple;
 //!
 //! let writer = NTriplesWriter::new();
 //!
@@ -61,9 +61,9 @@
 //! RDF syntax can also be parsed and transformed into an RDF graph.
 //!
 //! ```
-//! use rdf_rs::reader::turtle_parser::TurtleParser;
-//! use rdf_rs::reader::rdf_parser::RdfParser;
-//! use rdf_rs::uri::Uri;
+//! use rdf::reader::turtle_parser::TurtleParser;
+//! use rdf::reader::rdf_parser::RdfParser;
+//! use rdf::uri::Uri;
 //!
 //! let input = "@base <http://example.org/> .
 //! @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .

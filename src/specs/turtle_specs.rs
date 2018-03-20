@@ -11,8 +11,8 @@ impl TurtleSpecs {
   /// # Examples
   ///
   /// ```
-  /// use rdf_rs::specs::turtle_specs::TurtleSpecs;
-  /// use rdf_rs::specs::xml_specs::XmlDataTypes;
+  /// use rdf::specs::turtle_specs::TurtleSpecs;
+  /// use rdf::specs::xml_specs::XmlDataTypes;
   ///
   /// assert!(TurtleSpecs::is_plain_literal(&"3.0".to_string(), &Some(XmlDataTypes::Decimal.to_uri())));
   /// assert!(TurtleSpecs::is_plain_literal(&"true".to_string(), &Some(XmlDataTypes::Boolean.to_uri())));
@@ -40,7 +40,7 @@ impl TurtleSpecs {
   /// # Examples
   ///
   /// ```
-  /// use rdf_rs::specs::turtle_specs::TurtleSpecs;
+  /// use rdf::specs::turtle_specs::TurtleSpecs;
   ///
   /// assert!(TurtleSpecs::is_double_literal(&"3.0".to_string()));
   /// assert!(TurtleSpecs::is_double_literal(&"3e10".to_string()));
@@ -58,7 +58,7 @@ impl TurtleSpecs {
   /// # Examples
   ///
   /// ```
-  /// use rdf_rs::specs::turtle_specs::TurtleSpecs;
+  /// use rdf::specs::turtle_specs::TurtleSpecs;
   ///
   /// assert!(TurtleSpecs::is_integer_literal(&"3".to_string()));
   /// assert_eq!(TurtleSpecs::is_integer_literal(&"3.0".to_string()), false);
@@ -76,7 +76,7 @@ impl TurtleSpecs {
   /// # Examples
   ///
   /// ```
-  /// use rdf_rs::specs::turtle_specs::TurtleSpecs;
+  /// use rdf::specs::turtle_specs::TurtleSpecs;
   ///
   /// assert!(TurtleSpecs::is_boolean_literal(&"true".to_string()));
   /// assert!(TurtleSpecs::is_boolean_literal(&"false".to_string()));

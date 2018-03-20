@@ -29,9 +29,9 @@ impl Triple {
   /// # Examples
   ///
   /// ```
-  /// use rdf_rs::triple::Triple;
-  /// use rdf_rs::node::Node;
-  /// use rdf_rs::uri::Uri;
+  /// use rdf::triple::Triple;
+  /// use rdf::node::Node;
+  /// use rdf::uri::Uri;
   ///
   /// let subject = Node::BlankNode { id: "a".to_string() };
   /// let predicate = Node::UriNode { uri: Uri::new("http://example.org/show/localName".to_string()) } ;

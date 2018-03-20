@@ -21,9 +21,9 @@ impl RdfWriter for NTriplesWriter {
   /// # Examples
   ///
   /// ```
-  /// use rdf_rs::writer::n_triples_writer::NTriplesWriter;
-  /// use rdf_rs::writer::rdf_writer::RdfWriter;
-  /// use rdf_rs::graph::Graph;
+  /// use rdf::writer::n_triples_writer::NTriplesWriter;
+  /// use rdf::writer::rdf_writer::RdfWriter;
+  /// use rdf::graph::Graph;
   ///
   /// let writer = NTriplesWriter::new();
   /// let graph = Graph::new(None);
@@ -60,8 +60,8 @@ impl NTriplesWriter {
   /// # Examples
   ///
   /// ```
-  /// use rdf_rs::writer::n_triples_writer::NTriplesWriter;
-  /// use rdf_rs::writer::rdf_writer::RdfWriter;
+  /// use rdf::writer::n_triples_writer::NTriplesWriter;
+  /// use rdf::writer::rdf_writer::RdfWriter;
   ///
   /// let writer = NTriplesWriter::new();
   /// ```
@@ -76,11 +76,11 @@ impl NTriplesWriter {
   /// # Examples
   ///
   /// ```
-  /// use rdf_rs::writer::n_triples_writer::NTriplesWriter;
-  /// use rdf_rs::writer::rdf_writer::RdfWriter;
-  /// use rdf_rs::node::Node;
-  /// use rdf_rs::triple::Triple;
-  /// use rdf_rs::uri::Uri;
+  /// use rdf::writer::n_triples_writer::NTriplesWriter;
+  /// use rdf::writer::rdf_writer::RdfWriter;
+  /// use rdf::node::Node;
+  /// use rdf::triple::Triple;
+  /// use rdf::uri::Uri;
   ///
   /// let writer = NTriplesWriter::new();
   ///
@@ -134,10 +134,10 @@ impl NTriplesWriter {
   /// # Examples
   ///
   /// ```
-  /// use rdf_rs::writer::n_triples_writer::NTriplesWriter;
-  /// use rdf_rs::writer::rdf_writer::RdfWriter;
-  /// use rdf_rs::node::Node;
-  /// use rdf_rs::triple::TripleSegment;
+  /// use rdf::writer::n_triples_writer::NTriplesWriter;
+  /// use rdf::writer::rdf_writer::RdfWriter;
+  /// use rdf::node::Node;
+  /// use rdf::triple::TripleSegment;
   ///
   /// let writer = NTriplesWriter::new();
   ///

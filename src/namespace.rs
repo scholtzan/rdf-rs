@@ -17,8 +17,8 @@ impl Namespace {
   /// # Examples
   ///
   /// ```
-  /// use rdf_rs::namespace::Namespace;
-  /// use rdf_rs::uri::Uri;
+  /// use rdf::namespace::Namespace;
+  /// use rdf::uri::Uri;
   ///
   /// let ns = Namespace::new("example".to_string(),
   ///                         Uri::new("http://example.org/".to_string()));
@@ -35,8 +35,8 @@ impl Namespace {
   /// # Examples
   ///
   /// ```
-  /// use rdf_rs::namespace::Namespace;
-  /// use rdf_rs::uri::Uri;
+  /// use rdf::namespace::Namespace;
+  /// use rdf::uri::Uri;
   ///
   /// let ns = Namespace::new("example".to_string(),
   ///                         Uri::new("http://example.org/".to_string()));
@@ -52,8 +52,8 @@ impl Namespace {
   /// # Examples
   ///
   /// ```
-  /// use rdf_rs::namespace::Namespace;
-  /// use rdf_rs::uri::Uri;
+  /// use rdf::namespace::Namespace;
+  /// use rdf::uri::Uri;
   ///
   /// let ns = Namespace::new("example".to_string(),
   ///                         Uri::new("http://example.org/".to_string()));
@@ -80,7 +80,7 @@ impl NamespaceStore {
   /// # Examples
   ///
   /// ```
-  /// use rdf_rs::namespace::NamespaceStore;
+  /// use rdf::namespace::NamespaceStore;
   ///
   /// let nss = NamespaceStore::new();
   /// ```
@@ -100,9 +100,9 @@ impl NamespaceStore {
   /// # Examples
   ///
   /// ```
-  /// use rdf_rs::namespace::NamespaceStore;
-  /// use rdf_rs::namespace::Namespace;
-  /// use rdf_rs::uri::Uri;
+  /// use rdf::namespace::NamespaceStore;
+  /// use rdf::namespace::Namespace;
+  /// use rdf::uri::Uri;
   ///
   /// let mut nss = NamespaceStore::new();
   ///
@@ -120,9 +120,9 @@ impl NamespaceStore {
   /// # Examples
   ///
   /// ```
-  /// use rdf_rs::namespace::NamespaceStore;
-  /// use rdf_rs::namespace::Namespace;
-  /// use rdf_rs::uri::Uri;
+  /// use rdf::namespace::NamespaceStore;
+  /// use rdf::namespace::Namespace;
+  /// use rdf::uri::Uri;
   ///
   /// let mut nss = NamespaceStore::new();
   ///

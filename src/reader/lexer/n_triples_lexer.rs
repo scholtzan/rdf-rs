@@ -18,8 +18,8 @@ impl<R: Read> RdfLexer<R> for NTriplesLexer<R> {
   /// # Examples
   ///
   /// ```
-  /// use rdf_rs::reader::lexer::rdf_lexer::RdfLexer;
-  /// use rdf_rs::reader::lexer::n_triples_lexer::NTriplesLexer;
+  /// use rdf::reader::lexer::rdf_lexer::RdfLexer;
+  /// use rdf::reader::lexer::n_triples_lexer::NTriplesLexer;
   ///
   /// let input = "<example.org/a>".as_bytes();
   ///
@@ -37,9 +37,9 @@ impl<R: Read> RdfLexer<R> for NTriplesLexer<R> {
   /// # Examples
   ///
   /// ```
-  /// use rdf_rs::reader::lexer::rdf_lexer::RdfLexer;
-  /// use rdf_rs::reader::lexer::n_triples_lexer::NTriplesLexer;
-  /// use rdf_rs::reader::lexer::token::Token;
+  /// use rdf::reader::lexer::rdf_lexer::RdfLexer;
+  /// use rdf::reader::lexer::n_triples_lexer::NTriplesLexer;
+  /// use rdf::reader::lexer::token::Token;
   ///
   /// let input = "_:auto <example.org/b> \"test\" .".as_bytes();
   ///
@@ -84,9 +84,9 @@ impl<R: Read> RdfLexer<R> for NTriplesLexer<R> {
   /// # Examples
   ///
   /// ```
-  /// use rdf_rs::reader::lexer::rdf_lexer::RdfLexer;
-  /// use rdf_rs::reader::lexer::n_triples_lexer::NTriplesLexer;
-  /// use rdf_rs::reader::lexer::token::Token;
+  /// use rdf::reader::lexer::rdf_lexer::RdfLexer;
+  /// use rdf::reader::lexer::n_triples_lexer::NTriplesLexer;
+  /// use rdf::reader::lexer::token::Token;
   ///
   /// let input = "_:auto <example.org/b> \"test\" .".as_bytes();
   ///

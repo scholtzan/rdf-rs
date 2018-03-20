@@ -27,12 +27,12 @@ impl<'a> RdfWriter for TurtleWriter<'a> {
   /// # Examples
   ///
   /// ```
-  /// use rdf_rs::writer::turtle_writer::TurtleWriter;
-  /// use rdf_rs::writer::rdf_writer::RdfWriter;
-  /// use rdf_rs::graph::Graph;
-  /// use rdf_rs::node::Node;
-  /// use rdf_rs::uri::Uri;
-  /// use rdf_rs::triple::Triple;
+  /// use rdf::writer::turtle_writer::TurtleWriter;
+  /// use rdf::writer::rdf_writer::RdfWriter;
+  /// use rdf::graph::Graph;
+  /// use rdf::node::Node;
+  /// use rdf::uri::Uri;
+  /// use rdf::triple::Triple;
   ///
   /// let mut graph = Graph::new(None);
   ///

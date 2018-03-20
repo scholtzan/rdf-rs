@@ -100,7 +100,7 @@ impl<R: Read> InputReader<R> {
   /// # Examples
   ///
   /// ```
-  /// use rdf_rs::reader::input_reader::InputReader;
+  /// use rdf::reader::input_reader::InputReader;
   ///
   /// let reader = InputReader::new("_:auto0".as_bytes());
   /// ```
@@ -116,8 +116,8 @@ impl<R: Read> InputReader<R> {
   /// # Examples
   ///
   /// ```
-  /// use rdf_rs::reader::input_reader::InputReader;
-  /// use rdf_rs::reader::input_reader::InputChars;
+  /// use rdf::reader::input_reader::InputReader;
+  /// use rdf::reader::input_reader::InputChars;
   ///
   /// let mut reader = InputReader::new("_:auto0".as_bytes());
   /// assert_eq!(reader.peek_next_k_chars(2).unwrap().to_vec(), vec![Some('_'), Some(':')]);
@@ -143,8 +143,8 @@ impl<R: Read> InputReader<R> {
   /// # Examples
   ///
   /// ```
-  /// use rdf_rs::reader::input_reader::InputReader;
-  /// use rdf_rs::reader::input_reader::InputChars;
+  /// use rdf::reader::input_reader::InputReader;
+  /// use rdf::reader::input_reader::InputChars;
   ///
   /// let mut reader = InputReader::new("_:auto0".as_bytes());
   /// assert_eq!(reader.peek_next_char().unwrap(), Some('_'));
@@ -165,8 +165,8 @@ impl<R: Read> InputReader<R> {
   /// # Examples
   ///
   /// ```
-  /// use rdf_rs::reader::input_reader::InputReader;
-  /// use rdf_rs::reader::input_reader::InputChars;
+  /// use rdf::reader::input_reader::InputReader;
+  /// use rdf::reader::input_reader::InputChars;
   ///
   /// let mut reader = InputReader::new(" \n _:auto0".as_bytes());
   /// assert_eq!(reader.peek_next_char_discard_leading_spaces().unwrap(), Some('_'));
@@ -195,7 +195,7 @@ impl<R: Read> InputReader<R> {
   ///
   /// # Examples
   /// ```
-  /// use rdf_rs::reader::input_reader::InputReader;
+  /// use rdf::reader::input_reader::InputReader;
   ///
   /// let mut input = "Hello World!".as_bytes();
   /// let mut input_reader = InputReader::new(input);
@@ -247,8 +247,8 @@ impl<R: Read> InputReader<R> {
   /// # Examples
   ///
   /// ```
-  /// use rdf_rs::reader::input_reader::InputReader;
-  /// use rdf_rs::reader::input_reader::InputChars;
+  /// use rdf::reader::input_reader::InputReader;
+  /// use rdf::reader::input_reader::InputChars;
   ///
   /// let mut reader = InputReader::new("_:auto0".as_bytes());
   /// assert_eq!(reader.get_next_k_chars(2).unwrap().to_vec(), vec![Some('_'), Some(':')]);
@@ -275,7 +275,7 @@ impl<R: Read> InputReader<R> {
   ///
   /// # Examples
   /// ```
-  /// use rdf_rs::reader::input_reader::InputReader;
+  /// use rdf::reader::input_reader::InputReader;
   ///
   /// let mut input = "H   ello World!".as_bytes();
   /// let mut input_reader = InputReader::new(input);
@@ -307,7 +307,7 @@ impl<R: Read> InputReader<R> {
   /// # Examples
   ///
   /// ```
-  /// use rdf_rs::reader::input_reader::InputReader;
+  /// use rdf::reader::input_reader::InputReader;
   ///
   /// let mut input = "Hello World!".as_bytes();
   /// let mut input_reader = InputReader::new(input);
@@ -336,7 +336,7 @@ impl<R: Read> InputReader<R> {
   /// # Examples
   ///
   /// ```
-  /// use rdf_rs::reader::input_reader::InputReader;
+  /// use rdf::reader::input_reader::InputReader;
   ///
   /// let mut input = "   Hello    World!".as_bytes();
   /// let mut input_reader = InputReader::new(input);
@@ -364,7 +364,7 @@ impl<R: Read> InputReader<R> {
   /// # Examples
   ///
   /// ```
-  /// use rdf_rs::reader::input_reader::InputReader;
+  /// use rdf::reader::input_reader::InputReader;
   ///
   /// let mut input = "Hello World!".as_bytes();
   /// let mut input_reader = InputReader::new(input);
@@ -402,7 +402,7 @@ impl<R: Read> InputReader<R> {
   /// # Examples
   ///
   /// ```
-  /// use rdf_rs::reader::input_reader::InputReader;
+  /// use rdf::reader::input_reader::InputReader;
   ///
   /// let mut input = "Hello    World!".as_bytes();
   /// let mut input_reader = InputReader::new(input);
@@ -425,6 +425,4 @@ impl<R: Read> InputReader<R> {
 
     self.get_until(delimiter)
   }
-
-
 }

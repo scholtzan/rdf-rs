@@ -25,8 +25,8 @@ impl<R: Read> RdfParser for NTriplesParser<R> {
   /// # Examples
   ///
   /// ```
-  /// use rdf_rs::reader::n_triples_parser::NTriplesParser;
-  /// use rdf_rs::reader::rdf_parser::RdfParser;
+  /// use rdf::reader::n_triples_parser::NTriplesParser;
+  /// use rdf::reader::rdf_parser::RdfParser;
   ///
   /// let input = "<http://www.w3.org/2001/sw/RDFCore/ntriples/> <http://xmlns.com/foaf/0.1/maker> _:art .
   ///              _:art <http://xmlns.com/foaf/0.1/name> \"Art Barstow\" .";
@@ -81,8 +81,8 @@ impl NTriplesParser<Cursor<Vec<u8>>> {
   /// # Examples
   ///
   /// ```
-  /// use rdf_rs::reader::n_triples_parser::NTriplesParser;
-  /// use rdf_rs::reader::rdf_parser::RdfParser;
+  /// use rdf::reader::n_triples_parser::NTriplesParser;
+  /// use rdf::reader::rdf_parser::RdfParser;
   ///
   /// let input = "<http://www.w3.org/2001/sw/RDFCore/ntriples/> <http://xmlns.com/foaf/0.1/maker> _:art .
   ///              _:art <http://xmlns.com/foaf/0.1/name> \"Art Barstow\" .";
@@ -101,8 +101,8 @@ impl<R: Read> NTriplesParser<R> {
   /// # Examples
   ///
   /// ```
-  /// use rdf_rs::reader::n_triples_parser::NTriplesParser;
-  /// use rdf_rs::reader::rdf_parser::RdfParser;
+  /// use rdf::reader::n_triples_parser::NTriplesParser;
+  /// use rdf::reader::rdf_parser::RdfParser;
   ///
   /// let input = "<http://www.w3.org/2001/sw/RDFCore/ntriples/> <http://xmlns.com/foaf/0.1/maker> _:art .
   ///              _:art <http://xmlns.com/foaf/0.1/name> \"Art Barstow\" .";
@@ -186,7 +186,3 @@ mod tests {
     }
   }
 }
-
-
-
-

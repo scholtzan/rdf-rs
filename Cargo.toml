@@ -1,6 +1,12 @@
 [package]
-name = "rdf-rs"
+name = "rdf"
 version = "0.1.0"
-authors = ["Anna Scholtz <anna@scholtzan.net>"]
+authors = ["Anna Scholtz <anna@scholtzan.net>", "Marc-Antoine Arnaud <arnaud.marcantoine@gmail.com>"]
+description = """
+`rdf` is a library for the [Resource Description Framework](https://www.w3.org/RDF/) (RDF) and [SPARQL](https://www.w3.org/TR/rdf-sparql-query/) implemented in Rust.
+"""
+license = "MIT"
+repository = "https://github.com/media-io/rdf-rs"
+documentation = "https://docs.rs/media-io/rdf"
 
 [dependencies]
