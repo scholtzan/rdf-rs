@@ -102,9 +102,6 @@ impl<'a> RdfFormatter for TurtleFormatter<'a> {
   }
 }
 
-
-
-
 #[cfg(test)]
 mod tests {
   use node::*;

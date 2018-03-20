@@ -24,14 +24,12 @@ pub enum ErrorType {
   InvalidNamespace
 }
 
-
 /// An error related to the rdf-rs module.
 #[derive(Debug)]
 pub struct Error {
   error_type: ErrorType,
   error: Box<StdError>
 }
-
 
 impl Error {
   /// Constructor of `Error`.
@@ -49,13 +47,11 @@ impl Error {
   }
 }
 
-
 impl fmt::Display for Error {
   fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
     self.error.fmt(f)
   }
 }
-
 
 impl StdError for Error {
   fn description(&self) -> &str {

@@ -13,4 +13,3 @@ pub trait RdfLexer<R: Read> {
   // Determines the next token without consuming it.
   fn peek_next_token(&mut self) -> Result<Token>;
 }
-

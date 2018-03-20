@@ -11,7 +11,6 @@ pub struct NTriplesLexer<R: Read> {
   peeked_token: Option<Token>
 }
 
-
 impl<R: Read> RdfLexer<R> for NTriplesLexer<R> {
   /// Constructor for `NTriplesLexer`;
   ///

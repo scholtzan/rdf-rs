@@ -18,8 +18,6 @@ pub enum Node {
   BlankNode { id: String }
 }
 
-
-
 #[cfg(test)]
 mod tests {
   use node::*;

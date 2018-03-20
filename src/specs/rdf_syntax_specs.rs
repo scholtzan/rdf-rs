@@ -28,7 +28,6 @@ impl RdfSyntaxDataTypes {
   }
 }
 
-
 /// Contains general RDF specification rules and helpers.
 pub struct RdfSyntaxSpecs {}
 
