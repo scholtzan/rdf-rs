@@ -22,7 +22,7 @@ impl RdfFormatter for NTriplesFormatter {
     /// right function for formatting this content.
     fn format_node(&self, node: &Node) -> String {
         match *node {
-            Node::BlankNode { ref id } => self.format_blank(&id),
+            Node::BlankNode { ref id } => self.format_blank(id),
             Node::LiteralNode {
                 ref literal,
                 ref data_type,

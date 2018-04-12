@@ -267,23 +267,20 @@ impl<R: Read> TurtleLexer<R> {
         // check if delimiter was '.' and if it is part of a decimal or if it is a delimiter
         if self.input_reader.get_next_char()? == Some('.') {
             let mut complete_numeric = numeric.clone();
-            match self.input_reader
-                .peek_until(InputReaderHelper::node_delimiter)
-            {
-                Ok(mut input_chars) => {
-                    complete_numeric.push(Some('.'));
-                    complete_numeric.append(&mut input_chars);
 
-                    if TurtleSpecs::is_double_literal(&complete_numeric.to_string()) {
-                        let _ = self.input_reader
-                            .get_until_discard_leading_spaces(InputReaderHelper::node_delimiter)?; // consume
-                        return Ok(Token::LiteralWithUrlDatatype(
-                            complete_numeric.to_string(),
-                            XmlDataTypes::Double.to_string(),
-                        ));
-                    }
+            if let Ok(mut input_chars) = self.input_reader
+                .peek_until(InputReaderHelper::node_delimiter) {
+                complete_numeric.push(Some('.'));
+                complete_numeric.append(&mut input_chars);
+
+                if TurtleSpecs::is_double_literal(&complete_numeric.to_string()) {
+                    let _ = self.input_reader
+                        .get_until_discard_leading_spaces(InputReaderHelper::node_delimiter)?; // consume
+                    return Ok(Token::LiteralWithUrlDatatype(
+                        complete_numeric.to_string(),
+                        XmlDataTypes::Double.to_string(),
+                    ));
                 }
-                _ => {}
             }
         }
 

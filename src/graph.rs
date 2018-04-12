@@ -149,15 +149,15 @@ impl Graph {
     /// let uri = Uri::new("http://example.org/".to_string());
     /// graph.add_namespace(&Namespace::new("example".to_string(), uri.to_owned()));
     ///
-    /// assert_eq!(graph.get_namespace_uri_by_prefix("example".to_string()).unwrap(), &uri);
+    /// assert_eq!(graph.get_namespace_uri_by_prefix("example").unwrap(), &uri);
     /// ```
     ///
     /// # Failures
     ///
     /// - No namespace with the provided prefix exists
     ///
-    pub fn get_namespace_uri_by_prefix(&self, prefix: String) -> Result<&Uri> {
-        self.namespaces.get_uri_by_prefix(&prefix)
+    pub fn get_namespace_uri_by_prefix(&self, prefix: &str) -> Result<&Uri> {
+        self.namespaces.get_uri_by_prefix(prefix)
     }
 
     /// Returns a literal node of the specified namespace.
@@ -351,7 +351,7 @@ impl Graph {
     ///
     /// assert_eq!(graph.count(), 2);
     /// ```
-    pub fn add_triples(&mut self, triples: &Vec<Triple>) {
+    pub fn add_triples(&mut self, triples: &[Triple]) {
         for triple in triples {
             self.add_triple(triple);
         }

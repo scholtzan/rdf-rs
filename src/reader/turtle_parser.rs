@@ -179,7 +179,7 @@ impl<R: Read> TurtleParser<R> {
         match self.lexer.get_next_token()? {
             Token::BlankNode(id) => Ok(Node::BlankNode { id }),
             Token::QName(prefix, path) => {
-                let mut uri = graph.get_namespace_uri_by_prefix(prefix)?.to_owned();
+                let mut uri = graph.get_namespace_uri_by_prefix(&prefix)?.to_owned();
                 uri.append_resource_path(&path.replace(":", "/")); // adjust the QName path to URI path
                 Ok(Node::UriNode { uri })
             }
@@ -237,7 +237,7 @@ impl<R: Read> TurtleParser<R> {
                 uri: RdfSyntaxDataTypes::A.to_uri(),
             },
             Token::QName(prefix, path) => {
-                let mut uri = graph.get_namespace_uri_by_prefix(prefix)?.to_owned();
+                let mut uri = graph.get_namespace_uri_by_prefix(&prefix)?.to_owned();
                 uri.append_resource_path(&path.replace(":", "/")); // adjust the QName path to URI path
                 Node::UriNode { uri }
             }
@@ -262,7 +262,7 @@ impl<R: Read> TurtleParser<R> {
             Token::BlankNode(id) => Ok(Node::BlankNode { id }),
             Token::Uri(uri) => Ok(Node::UriNode { uri: Uri::new(uri) }),
             Token::QName(prefix, path) => {
-                let mut uri = graph.get_namespace_uri_by_prefix(prefix)?.to_owned();
+                let mut uri = graph.get_namespace_uri_by_prefix(&prefix)?.to_owned();
                 uri.append_resource_path(&path.replace(":", "/")); // adjust the QName path to URI path
                 Ok(Node::UriNode { uri })
             }
