@@ -37,8 +37,8 @@ impl RdfSyntaxSpecs {
     }
 
     /// Replaces all characters with their escaped counterparts.
-    pub fn escape_literal(literal: &str) -> &str {
-        let escaped_literal = &(literal).clone();
+    pub fn escape_literal(literal: &str) -> String {
+        let escaped_literal = literal.to_string();
 
         for c in RdfSyntaxSpecs::characters_to_be_escaped() {
             let mut escaped_char = "\\".to_string();

@@ -211,7 +211,7 @@ impl<R: Read> InputReader<R> {
     /// - End of input reached.
     ///
     pub fn get_next_char(&mut self) -> Result<InputChar> {
-        if self.peeked_chars.len() > 0 {
+        if !self.peeked_chars.is_empty() {
             return Ok(self.peeked_chars.remove(0));
         }
 
