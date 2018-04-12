@@ -269,7 +269,8 @@ impl<R: Read> TurtleLexer<R> {
             let mut complete_numeric = numeric.clone();
 
             if let Ok(mut input_chars) = self.input_reader
-                .peek_until(InputReaderHelper::node_delimiter) {
+                .peek_until(InputReaderHelper::node_delimiter)
+            {
                 complete_numeric.push(Some('.'));
                 complete_numeric.append(&mut input_chars);
 
