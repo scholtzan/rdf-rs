@@ -68,7 +68,7 @@ impl<'a> RdfWriter for TurtleWriter<'a> {
         let mut predicate_indentation = 0;
         let mut object_indentation = 0;
 
-        for triple in triples_vec.iter() {
+        for triple in &triples_vec {
             if previous_subject == Some(triple.subject()) {
                 // continue group
                 if previous_predicate == Some(triple.predicate()) {
@@ -100,7 +100,8 @@ impl<'a> RdfWriter for TurtleWriter<'a> {
                 }
 
                 // start new group
-                let turtle_subject = self.node_to_turtle(triple.subject(), &TripleSegment::Subject)?;
+                let turtle_subject =
+                    self.node_to_turtle(triple.subject(), &TripleSegment::Subject)?;
                 output_string.push_str(&turtle_subject);
                 previous_subject = Some(triple.subject());
 
@@ -140,13 +141,10 @@ impl<'a> TurtleWriter<'a> {
     fn write_base_uri(&self, graph: &Graph) -> String {
         let mut output_string = "".to_string();
 
-        match *graph.base_uri() {
-            Some(ref base) => {
-                output_string.push_str("@base ");
-                output_string.push_str(&self.formatter.format_uri(base));
-                output_string.push_str(" .\n");
-            }
-            None => {}
+        if let Some(ref base) = *graph.base_uri() {
+            output_string.push_str("@base ");
+            output_string.push_str(&self.formatter.format_uri(base));
+            output_string.push_str(" .\n");
         }
 
         output_string

@@ -23,10 +23,7 @@ impl Namespace {
     ///                         Uri::new("http://example.org/".to_string()));
     /// ```
     pub fn new(prefix: String, uri: Uri) -> Namespace {
-        Namespace {
-            prefix,
-            uri,
-        }
+        Namespace { prefix, uri }
     }
 
     /// Returns the prefix of the namespace.

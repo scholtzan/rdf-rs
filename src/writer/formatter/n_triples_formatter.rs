@@ -46,20 +46,14 @@ impl RdfFormatter for NTriplesFormatter {
         output_string.push_str(&RdfSyntaxSpecs::escape_literal(literal));
         output_string.push_str("\"");
 
-        match *language {
-            Some(ref lang) => {
-                output_string.push_str("@");
-                output_string.push_str(lang);
-            }
-            None => {}
+        if let Some(ref lang) = *language {
+            output_string.push_str("@");
+            output_string.push_str(lang);
         }
 
-        match *data_type {
-            Some(ref dt) => {
-                output_string.push_str("^^");
-                output_string.push_str(&self.format_uri(dt));
-            }
-            None => {}
+        if let Some(ref dt) = *data_type {
+            output_string.push_str("^^");
+            output_string.push_str(&self.format_uri(dt));
         }
 
         output_string

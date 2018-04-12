@@ -14,9 +14,7 @@ pub struct TurtleFormatter<'a> {
 impl<'a> TurtleFormatter<'a> {
     /// Constructor of `TurtleFormatter`.
     pub fn new(namespaces: &'a HashMap<String, Uri>) -> TurtleFormatter<'a> {
-        TurtleFormatter {
-            namespaces,
-        }
+        TurtleFormatter { namespaces }
     }
 }
 

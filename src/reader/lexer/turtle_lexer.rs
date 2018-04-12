@@ -102,17 +102,23 @@ impl<R: Read> RdfLexer<R> for TurtleLexer<R> {
             }
             Some('P') | Some('B') => {
                 // try parsing PREFIX or BASE
-                if let Ok(token) = self.get_base_or_prefix() { return Ok(token) }
+                if let Ok(token) = self.get_base_or_prefix() {
+                    return Ok(token);
+                }
                 // continue, because it could still be a QName
             }
             Some('t') | Some('f') => {
                 // try parsing 'true' or 'false'
-                if let Ok(token) = self.get_boolean_literal() { return Ok(token) }
+                if let Ok(token) = self.get_boolean_literal() {
+                    return Ok(token);
+                }
                 // continue, because it could still be a QName
             }
             Some('a') => {
                 // try parsing the 'a' keyword
-                if let Ok(token) = self.get_a_keyword() { return Ok(token) }
+                if let Ok(token) = self.get_a_keyword() {
+                    return Ok(token);
+                }
                 // continue, because it could still be a QName
             }
             Some('+') | Some('-') => return self.get_numeric(),
