@@ -69,6 +69,10 @@ impl InputChars {
         self.input_chars.len()
     }
 
+    pub fn is_empty(&self) -> bool {
+        self.input_chars.len() == 0
+    }
+
     pub fn push(&mut self, c: InputChar) {
         self.input_chars.push(c);
     }
@@ -104,7 +108,7 @@ impl<R: Read> InputReader<R> {
     /// ```
     pub fn new(input: R) -> InputReader<R> {
         InputReader {
-            input: input,
+            input,
             peeked_chars: InputChars::new(Vec::new()),
         }
     }
@@ -178,7 +182,7 @@ impl<R: Read> InputReader<R> {
     pub fn peek_next_char_discard_leading_spaces(&mut self) -> Result<InputChar> {
         match self.get_next_char_discard_leading_spaces() {
             Ok(Some(next_char)) => {
-                if self.peeked_chars.len() <= 0 {
+                if self.peeked_chars.is_empty() {
                     self.peeked_chars.push(Some(next_char));
                 }
 

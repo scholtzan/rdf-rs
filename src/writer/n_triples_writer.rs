@@ -8,6 +8,7 @@ use error::*;
 use Result;
 
 /// RDF writer to generate N-Triples syntax.
+#[derive(Default)]
 pub struct NTriplesWriter {
     formatter: NTriplesFormatter,
 }
@@ -39,7 +40,7 @@ impl RdfWriter for NTriplesWriter {
 
         for triple in graph.triples_iter() {
             // convert each triple of the graph to N-Triple syntax
-            match self.triple_to_n_triples(&triple) {
+            match self.triple_to_n_triples(triple) {
                 Ok(str) => {
                     output_string.push_str(&str);
                     output_string.push_str("\n");
@@ -99,7 +100,7 @@ impl NTriplesWriter {
         let mut output_string = "".to_string();
 
         // convert subject
-        match self.node_to_n_triples(triple.subject(), TripleSegment::Subject) {
+        match self.node_to_n_triples(triple.subject(), &TripleSegment::Subject) {
             Ok(str) => output_string.push_str(&str),
             Err(error) => return Err(error),
         }
@@ -107,7 +108,7 @@ impl NTriplesWriter {
         output_string.push_str(" ");
 
         // convert predicate
-        match self.node_to_n_triples(triple.predicate(), TripleSegment::Predicate) {
+        match self.node_to_n_triples(triple.predicate(), &TripleSegment::Predicate) {
             Ok(str) => output_string.push_str(&str),
             Err(error) => return Err(error),
         }
@@ -115,7 +116,7 @@ impl NTriplesWriter {
         output_string.push_str(" ");
 
         // convert object
-        match self.node_to_n_triples(triple.object(), TripleSegment::Object) {
+        match self.node_to_n_triples(triple.object(), &TripleSegment::Object) {
             Ok(str) => output_string.push_str(&str),
             Err(error) => return Err(error),
         }
@@ -141,7 +142,7 @@ impl NTriplesWriter {
     ///
     /// let node = Node::BlankNode { id: "blank".to_string() };
     ///
-    /// assert_eq!(writer.node_to_n_triples(&node, TripleSegment::Subject).unwrap(),
+    /// assert_eq!(writer.node_to_n_triples(&node, &TripleSegment::Subject).unwrap(),
     ///            "_:blank".to_string());
     /// ```
     ///
@@ -149,17 +150,17 @@ impl NTriplesWriter {
     ///
     /// - Node type for triple segment does not conform with NTriples syntax standard.
     ///
-    pub fn node_to_n_triples(&self, node: &Node, segment: TripleSegment) -> Result<String> {
-        match node {
-      &Node::BlankNode { id: _ } =>
+    pub fn node_to_n_triples(&self, node: &Node, segment: &TripleSegment) -> Result<String> {
+        match *node {
+      Node::BlankNode { .. } =>
         // blank nodes are not allowed as predicates
-        if segment == TripleSegment::Predicate {
+        if *segment == TripleSegment::Predicate {
           return Err(Error::new(ErrorType::InvalidWriterOutput,
                                 "Blank nodes are not allowed as predicates."))
         },
-      &Node::LiteralNode { literal: _, data_type: ref dt, language: ref lang } => {
+      Node::LiteralNode { data_type: ref dt, language: ref lang, .. } => {
         // literal nodes are only allowed as objects
-        if segment != TripleSegment::Object {
+        if *segment != TripleSegment::Object {
           return Err(Error::new(ErrorType::InvalidWriterOutput,
                                 "Literals are not allowed as subjects or predicates."))
         }

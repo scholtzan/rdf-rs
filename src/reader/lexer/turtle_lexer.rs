@@ -58,12 +58,9 @@ impl<R: Read> RdfLexer<R> for TurtleLexer<R> {
     ///
     fn get_next_token(&mut self) -> Result<Token> {
         // first read peeked characters
-        match self.peeked_token.clone() {
-            Some(token) => {
-                self.peeked_token = None;
-                return Ok(token);
-            }
-            None => {}
+        if let Some(token) = self.peeked_token.clone() {
+            self.peeked_token = None;
+            return Ok(token);
         }
 
         match try!(self.input_reader.peek_next_char_discard_leading_spaces()) {
@@ -105,24 +102,18 @@ impl<R: Read> RdfLexer<R> for TurtleLexer<R> {
             }
             Some('P') | Some('B') => {
                 // try parsing PREFIX or BASE
-                match self.get_base_or_prefix() {
-                    Ok(token) => return Ok(token),
-                    _ => {} // continue, because it could still be a QName
-                }
+                if let Ok(token) = self.get_base_or_prefix() { return Ok(token) }
+                // continue, because it could still be a QName
             }
             Some('t') | Some('f') => {
                 // try parsing 'true' or 'false'
-                match self.get_boolean_literal() {
-                    Ok(token) => return Ok(token),
-                    _ => {} // continue, because it could still be a QName
-                }
+                if let Ok(token) = self.get_boolean_literal() { return Ok(token) }
+                // continue, because it could still be a QName
             }
             Some('a') => {
                 // try parsing the 'a' keyword
-                match self.get_a_keyword() {
-                    Ok(token) => return Ok(token),
-                    _ => {} // continue, because it could still be a QName
-                }
+                if let Ok(token) = self.get_a_keyword() { return Ok(token) }
+                // continue, because it could still be a QName
             }
             Some('+') | Some('-') => return self.get_numeric(),
             Some(c) if InputReaderHelper::digit(c) => return self.get_numeric(),
@@ -163,9 +154,9 @@ impl<R: Read> RdfLexer<R> for TurtleLexer<R> {
             None => match self.get_next_token() {
                 Ok(next) => {
                     self.peeked_token = Some(next.clone());
-                    return Ok(next);
+                    Ok(next)
                 }
-                Err(err) => return Err(err),
+                Err(err) => Err(err),
             },
         }
     }
@@ -252,8 +243,8 @@ impl<R: Read> TurtleLexer<R> {
                 self.consume_next_char(); // consume comment delimiter
                 Ok(Token::Comment(chars.to_string()))
             }
-            Err(err) => match err.error_type() {
-                &ErrorType::EndOfInput(ref chars) => Ok(Token::Comment(chars.to_string())),
+            Err(err) => match *err.error_type() {
+                ErrorType::EndOfInput(ref chars) => Ok(Token::Comment(chars.to_string())),
                 _ => Err(Error::new(
                     ErrorType::InvalidReaderInput,
                     "Invalid input for Turtle lexer while parsing comment.",
@@ -291,20 +282,20 @@ impl<R: Read> TurtleLexer<R> {
         }
 
         if TurtleSpecs::is_integer_literal(&numeric.to_string()) {
-            return Ok(Token::LiteralWithUrlDatatype(
+            Ok(Token::LiteralWithUrlDatatype(
                 numeric.to_string(),
                 XmlDataTypes::Integer.to_string(),
-            ));
+            ))
         } else if TurtleSpecs::is_double_literal(&numeric.to_string()) {
-            return Ok(Token::LiteralWithUrlDatatype(
+            Ok(Token::LiteralWithUrlDatatype(
                 numeric.to_string(),
                 XmlDataTypes::Double.to_string(),
-            ));
+            ))
         } else {
-            return Err(Error::new(
+            Err(Error::new(
                 ErrorType::InvalidReaderInput,
                 "Invalid Turtle input for numeric literal.",
-            ));
+            ))
         }
     }
 
@@ -314,15 +305,15 @@ impl<R: Read> TurtleLexer<R> {
             .peek_until_discard_leading_spaces(InputReaderHelper::node_delimiter)?;
 
         if TurtleSpecs::is_boolean_literal(&boolean.to_string()) {
-            return Ok(Token::LiteralWithUrlDatatype(
+            Ok(Token::LiteralWithUrlDatatype(
                 boolean.to_string(),
                 XmlDataTypes::Boolean.to_string(),
-            ));
+            ))
         } else {
-            return Err(Error::new(
+            Err(Error::new(
                 ErrorType::InvalidReaderInput,
                 "Invalid Turtle input for boolean.",
-            ));
+            ))
         }
     }
 
@@ -332,12 +323,12 @@ impl<R: Read> TurtleLexer<R> {
             .peek_until_discard_leading_spaces(InputReaderHelper::node_delimiter)?;
 
         if a.len() == 1 && a[0] == Some('a') {
-            return Ok(Token::KeywordA);
+            Ok(Token::KeywordA)
         } else {
-            return Err(Error::new(
+            Err(Error::new(
                 ErrorType::InvalidReaderInput,
                 "Invalid Turtle input for keyword 'a'.",
-            ));
+            ))
         }
     }
 
@@ -347,8 +338,8 @@ impl<R: Read> TurtleLexer<R> {
             .get_until(InputReaderHelper::node_delimiter)
         {
             Ok(chars) => Ok(chars.to_string()),
-            Err(err) => match err.error_type() {
-                &ErrorType::EndOfInput(ref chars) => Ok(chars.to_string()),
+            Err(err) => match *err.error_type() {
+                ErrorType::EndOfInput(ref chars) => Ok(chars.to_string()),
                 _ => Err(Error::new(
                     ErrorType::InvalidReaderInput,
                     "Invalid input for Turtle lexer while parsing language specification.",
@@ -477,8 +468,8 @@ impl<R: Read> TurtleLexer<R> {
             .get_until(InputReaderHelper::node_delimiter)
         {
             Ok(chars) => Ok(Token::BlankNode(chars.to_string())),
-            Err(err) => match err.error_type() {
-                &ErrorType::EndOfInput(ref chars) => Ok(Token::BlankNode(chars.to_string())),
+            Err(err) => match *err.error_type() {
+                ErrorType::EndOfInput(ref chars) => Ok(Token::BlankNode(chars.to_string())),
                 _ => Err(Error::new(
                     ErrorType::InvalidReaderInput,
                     "Invalid input for Turtle lexer while parsing blank node.",
@@ -497,8 +488,8 @@ impl<R: Read> TurtleLexer<R> {
             .get_until(InputReaderHelper::node_delimiter)
         {
             Ok(chars) => Ok(Token::QName(prefix, chars.to_string())),
-            Err(err) => match err.error_type() {
-                &ErrorType::EndOfInput(ref chars) => Ok(Token::QName(prefix, chars.to_string())),
+            Err(err) => match *err.error_type() {
+                ErrorType::EndOfInput(ref chars) => Ok(Token::QName(prefix, chars.to_string())),
                 _ => Err(Error::new(
                     ErrorType::InvalidReaderInput,
                     "Invalid input for Turtle lexer while parsing QName.",

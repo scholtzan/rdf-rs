@@ -157,7 +157,7 @@ impl Graph {
     /// - No namespace with the provided prefix exists
     ///
     pub fn get_namespace_uri_by_prefix(&self, prefix: String) -> Result<&Uri> {
-        self.namespaces.get_uri_by_prefix(prefix)
+        self.namespaces.get_uri_by_prefix(&prefix)
     }
 
     /// Returns a literal node of the specified namespace.
@@ -179,7 +179,7 @@ impl Graph {
     /// ```
     pub fn create_literal_node(&self, literal: String) -> Node {
         Node::LiteralNode {
-            literal: literal,
+            literal,
             data_type: None,
             language: None,
         }
@@ -205,7 +205,7 @@ impl Graph {
     /// ```
     pub fn create_literal_node_with_data_type(&self, literal: String, data_type: &Uri) -> Node {
         Node::LiteralNode {
-            literal: literal,
+            literal,
             data_type: Some(data_type.clone()),
             language: None,
         }
@@ -230,7 +230,7 @@ impl Graph {
     /// ```
     pub fn create_literal_node_with_language(&self, literal: String, language: String) -> Node {
         Node::LiteralNode {
-            literal: literal,
+            literal,
             data_type: None,
             language: Some(language),
         }
@@ -282,7 +282,7 @@ impl Graph {
     /// });
     /// ```
     pub fn create_blank_node_with_id(&self, id: String) -> Node {
-        Node::BlankNode { id: id }
+        Node::BlankNode { id }
     }
 
     /// Creates a new URI node.

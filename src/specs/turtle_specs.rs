@@ -18,7 +18,7 @@ impl TurtleSpecs {
     /// assert!(TurtleSpecs::is_plain_literal(&"3e10".to_string(), &Some(XmlDataTypes::Decimal.to_uri())));
     /// assert_eq!(TurtleSpecs::is_plain_literal(&"a".to_string(), &Some(XmlDataTypes::Decimal.to_uri())), false);
     /// ```
-    pub fn is_plain_literal(literal: &String, data_type: &Option<Uri>) -> bool {
+    pub fn is_plain_literal(literal: &str, data_type: &Option<Uri>) -> bool {
         if TurtleSpecs::is_double_literal(literal)
             && *data_type == Some(XmlDataTypes::Decimal.to_uri())
         {
@@ -51,7 +51,7 @@ impl TurtleSpecs {
     /// assert!(TurtleSpecs::is_double_literal(&"3e10".to_string()));
     /// assert_eq!(TurtleSpecs::is_double_literal(&"a".to_string()), false);
     /// ```
-    pub fn is_double_literal(literal: &String) -> bool {
+    pub fn is_double_literal(literal: &str) -> bool {
         match literal.parse::<f64>() {
             Ok(_) => true,
             Err(_) => false,
@@ -68,7 +68,7 @@ impl TurtleSpecs {
     /// assert!(TurtleSpecs::is_integer_literal(&"3".to_string()));
     /// assert_eq!(TurtleSpecs::is_integer_literal(&"3.0".to_string()), false);
     /// ```
-    pub fn is_integer_literal(literal: &String) -> bool {
+    pub fn is_integer_literal(literal: &str) -> bool {
         match literal.parse::<i64>() {
             Ok(_) => true,
             Err(_) => false,
@@ -86,7 +86,7 @@ impl TurtleSpecs {
     /// assert!(TurtleSpecs::is_boolean_literal(&"false".to_string()));
     /// assert_eq!(TurtleSpecs::is_boolean_literal(&"1".to_string()), false);
     /// ```
-    pub fn is_boolean_literal(literal: &String) -> bool {
+    pub fn is_boolean_literal(literal: &str) -> bool {
         match literal.parse::<bool>() {
             Ok(_) => true,
             Err(_) => false,

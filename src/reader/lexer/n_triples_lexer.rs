@@ -55,12 +55,9 @@ impl<R: Read> RdfLexer<R> for NTriplesLexer<R> {
     /// - Input that does not conform to the NTriples standard.
     ///
     fn get_next_token(&mut self) -> Result<Token> {
-        match self.peeked_token.clone() {
-            Some(token) => {
-                self.peeked_token = None;
-                return Ok(token);
-            }
-            None => {}
+        if let Some(token) = self.peeked_token.clone() {
+            self.peeked_token = None;
+            return Ok(token);
         }
 
         match self.input_reader.peek_next_char_discard_leading_spaces()? {
@@ -110,7 +107,7 @@ impl<R: Read> RdfLexer<R> for NTriplesLexer<R> {
             None => {
                 let next = self.get_next_token()?;
                 self.peeked_token = Some(next.clone());
-                return Ok(next);
+                Ok(next)
             }
         }
     }
@@ -133,8 +130,8 @@ impl<R: Read> NTriplesLexer<R> {
                 self.consume_next_char(); // consume comment delimiter
                 Ok(Token::Comment(chars.to_string()))
             }
-            Err(err) => match err.error_type() {
-                &ErrorType::EndOfInput(ref chars) => Ok(Token::Comment(chars.to_string())),
+            Err(err) => match *err.error_type() {
+                ErrorType::EndOfInput(ref chars) => Ok(Token::Comment(chars.to_string())),
                 _ => Err(Error::new(
                     ErrorType::InvalidReaderInput,
                     "Invalid input for Turtle lexer while parsing comment.",
@@ -149,8 +146,8 @@ impl<R: Read> NTriplesLexer<R> {
             .get_until(|c| c == '\n' || c == '\r' || c == ' ' || c == '.')
         {
             Ok(chars) => Ok(chars.to_string()),
-            Err(err) => match err.error_type() {
-                &ErrorType::EndOfInput(ref chars) => Ok(chars.to_string()),
+            Err(err) => match *err.error_type() {
+                ErrorType::EndOfInput(ref chars) => Ok(chars.to_string()),
                 _ => Err(Error::new(
                     ErrorType::InvalidReaderInput,
                     "Invalid input for NTriples lexer while parsing language specification.",
@@ -239,8 +236,8 @@ impl<R: Read> NTriplesLexer<R> {
             .get_until(|c| c == '\n' || c == '\r' || c == ' ' || c == '.')
         {
             Ok(chars) => Ok(Token::BlankNode(chars.to_string())),
-            Err(err) => match err.error_type() {
-                &ErrorType::EndOfInput(ref chars) => Ok(Token::BlankNode(chars.to_string())),
+            Err(err) => match *err.error_type() {
+                ErrorType::EndOfInput(ref chars) => Ok(Token::BlankNode(chars.to_string())),
                 _ => Err(Error::new(
                     ErrorType::InvalidReaderInput,
                     "Invalid input for NTriples lexer while parsing blank node.",

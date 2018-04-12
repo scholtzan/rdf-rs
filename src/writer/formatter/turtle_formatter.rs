@@ -15,7 +15,7 @@ impl<'a> TurtleFormatter<'a> {
     /// Constructor of `TurtleFormatter`.
     pub fn new(namespaces: &'a HashMap<String, Uri>) -> TurtleFormatter<'a> {
         TurtleFormatter {
-            namespaces: namespaces,
+            namespaces,
         }
     }
 }
@@ -26,14 +26,14 @@ impl<'a> RdfFormatter for TurtleFormatter<'a> {
     /// Determines the node type, extracts its content and calls the
     /// right function for formatting this content.
     fn format_node(&self, node: &Node) -> String {
-        match node {
-            &Node::BlankNode { ref id } => self.format_blank(&id),
-            &Node::LiteralNode {
+        match *node {
+            Node::BlankNode { ref id } => self.format_blank(id),
+            Node::LiteralNode {
                 ref literal,
                 ref data_type,
                 ref language,
-            } => self.format_literal(&literal, data_type, language),
-            &Node::UriNode { ref uri } => self.format_uri(uri),
+            } => self.format_literal(literal, data_type, language),
+            Node::UriNode { ref uri } => self.format_uri(uri),
         }
     }
 
@@ -42,7 +42,7 @@ impl<'a> RdfFormatter for TurtleFormatter<'a> {
     /// Also considers the data type and language of the literal.
     fn format_literal(
         &self,
-        literal: &String,
+        literal: &str,
         data_type: &Option<Uri>,
         language: &Option<String>,
     ) -> String {
@@ -50,35 +50,35 @@ impl<'a> RdfFormatter for TurtleFormatter<'a> {
 
         if TurtleSpecs::is_plain_literal(literal, data_type) && *language == None {
             // some number or boolean
-            output_string.push_str(&literal);
+            output_string.push_str(literal);
         } else {
             output_string.push_str("\"");
-            output_string.push_str(&RdfSyntaxSpecs::escape_literal(&literal));
+            output_string.push_str(&RdfSyntaxSpecs::escape_literal(literal));
             output_string.push_str("\"");
         }
 
-        match language {
-            &Some(ref lang) => {
+        match *language {
+            Some(ref lang) => {
                 output_string.push_str("@");
                 output_string.push_str(lang);
             }
-            &None => {}
+            None => {}
         }
 
-        match data_type {
-            &Some(ref dt) => {
+        match *data_type {
+            Some(ref dt) => {
                 output_string.push_str("^^");
                 output_string.push_str(&self.format_uri(dt));
             }
-            &None => {}
+            None => {}
         }
 
         output_string
     }
 
     /// Formats the content of a blank node to the corresponding Turtle syntax.
-    fn format_blank(&self, id: &String) -> String {
-        "_:".to_string() + &id.to_string()
+    fn format_blank(&self, id: &str) -> String {
+        "_:".to_string() + id
     }
 
     /// Formats a URI to Turtle syntax.

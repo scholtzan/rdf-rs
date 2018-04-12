@@ -8,7 +8,7 @@ pub struct Uri {
 // todo
 impl Uri {
     pub fn new(uri: String) -> Uri {
-        Uri { uri: uri }
+        Uri { uri }
     }
 
     /// Returns the string representation of the URI.
@@ -17,7 +17,7 @@ impl Uri {
     }
 
     /// todo
-    pub fn append_resource_path(&mut self, path: String) {
+    pub fn append_resource_path(&mut self, path: &str) {
         // todo: check if URI ends with '/', if not add '/'
         self.uri.push_str(&path.to_string());
     }

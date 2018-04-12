@@ -24,8 +24,8 @@ impl Namespace {
     /// ```
     pub fn new(prefix: String, uri: Uri) -> Namespace {
         Namespace {
-            prefix: prefix,
-            uri: uri,
+            prefix,
+            uri,
         }
     }
 
@@ -65,7 +65,7 @@ impl Namespace {
 }
 
 /// Storage for multiple namespaces.
-#[derive(PartialEq, Debug)]
+#[derive(PartialEq, Debug, Default)]
 pub struct NamespaceStore {
     /// The namespace prefix is associated with the namespace URI.
     namespaces: HashMap<String, Uri>,
@@ -109,7 +109,7 @@ impl NamespaceStore {
     /// nss.add(&ns);
     /// ```
     pub fn add(&mut self, ns: &Namespace) {
-        &self.namespaces.insert(ns.prefix().clone(), ns.uri.clone());
+        self.namespaces.insert(ns.prefix().clone(), ns.uri.clone());
     }
 
     /// Returns the URI of a specific namespace.
@@ -128,15 +128,15 @@ impl NamespaceStore {
     ///
     /// nss.add(&ns);
     ///
-    /// assert_eq!(nss.get_uri_by_prefix("example".to_string()).unwrap(),
+    /// assert_eq!(nss.get_uri_by_prefix("example").unwrap(),
     ///            &Uri::new("http://example.org/".to_string()))
     /// ```
-    pub fn get_uri_by_prefix(&self, prefix: String) -> Result<&Uri> {
-        match self.namespaces.get(&prefix) {
+    pub fn get_uri_by_prefix(&self, prefix: &str) -> Result<&Uri> {
+        match self.namespaces.get(prefix) {
             Some(uri) => Ok(uri),
             None => Err(Error::new(
                 ErrorType::InvalidNamespace,
-                "Namespace does not exists for prefix: ".to_string() + &prefix.to_string(),
+                "Namespace does not exists for prefix: ".to_string() + prefix,
             )),
         }
     }

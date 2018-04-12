@@ -59,8 +59,8 @@ impl<R: Read> RdfParser for NTriplesParser<R> {
 
             match self.read_triple() {
                 Ok(triple) => graph.add_triple(&triple),
-                Err(err) => match err.error_type() {
-                    &ErrorType::EndOfInput(_) => return Ok(graph),
+                Err(err) => match *err.error_type() {
+                    ErrorType::EndOfInput(_) => return Ok(graph),
                     _ => {
                         println!("Error: {}", err.to_string());
                         return Err(Error::new(
@@ -138,7 +138,7 @@ impl<R: Read> NTriplesParser<R> {
     /// Get the next token and check if it is a valid subject and create a new subject node.
     fn read_subject(&mut self) -> Result<Node> {
         match self.lexer.get_next_token() {
-            Ok(Token::BlankNode(id)) => Ok(Node::BlankNode { id: id }),
+            Ok(Token::BlankNode(id)) => Ok(Node::BlankNode { id }),
             Ok(Token::Uri(uri)) => Ok(Node::UriNode { uri: Uri::new(uri) }),
             _ => Err(Error::new(
                 ErrorType::InvalidToken,
@@ -161,20 +161,20 @@ impl<R: Read> NTriplesParser<R> {
     /// Get the next token and check if it is a valid object and create a new object node.
     fn read_object(&mut self) -> Result<Node> {
         match self.lexer.get_next_token()? {
-            Token::BlankNode(id) => Ok(Node::BlankNode { id: id }),
+            Token::BlankNode(id) => Ok(Node::BlankNode { id }),
             Token::Uri(uri) => Ok(Node::UriNode { uri: Uri::new(uri) }),
             Token::LiteralWithLanguageSpecification(literal, lang) => Ok(Node::LiteralNode {
-                literal: literal,
+                literal,
                 data_type: None,
                 language: Some(lang),
             }),
             Token::LiteralWithUrlDatatype(literal, datatype) => Ok(Node::LiteralNode {
-                literal: literal,
+                literal,
                 data_type: Some(Uri::new(datatype)),
                 language: None,
             }),
             Token::Literal(literal) => Ok(Node::LiteralNode {
-                literal: literal,
+                literal,
                 data_type: None,
                 language: None,
             }),

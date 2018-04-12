@@ -5,6 +5,7 @@ use specs::rdf_syntax_specs::RdfSyntaxSpecs;
 
 /// Formatter for formatting nodes to N-Triple syntax.
 /// This formatter is used by `NTriplesWriter`.
+#[derive(Default)]
 pub struct NTriplesFormatter {}
 
 impl NTriplesFormatter {
@@ -20,14 +21,14 @@ impl RdfFormatter for NTriplesFormatter {
     /// Determines the node type, extracts its content and calls the
     /// right function for formatting this content.
     fn format_node(&self, node: &Node) -> String {
-        match node {
-            &Node::BlankNode { ref id } => self.format_blank(&id),
-            &Node::LiteralNode {
+        match *node {
+            Node::BlankNode { ref id } => self.format_blank(&id),
+            Node::LiteralNode {
                 ref literal,
                 ref data_type,
                 ref language,
-            } => self.format_literal(&literal, data_type, language),
-            &Node::UriNode { ref uri } => self.format_uri(uri),
+            } => self.format_literal(literal, data_type, language),
+            Node::UriNode { ref uri } => self.format_uri(uri),
         }
     }
 
@@ -37,36 +38,36 @@ impl RdfFormatter for NTriplesFormatter {
     ///
     fn format_literal(
         &self,
-        literal: &String,
+        literal: &str,
         data_type: &Option<Uri>,
         language: &Option<String>,
     ) -> String {
         let mut output_string = "\"".to_string();
-        output_string.push_str(&RdfSyntaxSpecs::escape_literal(&literal));
+        output_string.push_str(&RdfSyntaxSpecs::escape_literal(literal));
         output_string.push_str("\"");
 
-        match language {
-            &Some(ref lang) => {
+        match *language {
+            Some(ref lang) => {
                 output_string.push_str("@");
                 output_string.push_str(lang);
             }
-            &None => {}
+            None => {}
         }
 
-        match data_type {
-            &Some(ref dt) => {
+        match *data_type {
+            Some(ref dt) => {
                 output_string.push_str("^^");
                 output_string.push_str(&self.format_uri(dt));
             }
-            &None => {}
+            None => {}
         }
 
         output_string
     }
 
     /// Formats the content of a blank node to the corresponding N-Triples syntax.
-    fn format_blank(&self, id: &String) -> String {
-        "_:".to_string() + &id.to_string()
+    fn format_blank(&self, id: &str) -> String {
+        "_:".to_string() + id
     }
 
     /// Formats a URI to N-Triples syntax.

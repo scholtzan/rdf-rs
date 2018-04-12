@@ -71,7 +71,7 @@ impl PartialEq for Triple {
 impl Eq for Triple {}
 
 /// Storage for triples.
-#[derive(Debug)]
+#[derive(Debug, Default)]
 pub struct TripleStore {
     triples: Vec<Triple>,
 }
@@ -101,7 +101,7 @@ impl TripleStore {
 
     /// Deletes the triple from the store.
     pub fn remove_triple(&mut self, triple: &Triple) {
-        self.triples.retain(|ref t| *t != triple);
+        self.triples.retain(|t| t != triple);
     }
 
     /// Returns all triples where the subject node matches the provided node.
@@ -168,25 +168,23 @@ impl TripleStore {
     pub fn get_blank_nodes(&self) -> Vec<&Node> {
         let mut blank_nodes = Vec::new();
 
-        for triple in self.triples.iter() {
-            match triple {
-                &Triple {
-                    subject: Node::BlankNode { id: _ },
-                    predicate: _,
-                    object: Node::BlankNode { id: _ },
+        for triple in &self.triples {
+            match *triple {
+                Triple {
+                    subject: Node::BlankNode { .. },
+                    object: Node::BlankNode { .. },
+                    ..
                 } => {
                     blank_nodes.push(triple.subject());
                     blank_nodes.push(triple.object());
                 }
-                &Triple {
-                    subject: Node::BlankNode { id: _ },
-                    predicate: _,
-                    object: _,
+                Triple {
+                    subject: Node::BlankNode { .. },
+                    ..
                 } => blank_nodes.push(triple.subject()),
-                &Triple {
-                    subject: _,
-                    predicate: _,
-                    object: Node::BlankNode { id: _ },
+                Triple {
+                    object: Node::BlankNode { .. },
+                    ..
                 } => blank_nodes.push(triple.object()),
                 _ => {}
             }

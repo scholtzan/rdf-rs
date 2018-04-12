@@ -38,7 +38,7 @@ impl Error {
         E: Into<Box<StdError>>,
     {
         Error {
-            error_type: error_type,
+            error_type,
             error: error.into(),
         }
     }

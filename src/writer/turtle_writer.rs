@@ -81,7 +81,7 @@ impl<'a> RdfWriter for TurtleWriter<'a> {
 
                     // write predicate
                     let turtle_predicate =
-                        self.node_to_turtle(triple.predicate(), TripleSegment::Predicate)?;
+                        self.node_to_turtle(triple.predicate(), &TripleSegment::Predicate)?;
                     // indent predicate
                     output_string
                         .push_str(&repeat(" ").take(predicate_indentation).collect::<String>());
@@ -100,13 +100,13 @@ impl<'a> RdfWriter for TurtleWriter<'a> {
                 }
 
                 // start new group
-                let turtle_subject = self.node_to_turtle(triple.subject(), TripleSegment::Subject)?;
+                let turtle_subject = self.node_to_turtle(triple.subject(), &TripleSegment::Subject)?;
                 output_string.push_str(&turtle_subject);
                 previous_subject = Some(triple.subject());
 
                 output_string.push_str(" ");
                 let turtle_predicate =
-                    self.node_to_turtle(triple.predicate(), TripleSegment::Predicate)?;
+                    self.node_to_turtle(triple.predicate(), &TripleSegment::Predicate)?;
                 output_string.push_str(&turtle_predicate);
                 previous_predicate = Some(triple.predicate());
                 output_string.push_str(" ");
@@ -116,7 +116,7 @@ impl<'a> RdfWriter for TurtleWriter<'a> {
             }
 
             // write object
-            let turtle_object = self.node_to_turtle(triple.object(), TripleSegment::Object)?;
+            let turtle_object = self.node_to_turtle(triple.object(), &TripleSegment::Object)?;
             output_string.push_str(&turtle_object);
         }
 
@@ -140,13 +140,13 @@ impl<'a> TurtleWriter<'a> {
     fn write_base_uri(&self, graph: &Graph) -> String {
         let mut output_string = "".to_string();
 
-        match graph.base_uri() {
-            &Some(ref base) => {
+        match *graph.base_uri() {
+            Some(ref base) => {
                 output_string.push_str("@base ");
                 output_string.push_str(&self.formatter.format_uri(base));
                 output_string.push_str(" .\n");
             }
-            &None => {}
+            None => {}
         }
 
         output_string
@@ -159,7 +159,7 @@ impl<'a> TurtleWriter<'a> {
         // write prefixes
         for (prefix, namespace_uri) in graph.namespaces() {
             output_string.push_str("@prefix ");
-            output_string.push_str(&prefix);
+            output_string.push_str(prefix);
             output_string.push_str(": <");
             output_string.push_str(namespace_uri.to_string());
             output_string.push_str("> .\n");
@@ -176,17 +176,17 @@ impl<'a> TurtleWriter<'a> {
     ///
     /// - The node type is invalid for the triple segment.
     ///
-    fn node_to_turtle(&self, node: &Node, segment: TripleSegment) -> Result<String> {
-        match node {
-      &Node::BlankNode { id: _ } =>
+    fn node_to_turtle(&self, node: &Node, segment: &TripleSegment) -> Result<String> {
+        match *node {
+      Node::BlankNode { .. } =>
       // blank nodes are not allowed as predicates
-        if segment == TripleSegment::Predicate {
+        if *segment == TripleSegment::Predicate {
           return Err(Error::new(ErrorType::InvalidWriterOutput,
                                 "Blank nodes are not allowed as predicates in Turtle."))
         },
-      &Node::LiteralNode { literal: _, data_type: ref dt, language: ref lang } => {
+      Node::LiteralNode { data_type: ref dt, language: ref lang, .. } => {
         // literal nodes are only allowed as objects
-        if segment != TripleSegment::Object {
+        if *segment != TripleSegment::Object {
           return Err(Error::new(ErrorType::InvalidWriterOutput,
                                 "Literals are not allowed as subjects or predicates in Turtle."))
         }
