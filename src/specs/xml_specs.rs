@@ -8,6 +8,7 @@ pub enum XmlDataTypes {
     Boolean,
     Date,
     Long,
+    UnsignedLong,
     Int,
     Integer,
 }
@@ -29,6 +30,7 @@ impl XmlDataTypes {
             XmlDataTypes::Double => schema_name + "double",
             XmlDataTypes::Date => schema_name + "date",
             XmlDataTypes::Long => schema_name + "long",
+            XmlDataTypes::UnsignedLong => schema_name + "unsignedLong",
             XmlDataTypes::Int => schema_name + "int",
             XmlDataTypes::String => schema_name + "string",
         }
