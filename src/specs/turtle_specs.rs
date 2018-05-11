@@ -31,8 +31,10 @@ impl TurtleSpecs {
             return true;
         }
 
-        if TurtleSpecs::is_integer_literal(literal)
-            && *data_type == Some(XmlDataTypes::Integer.to_uri())
+        if TurtleSpecs::is_integer_literal(literal) &&
+            (*data_type == Some(XmlDataTypes::Integer.to_uri()) ||
+            *data_type == Some(XmlDataTypes::UnsignedLong.to_uri()) ||
+            *data_type == Some(XmlDataTypes::Long.to_uri()))
         {
             return true;
         }
