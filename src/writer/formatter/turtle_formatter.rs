@@ -46,7 +46,7 @@ impl<'a> RdfFormatter for TurtleFormatter<'a> {
     ) -> String {
         let mut output_string = "".to_string();
 
-        if TurtleSpecs::is_plain_literal(literal, data_type) && *language == None {
+        if TurtleSpecs::is_boolean_literal(literal) && *language == None {
             // some number or boolean
             output_string.push_str(literal);
         } else {
@@ -240,7 +240,7 @@ mod tests {
 
         assert_eq!(
             formatter.format_node(&node),
-            "123^^<http://www.w3.org/2001/XMLSchema#integer>".to_string()
+            "\"123\"^^<http://www.w3.org/2001/XMLSchema#integer>".to_string()
         );
     }
 
@@ -256,7 +256,7 @@ mod tests {
 
         assert_eq!(
             formatter.format_node(&node),
-            "123.123^^<http://www.w3.org/2001/XMLSchema#decimal>".to_string()
+            "\"123.123\"^^<http://www.w3.org/2001/XMLSchema#decimal>".to_string()
         );
     }
 }
