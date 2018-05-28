@@ -1,6 +1,6 @@
 [package]
 name = "rdf"
-version = "0.1.2"
+version = "0.1.3"
 authors = ["Anna Scholtz <anna@scholtzan.net>", "Marc-Antoine Arnaud <arnaud.marcantoine@gmail.com>"]
 description = """
 rdf is a library for the Resource Description Framework (RDF) and SPARQL implemented in Rust.
