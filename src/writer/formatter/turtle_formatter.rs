@@ -46,7 +46,8 @@ impl<'a> RdfFormatter for TurtleFormatter<'a> {
     ) -> String {
         let mut output_string = "".to_string();
 
-        if TurtleSpecs::is_boolean_literal(literal) && *language == None {
+        if TurtleSpecs::is_boolean_literal(literal) && *language == None
+         && *data_type == None {
             // some number or boolean
             output_string.push_str(literal);
         } else {
@@ -224,7 +225,7 @@ mod tests {
 
         assert_eq!(
             formatter.format_node(&node),
-            "true^^<http://www.w3.org/2001/XMLSchema#boolean>".to_string()
+            "\"true\"^^<http://www.w3.org/2001/XMLSchema#boolean>".to_string()
         );
     }
 
