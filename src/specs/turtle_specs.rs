@@ -1,5 +1,5 @@
-use uri::Uri;
 use specs::xml_specs::XmlDataTypes;
+use uri::Uri;
 
 /// Contains specifications for validating turtle syntax.
 pub struct TurtleSpecs {}

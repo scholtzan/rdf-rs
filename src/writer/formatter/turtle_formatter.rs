@@ -1,9 +1,9 @@
 use node::Node;
-use uri::Uri;
-use writer::formatter::rdf_formatter::RdfFormatter;
+use specs::rdf_syntax_specs::RdfSyntaxSpecs;
 use specs::turtle_specs::TurtleSpecs;
 use std::collections::HashMap;
-use specs::rdf_syntax_specs::RdfSyntaxSpecs;
+use uri::Uri;
+use writer::formatter::rdf_formatter::RdfFormatter;
 
 /// Formatter for formatting nodes to Turtle syntax.
 /// This formatter is used by `TurtleWriter`.
@@ -46,8 +46,7 @@ impl<'a> RdfFormatter for TurtleFormatter<'a> {
     ) -> String {
         let mut output_string = "".to_string();
 
-        if TurtleSpecs::is_boolean_literal(literal) && *language == None
-         && *data_type == None {
+        if TurtleSpecs::is_boolean_literal(literal) && *language == None && *data_type == None {
             // some number or boolean
             output_string.push_str(literal);
         } else {
@@ -84,7 +83,8 @@ impl<'a> RdfFormatter for TurtleFormatter<'a> {
                 output_string.push_str(prefix);
                 output_string.push_str(":");
 
-                let path = uri.to_string()
+                let path = uri
+                    .to_string()
                     .to_owned()
                     .replace(namespace_uri.to_string(), "")
                     .replace("/", ":");
@@ -105,11 +105,11 @@ impl<'a> RdfFormatter for TurtleFormatter<'a> {
 #[cfg(test)]
 mod tests {
     use node::*;
-    use writer::formatter::rdf_formatter::RdfFormatter;
-    use uri::Uri;
-    use writer::formatter::turtle_formatter::TurtleFormatter;
     use specs::xml_specs::XmlDataTypes;
     use std::collections::HashMap;
+    use uri::Uri;
+    use writer::formatter::rdf_formatter::RdfFormatter;
+    use writer::formatter::turtle_formatter::TurtleFormatter;
 
     #[test]
     fn test_turtle_blank_node_formatting() {

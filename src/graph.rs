@@ -1,9 +1,9 @@
-use uri::Uri;
-use triple::*;
 use namespace::*;
 use node::*;
-use std::slice::Iter;
 use std::collections::HashMap;
+use std::slice::Iter;
+use triple::*;
+use uri::Uri;
 use Result;
 
 /// Representation of an RDF graph.

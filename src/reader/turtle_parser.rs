@@ -1,17 +1,17 @@
-use Result;
-use reader::rdf_parser::RdfParser;
-use graph::Graph;
 use error::{Error, ErrorType};
-use triple::Triple;
-use reader::lexer::turtle_lexer::TurtleLexer;
-use reader::lexer::rdf_lexer::RdfLexer;
-use node::Node;
-use reader::lexer::token::Token;
-use std::io::Read;
-use uri::Uri;
-use std::io::Cursor;
+use graph::Graph;
 use namespace::Namespace;
+use node::Node;
+use reader::lexer::rdf_lexer::RdfLexer;
+use reader::lexer::token::Token;
+use reader::lexer::turtle_lexer::TurtleLexer;
+use reader::rdf_parser::RdfParser;
 use specs::rdf_syntax_specs::RdfSyntaxDataTypes;
+use std::io::Cursor;
+use std::io::Read;
+use triple::Triple;
+use uri::Uri;
+use Result;
 
 /// RDF parser to generate an RDF graph from Turtle syntax.
 pub struct TurtleParser<R: Read> {
@@ -371,8 +371,8 @@ impl<R: Read> TurtleParser<R> {
 
 #[cfg(test)]
 mod tests {
-    use reader::turtle_parser::TurtleParser;
     use reader::rdf_parser::RdfParser;
+    use reader::turtle_parser::TurtleParser;
     use uri::Uri;
 
     #[test]

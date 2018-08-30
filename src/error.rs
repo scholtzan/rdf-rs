@@ -1,6 +1,6 @@
-use std::fmt;
-use std::error::Error as StdError;
 use reader::input_reader::InputChars;
+use std::error::Error as StdError;
+use std::fmt;
 
 /// Different types of errors that can occur.
 #[derive(Debug)]

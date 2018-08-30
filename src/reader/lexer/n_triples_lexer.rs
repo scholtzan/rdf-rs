@@ -1,8 +1,8 @@
+use error::{Error, ErrorType};
+use reader::input_reader::InputReader;
 use reader::lexer::rdf_lexer::RdfLexer;
 use reader::lexer::token::Token;
-use reader::input_reader::InputReader;
 use std::io::Read;
-use error::{Error, ErrorType};
 use Result;
 
 /// Produces tokens from NTriples input.
@@ -123,7 +123,8 @@ impl<R: Read> NTriplesLexer<R> {
     fn get_comment(&mut self) -> Result<Token> {
         self.consume_next_char(); // consume '#'
 
-        match self.input_reader
+        match self
+            .input_reader
             .get_until_discard_leading_spaces(|c| c == '\n' || c == '\r')
         {
             Ok(chars) => {
@@ -142,7 +143,8 @@ impl<R: Read> NTriplesLexer<R> {
 
     /// Parses the language specification from the input and returns it as token.
     fn get_language_specification(&mut self) -> Result<String> {
-        match self.input_reader
+        match self
+            .input_reader
             .get_until(|c| c == '\n' || c == '\r' || c == ' ' || c == '.')
         {
             Ok(chars) => Ok(chars.to_string()),
@@ -232,7 +234,8 @@ impl<R: Read> NTriplesLexer<R> {
             }
         }
 
-        match self.input_reader
+        match self
+            .input_reader
             .get_until(|c| c == '\n' || c == '\r' || c == ' ' || c == '.')
         {
             Ok(chars) => Ok(Token::BlankNode(chars.to_string())),
@@ -249,8 +252,8 @@ impl<R: Read> NTriplesLexer<R> {
 
 #[cfg(test)]
 mod tests {
-    use reader::lexer::rdf_lexer::RdfLexer;
     use reader::lexer::n_triples_lexer::NTriplesLexer;
+    use reader::lexer::rdf_lexer::RdfLexer;
     use reader::lexer::token::Token;
 
     #[test]

@@ -1,15 +1,15 @@
-use writer::formatter::turtle_formatter::TurtleFormatter;
-use writer::formatter::rdf_formatter::*;
-use writer::rdf_writer::RdfWriter;
+use error::{Error, ErrorType};
 use graph::Graph;
 use node::Node;
+use std::collections::HashMap;
+use std::iter::repeat;
 use triple::Triple;
 use triple::TripleSegment;
-use Result;
-use std::iter::repeat;
-use error::{Error, ErrorType};
-use std::collections::HashMap;
 use uri::Uri;
+use writer::formatter::rdf_formatter::*;
+use writer::formatter::turtle_formatter::TurtleFormatter;
+use writer::rdf_writer::RdfWriter;
+use Result;
 
 /// RDF writer to generate Turtle syntax.
 pub struct TurtleWriter<'a> {
@@ -176,27 +176,39 @@ impl<'a> TurtleWriter<'a> {
     ///
     fn node_to_turtle(&self, node: &Node, segment: &TripleSegment) -> Result<String> {
         match *node {
-      Node::BlankNode { .. } =>
-      // blank nodes are not allowed as predicates
-        if *segment == TripleSegment::Predicate {
-          return Err(Error::new(ErrorType::InvalidWriterOutput,
-                                "Blank nodes are not allowed as predicates in Turtle."))
-        },
-      Node::LiteralNode { data_type: ref dt, language: ref lang, .. } => {
-        // literal nodes are only allowed as objects
-        if *segment != TripleSegment::Object {
-          return Err(Error::new(ErrorType::InvalidWriterOutput,
-                                "Literals are not allowed as subjects or predicates in Turtle."))
-        }
+            Node::BlankNode { .. } =>
+            // blank nodes are not allowed as predicates
+            {
+                if *segment == TripleSegment::Predicate {
+                    return Err(Error::new(
+                        ErrorType::InvalidWriterOutput,
+                        "Blank nodes are not allowed as predicates in Turtle.",
+                    ));
+                }
+            }
+            Node::LiteralNode {
+                data_type: ref dt,
+                language: ref lang,
+                ..
+            } => {
+                // literal nodes are only allowed as objects
+                if *segment != TripleSegment::Object {
+                    return Err(Error::new(
+                        ErrorType::InvalidWriterOutput,
+                        "Literals are not allowed as subjects or predicates in Turtle.",
+                    ));
+                }
 
-        // either language or data type could be defined, but not both
-        if *lang != None && *dt != None {
-          return Err(Error::new(ErrorType::InvalidWriterOutput,
-                                "Literal has data type and language."))
+                // either language or data type could be defined, but not both
+                if *lang != None && *dt != None {
+                    return Err(Error::new(
+                        ErrorType::InvalidWriterOutput,
+                        "Literal has data type and language.",
+                    ));
+                }
+            }
+            _ => {}
         }
-      },
-      _ => {},
-    }
 
         // use the formatter to get the corresponding N-Triple syntax
         Ok(self.formatter.format_node(node))
@@ -205,12 +217,12 @@ impl<'a> TurtleWriter<'a> {
 
 #[cfg(test)]
 mod tests {
+    use graph::Graph;
+    use namespace::Namespace;
     use triple::*;
     use uri::Uri;
-    use graph::Graph;
     use writer::rdf_writer::RdfWriter;
     use writer::turtle_writer::TurtleWriter;
-    use namespace::Namespace;
 
     #[test]
     fn test_turtle_writer() {

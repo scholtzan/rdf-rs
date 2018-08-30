@@ -1,15 +1,15 @@
-use Result;
-use reader::rdf_parser::RdfParser;
-use graph::Graph;
 use error::{Error, ErrorType};
-use triple::Triple;
+use graph::Graph;
+use node::Node;
 use reader::lexer::n_triples_lexer::NTriplesLexer;
 use reader::lexer::rdf_lexer::RdfLexer;
-use node::Node;
 use reader::lexer::token::Token;
-use std::io::Read;
-use uri::Uri;
+use reader::rdf_parser::RdfParser;
 use std::io::Cursor;
+use std::io::Read;
+use triple::Triple;
+use uri::Uri;
+use Result;
 
 /// RDF parser to generate an RDF graph from N-Triples syntax.
 pub struct NTriplesParser<R: Read> {

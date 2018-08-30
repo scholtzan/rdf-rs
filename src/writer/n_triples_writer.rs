@@ -1,10 +1,10 @@
-use writer::formatter::rdf_formatter::*;
-use writer::formatter::n_triples_formatter::NTriplesFormatter;
-use writer::rdf_writer::RdfWriter;
+use error::*;
 use graph::Graph;
 use node::Node;
 use triple::*;
-use error::*;
+use writer::formatter::n_triples_formatter::NTriplesFormatter;
+use writer::formatter::rdf_formatter::*;
+use writer::rdf_writer::RdfWriter;
 use Result;
 
 /// RDF writer to generate N-Triples syntax.
@@ -152,27 +152,39 @@ impl NTriplesWriter {
     ///
     pub fn node_to_n_triples(&self, node: &Node, segment: &TripleSegment) -> Result<String> {
         match *node {
-      Node::BlankNode { .. } =>
-        // blank nodes are not allowed as predicates
-        if *segment == TripleSegment::Predicate {
-          return Err(Error::new(ErrorType::InvalidWriterOutput,
-                                "Blank nodes are not allowed as predicates."))
-        },
-      Node::LiteralNode { data_type: ref dt, language: ref lang, .. } => {
-        // literal nodes are only allowed as objects
-        if *segment != TripleSegment::Object {
-          return Err(Error::new(ErrorType::InvalidWriterOutput,
-                                "Literals are not allowed as subjects or predicates."))
-        }
+            Node::BlankNode { .. } =>
+            // blank nodes are not allowed as predicates
+            {
+                if *segment == TripleSegment::Predicate {
+                    return Err(Error::new(
+                        ErrorType::InvalidWriterOutput,
+                        "Blank nodes are not allowed as predicates.",
+                    ));
+                }
+            }
+            Node::LiteralNode {
+                data_type: ref dt,
+                language: ref lang,
+                ..
+            } => {
+                // literal nodes are only allowed as objects
+                if *segment != TripleSegment::Object {
+                    return Err(Error::new(
+                        ErrorType::InvalidWriterOutput,
+                        "Literals are not allowed as subjects or predicates.",
+                    ));
+                }
 
-        // either language or data type could be defined, but not both
-        if *lang != None && *dt != None {
-          return Err(Error::new(ErrorType::InvalidWriterOutput,
-                                "Language and data type defined for a literal."))
+                // either language or data type could be defined, but not both
+                if *lang != None && *dt != None {
+                    return Err(Error::new(
+                        ErrorType::InvalidWriterOutput,
+                        "Language and data type defined for a literal.",
+                    ));
+                }
+            }
+            _ => {}
         }
-      },
-      _ => {},
-    }
 
         // use the formatter to get the corresponding N-Triple syntax
         Ok(self.formatter.format_node(node))

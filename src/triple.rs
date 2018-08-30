@@ -1,7 +1,7 @@
 use node::Node;
+use std::cmp::PartialEq;
 use std::slice::Iter;
 use std::vec::IntoIter;
-use std::cmp::PartialEq;
 
 /// Triple segment.
 #[derive(PartialEq, Debug)]
@@ -63,7 +63,8 @@ impl Triple {
 
 impl PartialEq for Triple {
     fn eq(&self, other: &Triple) -> bool {
-        self.subject() == other.subject() && self.predicate() == other.predicate()
+        self.subject() == other.subject()
+            && self.predicate() == other.predicate()
             && self.object() == other.object()
     }
 }
