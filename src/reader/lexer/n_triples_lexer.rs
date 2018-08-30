@@ -1,9 +1,9 @@
+use Result;
 use error::{Error, ErrorType};
 use reader::input_reader::InputReader;
 use reader::lexer::rdf_lexer::RdfLexer;
 use reader::lexer::token::Token;
 use std::io::Read;
-use Result;
 
 /// Produces tokens from NTriples input.
 pub struct NTriplesLexer<R: Read> {

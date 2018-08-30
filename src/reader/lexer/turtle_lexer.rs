@@ -371,10 +371,9 @@ impl<R: Read> TurtleLexer<R> {
         let mut literal = "".to_string();
 
         while !found_literal_end {
-            literal.push_str(
-                &self.input_reader
-                    .get_until(|c| c == literal_delimiter.unwrap())?
-                    .to_string(),
+            literal.push_str(&self.input_reader
+                .get_until(|c| c == literal_delimiter.unwrap())?
+                .to_string(),
             );
 
             if is_multiline {

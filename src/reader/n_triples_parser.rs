@@ -1,3 +1,4 @@
+use Result;
 use error::{Error, ErrorType};
 use graph::Graph;
 use node::Node;
@@ -9,7 +10,6 @@ use std::io::Cursor;
 use std::io::Read;
 use triple::Triple;
 use uri::Uri;
-use Result;
 
 /// RDF parser to generate an RDF graph from N-Triples syntax.
 pub struct NTriplesParser<R: Read> {
