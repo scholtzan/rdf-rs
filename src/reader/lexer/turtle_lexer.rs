@@ -373,8 +373,7 @@ impl<R: Read> TurtleLexer<R> {
         while !found_literal_end {
             literal.push_str(&self.input_reader
                 .get_until(|c| c == literal_delimiter.unwrap())?
-                .to_string(),
-            );
+                .to_string());
 
             if is_multiline {
                 // if not escaped check if the literal is complete
