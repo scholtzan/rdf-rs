@@ -123,8 +123,7 @@ impl<R: Read> NTriplesLexer<R> {
     fn get_comment(&mut self) -> Result<Token> {
         self.consume_next_char(); // consume '#'
 
-        match self
-            .input_reader
+        match self.input_reader
             .get_until_discard_leading_spaces(|c| c == '\n' || c == '\r')
         {
             Ok(chars) => {
@@ -143,8 +142,7 @@ impl<R: Read> NTriplesLexer<R> {
 
     /// Parses the language specification from the input and returns it as token.
     fn get_language_specification(&mut self) -> Result<String> {
-        match self
-            .input_reader
+        match self.input_reader
             .get_until(|c| c == '\n' || c == '\r' || c == ' ' || c == '.')
         {
             Ok(chars) => Ok(chars.to_string()),
@@ -234,8 +232,7 @@ impl<R: Read> NTriplesLexer<R> {
             }
         }
 
-        match self
-            .input_reader
+        match self.input_reader
             .get_until(|c| c == '\n' || c == '\r' || c == ' ' || c == '.')
         {
             Ok(chars) => Ok(Token::BlankNode(chars.to_string())),

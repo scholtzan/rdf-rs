@@ -1,3 +1,4 @@
+use Result;
 use error::{Error, ErrorType};
 use graph::Graph;
 use namespace::Namespace;
@@ -11,7 +12,6 @@ use std::io::Cursor;
 use std::io::Read;
 use triple::Triple;
 use uri::Uri;
-use Result;
 
 /// RDF parser to generate an RDF graph from Turtle syntax.
 pub struct TurtleParser<R: Read> {

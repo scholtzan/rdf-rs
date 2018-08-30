@@ -1,3 +1,4 @@
+use Result;
 use error::*;
 use graph::Graph;
 use node::Node;
@@ -5,7 +6,6 @@ use triple::*;
 use writer::formatter::n_triples_formatter::NTriplesFormatter;
 use writer::formatter::rdf_formatter::*;
 use writer::rdf_writer::RdfWriter;
-use Result;
 
 /// RDF writer to generate N-Triples syntax.
 #[derive(Default)]

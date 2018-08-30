@@ -1,3 +1,4 @@
+use Result;
 use error::{Error, ErrorType};
 use reader::input_reader::{InputReader, InputReaderHelper};
 use reader::lexer::rdf_lexer::RdfLexer;
@@ -5,7 +6,6 @@ use reader::lexer::token::Token;
 use specs::turtle_specs::TurtleSpecs;
 use specs::xml_specs::XmlDataTypes;
 use std::io::Read;
-use Result;
 
 /// Produces tokens from Turtle syntax input.
 pub struct TurtleLexer<R: Read> {
@@ -222,8 +222,7 @@ impl<R: Read> TurtleLexer<R> {
         let _ = self.input_reader.get_until(|c| c == ' '); // consume 'prefix'
 
         // get prefix name including ':'
-        let mut name = self
-            .input_reader
+        let mut name = self.input_reader
             .get_until_discard_leading_spaces(|c| c == ':')?
             .to_string();
         name.push(':');
@@ -243,8 +242,7 @@ impl<R: Read> TurtleLexer<R> {
     fn get_comment(&mut self) -> Result<Token> {
         self.consume_next_char(); // consume '#'
 
-        match self
-            .input_reader
+        match self.input_reader
             .get_until_discard_leading_spaces(InputReaderHelper::line_break)
         {
             Ok(chars) => {
@@ -263,24 +261,21 @@ impl<R: Read> TurtleLexer<R> {
 
     /// Parses integer, decimals and doubles.
     fn get_numeric(&mut self) -> Result<Token> {
-        let numeric = self
-            .input_reader
+        let numeric = self.input_reader
             .get_until_discard_leading_spaces(InputReaderHelper::node_delimiter)?;
 
         // check if delimiter was '.' and if it is part of a decimal or if it is a delimiter
         if self.input_reader.get_next_char()? == Some('.') {
             let mut complete_numeric = numeric.clone();
 
-            if let Ok(mut input_chars) = self
-                .input_reader
+            if let Ok(mut input_chars) = self.input_reader
                 .peek_until(InputReaderHelper::node_delimiter)
             {
                 complete_numeric.push(Some('.'));
                 complete_numeric.append(&mut input_chars);
 
                 if TurtleSpecs::is_double_literal(&complete_numeric.to_string()) {
-                    let _ = self
-                        .input_reader
+                    let _ = self.input_reader
                         .get_until_discard_leading_spaces(InputReaderHelper::node_delimiter)?; // consume
                     return Ok(Token::LiteralWithUrlDatatype(
                         complete_numeric.to_string(),
@@ -310,8 +305,7 @@ impl<R: Read> TurtleLexer<R> {
 
     /// Parses a boolean value and returns it as token.
     fn get_boolean_literal(&mut self) -> Result<Token> {
-        let boolean = self
-            .input_reader
+        let boolean = self.input_reader
             .peek_until_discard_leading_spaces(InputReaderHelper::node_delimiter)?;
 
         if TurtleSpecs::is_boolean_literal(&boolean.to_string()) {
@@ -329,8 +323,7 @@ impl<R: Read> TurtleLexer<R> {
 
     /// Parses the 'a' keyword.
     fn get_a_keyword(&mut self) -> Result<Token> {
-        let a = self
-            .input_reader
+        let a = self.input_reader
             .peek_until_discard_leading_spaces(InputReaderHelper::node_delimiter)?;
 
         if a.len() == 1 && a[0] == Some('a') {
@@ -345,8 +338,7 @@ impl<R: Read> TurtleLexer<R> {
 
     /// Parses the language specification from the input and returns it as token.
     fn get_language_specification(&mut self) -> Result<String> {
-        match self
-            .input_reader
+        match self.input_reader
             .get_until(InputReaderHelper::node_delimiter)
         {
             Ok(chars) => Ok(chars.to_string()),
@@ -380,8 +372,7 @@ impl<R: Read> TurtleLexer<R> {
 
         while !found_literal_end {
             literal.push_str(
-                &self
-                    .input_reader
+                &self.input_reader
                     .get_until(|c| c == literal_delimiter.unwrap())?
                     .to_string(),
             );
@@ -479,8 +470,7 @@ impl<R: Read> TurtleLexer<R> {
             }
         }
 
-        match self
-            .input_reader
+        match self.input_reader
             .get_until(InputReaderHelper::node_delimiter)
         {
             Ok(chars) => Ok(Token::BlankNode(chars.to_string())),
@@ -500,8 +490,7 @@ impl<R: Read> TurtleLexer<R> {
         prefix.push(':'); // ':' is part of prefix name
         self.consume_next_char(); // consume ':'
 
-        match self
-            .input_reader
+        match self.input_reader
             .get_until(InputReaderHelper::node_delimiter)
         {
             Ok(chars) => Ok(Token::QName(prefix, chars.to_string())),

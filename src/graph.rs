@@ -1,10 +1,10 @@
+use Result;
 use namespace::*;
 use node::*;
 use std::collections::HashMap;
 use std::slice::Iter;
 use triple::*;
 use uri::Uri;
-use Result;
 
 /// Representation of an RDF graph.
 #[derive(Debug)]

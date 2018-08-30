@@ -1,5 +1,5 @@
-use graph::Graph;
 use Result;
+use graph::Graph;
 
 /// Trait implemented by RDF parsers to generate a RDF graph from RDF syntax.
 pub trait RdfParser {
