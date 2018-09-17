@@ -97,7 +97,6 @@ impl<R: Read> SparqlParser<R> {
     let mut query_type = SparqlQueryType::Select;
     let mut variables: Vec<String> = Vec::new();
 
-
     // check if REDUCED or DISTINCT
     match self.lexer.peek_next_token()? {
       Token::Reduced => {
@@ -127,11 +126,19 @@ impl<R: Read> SparqlParser<R> {
         // parse variables identifiers
         variables.push(var_name);
 
+
         loop {
-          match self.lexer.peek_next_token()? {
-            Token::SparqlVariable(name) => {
+          match self.lexer.peek_next_token() {
+            Ok(Token::SparqlVariable(name)) => {
               variables.push(name);
               let _ = self.lexer.get_next_token();
+            },
+            Err(err) => {
+              match err.error_type() {
+                &ErrorType::EndOfInput(_) => break,
+                _ => return Err(Error::new(ErrorType::InvalidReaderInput,
+                                           "Error while parsing SPARQL variables."))
+              }
             },
             _ => break
           }
@@ -159,8 +166,10 @@ impl<R: Read> SparqlParser<R> {
         let group_pattern = self.parse_group(&mut query)?;
         query.add_pattern(Box::new(group_pattern));
       },
-      _ => return Err(Error::new(ErrorType::InvalidToken,
-                                 "Unexpected token while parsing WHERE group"))
+      _ => {
+        return Err(Error::new(ErrorType::InvalidToken,
+                              "Unexpected token while parsing WHERE group"))
+      }
     }
 
     query.add_variables(variables);
@@ -186,23 +195,24 @@ impl<R: Read> SparqlParser<R> {
             group_pattern.add_pattern(Box::new(pattern));
           }
         },
-        _ => {}   // no triple pattern found so continue
-      }
-
-      // parse modifiers and keywords
-      match self.lexer.get_next_token()? {
-        Token::Optional => {} // todo
-        Token::Filter => {} // todo
-        _ => {} // todo
-      }
-
-      // parse delimiter
-      match self.lexer.peek_next_token()? {
+        Token::Optional => {
+          let _ = self.lexer.get_next_token();  // consume OPTIONAL
+          let _ = self.lexer.get_next_token();  // after OPTIONAL always follows the start of a new group
+          let mut optional_group = self.parse_group(query)?;
+          optional_group.set_is_optional();
+          group_pattern.add_pattern(Box::new(optional_group));
+        },
+        Token::GroupStart => {
+          let _ = self.lexer.get_next_token();  // consume '{'
+          let nested_group = self.parse_group(query)?;
+          group_pattern.add_pattern(Box::new(nested_group));
+        },
+        Token::Filter => {}, // todo
         Token::GroupEnd => {
           let _ = self.lexer.get_next_token();    // consume "."
           break;  // stop looking for next element within loop
         },
-        _ => {} // continue parsing elements in group
+        _ => {} // todo: UNION
       }
     }
 
@@ -240,13 +250,21 @@ impl<R: Read> SparqlParser<R> {
     triples.push(TriplePattern::new(subject, &predicate, &object));
 
     loop {
-      match self.lexer.get_next_token()? {
-        Token::TripleDelimiter => break,
+      match self.lexer.peek_next_token()? {
+        Token::TripleDelimiter => {
+          let _ = self.lexer.get_next_token();
+          break
+        },
+        Token::GroupEnd => {
+          break
+        }
         Token::PredicateListDelimiter => {
+          let _ = self.lexer.get_next_token();
           let (predicate, object) = self.read_predicate_with_object_pattern(query)?;
           triples.push(TriplePattern::new(subject, &predicate, &object));
         },
         Token::ObjectListDelimiter => {
+          let _ = self.lexer.get_next_token();
           let object = self.read_object_pattern(query)?;
           triples.push(TriplePattern::new(subject, &predicate, &object));
         }
@@ -311,18 +329,46 @@ mod tests {
   use sparql::query::*;
   use reader::sparql_parser::SparqlParser;
 
+  #[test]
   fn sparql_query_type_from_string() {
-    let input = "SELECT ?title";
+    let input = "SELECT ?a ?b ?c WHERE { ?v ?p 123 }";
     let mut reader = SparqlParser::from_string(input.to_string());
 
     match reader.decode() {
-      Ok(SparqlQuery) => {
-        assert!(true)
-      }
+      Ok(sparql_query) => {
+        match sparql_query.get_query_type() {
+          &SparqlQueryType::Select => assert!(true),
+          _ => assert!(false)
+        }
+      },
       Err(e) => {
         println!("Err {}", e.to_string());
         assert!(false)
       }
     }
   }
+
+  #[test]
+  fn sparql_variables_from_string() {
+    let input = "SELECT ?a ?b ?c WHERE { ?v ?p 123 }";
+    let mut reader = SparqlParser::from_string(input.to_string());
+
+    match reader.decode() {
+      Ok(sparql_query) => {
+        let query_variables = sparql_query.get_query_variables();
+
+        assert_eq!(query_variables[0], "a".to_string());
+        assert_eq!(query_variables[1], "b".to_string());
+        assert_eq!(query_variables[2], "c".to_string());
+
+        let expected_triple
+      },
+      Err(e) => {
+        println!("Err {}", e.to_string());
+        assert!(false)
+      }
+    }
+  }
+
+  // todo: tests
 }

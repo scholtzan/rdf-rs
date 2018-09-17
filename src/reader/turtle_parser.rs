@@ -467,7 +467,7 @@ mod tests {
 
   #[test]
   fn read_collection_from_string() {
-    let input = "_:a _:b ( _:c _:g ) .";
+    let input = "_:a _:b ( _:c _:g ) . ";
 
     let mut reader = TurtleParser::from_string(input.to_string());
 

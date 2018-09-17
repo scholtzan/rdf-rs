@@ -61,7 +61,29 @@ impl SparqlQuery {
     self.patterns.push(pattern);
   }
 
+  /// Returns the type of the SPARQL query.
+  ///
+  /// todo
+  ///
+  pub fn get_query_type(&self) -> &SparqlQueryType {
+    &self.query_type
+  }
 
+  /// Get query variables.
+  ///
+  /// todo
+  ///
+  pub fn get_query_variables(&self) -> &Vec<String> {
+    &self.variables
+  }
+
+  /// Get the query patterns in the `WHERE` expression.
+  ///
+  /// todo
+  ///
+  pub fn get_query_patterns(&self) -> &Vec<Pattern> {
+    &self.patterns
+  }
 
   /// Returns the URI of a namespace with the provided prefix.
   ///

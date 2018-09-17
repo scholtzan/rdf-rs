@@ -116,7 +116,7 @@ impl<R: Read> RdfLexer<R> for SparqlLexer<R> {
       Some('+') | Some('-') => return SparqlLexer::get_numeric(&mut self.input_reader),
       Some(c) if InputReaderHelper::digit(c) => return SparqlLexer::get_numeric(&mut self.input_reader),
       Some(_) => {},
-      _ => return Err(Error::new(ErrorType::InvalidSparqlInput, "Invalid SPARQL input."))
+      None => return Ok(Token::EndOfInput)
     }
 
     SparqlLexer::get_qname_or_keyword(&mut self.input_reader)
@@ -179,6 +179,7 @@ pub trait TokensFromSparql<R: Read>: TokensFromTurtle<R> {
 
     match input.to_string().parse::<SparqlKeyword>()? {
       SparqlKeyword::Select => return Ok(Token::Select),
+      SparqlKeyword::Where => return Ok(Token::Where),
       SparqlKeyword::Distinct => return Ok(Token::Distinct),
       SparqlKeyword::Reduced => return Ok(Token::Reduced),
       SparqlKeyword::Construct => return Ok(Token::Construct),
