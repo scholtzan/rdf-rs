@@ -2,25 +2,23 @@
 
 #[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Debug)]
 pub struct Uri {
-  uri: String
+    uri: String,
 }
 
 // todo
 impl Uri {
-  pub fn new(uri: String) -> Uri {
-    Uri {
-      uri: uri
+    pub fn new(uri: String) -> Uri {
+        Uri { uri }
     }
-  }
 
-  /// Returns the string representation of the URI.
-  pub fn to_string(&self) -> &String {
-    &self.uri
-  }
+    /// Returns the string representation of the URI.
+    pub fn to_string(&self) -> &String {
+        &self.uri
+    }
 
-  /// todo
-  pub fn append_resource_path(&mut self, path: String) {
-    // todo: check if URI ends with '/', if not add '/'
-    self.uri.push_str(&path.to_string());
-  }
+    /// todo
+    pub fn append_resource_path(&mut self, path: &str) {
+        // todo: check if URI ends with '/', if not add '/'
+        self.uri.push_str(&path.to_string());
+    }
 }

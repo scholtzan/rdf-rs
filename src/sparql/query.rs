@@ -81,9 +81,9 @@ impl SparqlQuery {
   ///
   /// todo
   ///
-  pub fn get_query_patterns(&self) -> &Vec<Pattern> {
-    &self.patterns
-  }
+//  pub fn get_query_patterns(&self) -> &Vec<Pattern> {
+//    &self.patterns
+//  }
 
   /// Returns the URI of a namespace with the provided prefix.
   ///
@@ -96,6 +96,6 @@ impl SparqlQuery {
   /// - No namespace with the provided prefix exists
   ///
   pub fn get_namespace_uri_by_prefix(&self, prefix: String) -> Result<&Uri> {
-    self.namespaces.get_uri_by_prefix(prefix)
+    self.namespaces.get_uri_by_prefix(&prefix)
   }
 }
