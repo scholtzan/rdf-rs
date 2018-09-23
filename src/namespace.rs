@@ -1,7 +1,7 @@
-use Result;
 use error::{Error, ErrorType};
 use std::collections::HashMap;
 use uri::Uri;
+use Result;
 
 /// Representation of a specific namespace.
 #[derive(Debug)]

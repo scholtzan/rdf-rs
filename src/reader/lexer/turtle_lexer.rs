@@ -1,7 +1,7 @@
 use error::{Error, ErrorType};
 use reader::input_reader::{InputReader, InputReaderHelper};
-use reader::lexer::rdf_lexer::RdfLexer;
 use reader::lexer::n_triples_lexer::TokensFromNTriples;
+use reader::lexer::rdf_lexer::RdfLexer;
 use reader::lexer::rdf_lexer::TokensFromRdf;
 use reader::lexer::token::Token;
 use specs::turtle_specs::TurtleSpecs;
@@ -145,7 +145,8 @@ pub trait TokensFromTurtle<R: Read>: TokensFromNTriples<R> {
 
     /// Parses the 'a' keyword.
     fn get_a_keyword(input_reader: &mut InputReader<R>) -> Result<Token> {
-        let a = input_reader.peek_until_discard_leading_spaces(InputReaderHelper::node_delimiter)?;
+        let a =
+            input_reader.peek_until_discard_leading_spaces(InputReaderHelper::node_delimiter)?;
 
         if a.len() == 1 && a[0] == Some('a') {
             return Ok(Token::KeywordA);
@@ -177,9 +178,11 @@ pub trait TokensFromTurtle<R: Read>: TokensFromNTriples<R> {
         let mut literal = "".to_string();
 
         while !found_literal_end {
-            literal.push_str(&input_reader
-                .get_until(|c| c == literal_delimiter.unwrap())?
-                .to_string());
+            literal.push_str(
+                &input_reader
+                    .get_until(|c| c == literal_delimiter.unwrap())?
+                    .to_string(),
+            );
 
             if is_multiline {
                 // if not escaped check if the literal is complete

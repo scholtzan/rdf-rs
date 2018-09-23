@@ -83,7 +83,8 @@ impl<'a> RdfFormatter for TurtleFormatter<'a> {
                 output_string.push_str(prefix);
                 output_string.push_str(":");
 
-                let path = uri.to_string()
+                let path = uri
+                    .to_string()
                     .to_owned()
                     .replace(namespace_uri.to_string(), "")
                     .replace("/", ":");

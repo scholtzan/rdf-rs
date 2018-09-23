@@ -8,8 +8,8 @@ use sparql::query::{SparqlQuery, SparqlQueryType};
 use specs::rdf_syntax_specs::RdfSyntaxDataTypes;
 use std::io::Cursor;
 use std::io::Read;
-use Result;
 use uri::Uri;
+use Result;
 
 /// SPARQL parser to generate a `SparqlQuery` from SPARQL syntax.
 pub struct SparqlParser<R: Read> {

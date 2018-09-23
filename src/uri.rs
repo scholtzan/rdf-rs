@@ -5,7 +5,7 @@ pub struct Uri {
     uri: String,
 }
 
-// todo
+// todo: look into using servo URI
 impl Uri {
     pub fn new(uri: String) -> Uri {
         Uri { uri }

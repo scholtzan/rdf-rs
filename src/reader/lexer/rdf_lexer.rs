@@ -1,7 +1,7 @@
-use Result;
+use reader::input_reader::InputReader;
 use reader::lexer::token::Token;
 use std::io::Read;
-use reader::input_reader::InputReader;
+use Result;
 
 /// Trait implemented by RDF lexer.
 pub trait RdfLexer<R: Read> {

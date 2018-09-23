@@ -20,11 +20,11 @@ pub enum ErrorType {
     /// Input reader encounters invalid byte encoding.
     InvalidByteEncoding,
 
-  /// Incorrect namespace.
-  InvalidNamespace,
+    /// Incorrect namespace.
+    InvalidNamespace,
 
-  /// RDF SPARQL reader reads invalid SPARQL input.
-  InvalidSparqlInput
+    /// RDF SPARQL reader reads invalid SPARQL input.
+    InvalidSparqlInput,
 }
 
 /// An error related to the rdf-rs module.

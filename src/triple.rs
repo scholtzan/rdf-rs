@@ -63,7 +63,8 @@ impl Triple {
 
 impl PartialEq for Triple {
     fn eq(&self, other: &Triple) -> bool {
-        self.subject() == other.subject() && self.predicate() == other.predicate()
+        self.subject() == other.subject()
+            && self.predicate() == other.predicate()
             && self.object() == other.object()
     }
 }

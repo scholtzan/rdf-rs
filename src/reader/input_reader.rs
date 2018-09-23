@@ -44,7 +44,8 @@ pub struct InputChars {
 
 impl ToString for InputChars {
     fn to_string(&self) -> String {
-        let s: String = self.input_chars
+        let s: String = self
+            .input_chars
             .clone()
             .into_iter()
             .flat_map(|c| c)

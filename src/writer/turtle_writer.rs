@@ -1,4 +1,3 @@
-use Result;
 use error::{Error, ErrorType};
 use graph::Graph;
 use node::Node;
@@ -10,6 +9,7 @@ use uri::Uri;
 use writer::formatter::rdf_formatter::*;
 use writer::formatter::turtle_formatter::TurtleFormatter;
 use writer::rdf_writer::RdfWriter;
+use Result;
 
 /// RDF writer to generate Turtle syntax.
 pub struct TurtleWriter<'a> {
