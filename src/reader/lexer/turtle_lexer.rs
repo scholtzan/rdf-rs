@@ -273,8 +273,8 @@ impl<R: Read> RdfLexer<R> for TurtleLexer<R> {
     /// # Examples
     ///
     /// ```
-    /// use rdf_rs::reader::lexer::rdf_lexer::RdfLexer;
-    /// use rdf_rs::reader::lexer::turtle_lexer::TurtleLexer;
+    /// use rdf::reader::lexer::rdf_lexer::RdfLexer;
+    /// use rdf::reader::lexer::turtle_lexer::TurtleLexer;
     ///
     /// let input = "<example.org/a>".as_bytes();
     ///
@@ -292,9 +292,9 @@ impl<R: Read> RdfLexer<R> for TurtleLexer<R> {
     /// # Examples
     ///
     /// ```
-    /// use rdf_rs::reader::lexer::rdf_lexer::RdfLexer;
-    /// use rdf_rs::reader::lexer::turtle_lexer::TurtleLexer;
-    /// use rdf_rs::reader::lexer::token::Token;
+    /// use rdf::reader::lexer::rdf_lexer::RdfLexer;
+    /// use rdf::reader::lexer::turtle_lexer::TurtleLexer;
+    /// use rdf::reader::lexer::token::Token;
     ///
     /// let input = "_:auto <example.org/b> \"test\" .".as_bytes();
     ///
@@ -397,9 +397,9 @@ impl<R: Read> RdfLexer<R> for TurtleLexer<R> {
     /// # Examples
     ///
     /// ```
-    /// use rdf_rs::reader::lexer::rdf_lexer::RdfLexer;
-    /// use rdf_rs::reader::lexer::turtle_lexer::TurtleLexer;
-    /// use rdf_rs::reader::lexer::token::Token;
+    /// use rdf::reader::lexer::rdf_lexer::RdfLexer;
+    /// use rdf::reader::lexer::turtle_lexer::TurtleLexer;
+    /// use rdf::reader::lexer::token::Token;
     ///
     /// let input = "_:auto <example.org/b> \"test\" .".as_bytes();
     ///

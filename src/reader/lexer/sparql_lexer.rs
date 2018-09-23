@@ -21,8 +21,8 @@ impl<R: Read> RdfLexer<R> for SparqlLexer<R> {
   /// # Examples
   ///
   /// ```
-  /// use rdf_rs::reader::lexer::rdf_lexer::RdfLexer;
-  /// use rdf_rs::reader::lexer::sparql_lexer::SparqlLexer;
+  /// use rdf::reader::lexer::rdf_lexer::RdfLexer;
+  /// use rdf::reader::lexer::sparql_lexer::SparqlLexer;
   ///
   /// let input = "SELECT ?name".as_bytes();
   ///
@@ -40,9 +40,9 @@ impl<R: Read> RdfLexer<R> for SparqlLexer<R> {
   /// # Examples
   ///
   /// ```
-  /// use rdf_rs::reader::lexer::rdf_lexer::RdfLexer;
-  /// use rdf_rs::reader::lexer::sparql_lexer::SparqlLexer;
-  /// use rdf_rs::reader::lexer::token::Token;
+  /// use rdf::reader::lexer::rdf_lexer::RdfLexer;
+  /// use rdf::reader::lexer::sparql_lexer::SparqlLexer;
+  /// use rdf::reader::lexer::token::Token;
   ///
   /// let input = "SELECT".as_bytes();
   ///
@@ -127,9 +127,9 @@ impl<R: Read> RdfLexer<R> for SparqlLexer<R> {
   /// # Examples
   ///
   /// ```
-  /// use rdf_rs::reader::lexer::rdf_lexer::RdfLexer;
-  /// use rdf_rs::reader::lexer::sparql_lexer::SparqlLexer;
-  /// use rdf_rs::reader::lexer::token::Token;
+  /// use rdf::reader::lexer::rdf_lexer::RdfLexer;
+  /// use rdf::reader::lexer::sparql_lexer::SparqlLexer;
+  /// use rdf::reader::lexer::token::Token;
   ///
   /// let input = "SELECT".as_bytes();
   ///

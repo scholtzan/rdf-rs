@@ -43,7 +43,7 @@ impl RdfSyntaxSpecs {
         for c in RdfSyntaxSpecs::characters_to_be_escaped() {
             let mut escaped_char = "\\".to_string();
             escaped_char.push(c);
-            escaped_literal.replace(c, &escaped_char);
+            let _ = escaped_literal.replace(c, &escaped_char);
         }
 
         escaped_literal

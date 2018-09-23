@@ -14,7 +14,7 @@ pub struct NTriplesLexer<R: Read> {
 /// Contains all implemented rules for creating tokens from NTriples syntax.
 pub trait TokensFromNTriples<R: Read>: TokensFromRdf<R> {
   /// Parses the comment from the input and returns it as token.
-  fn get_comment(mut input_reader: &mut InputReader<R>) -> Result<Token> {
+  fn get_comment(input_reader: &mut InputReader<R>) -> Result<Token> {
     Self::consume_next_char(input_reader);    // consume '#'
 
     match input_reader.get_until_discard_leading_spaces(|c| c == '\n' || c == '\r') {

@@ -3,14 +3,13 @@ use node::Node;
 use reader::lexer::rdf_lexer::RdfLexer;
 use reader::lexer::sparql_lexer::SparqlLexer;
 use reader::lexer::token::Token;
-use sparql::pattern::{GroupPattern, NodePattern, Pattern, TriplePattern};
+use sparql::pattern::{GroupPattern, NodePattern, TriplePattern};
 use sparql::query::{SparqlQuery, SparqlQueryType};
 use specs::rdf_syntax_specs::RdfSyntaxDataTypes;
-use specs::sparql_specs::SparqlKeyword;
 use std::io::Cursor;
 use std::io::Read;
-use uri::Uri;
 use Result;
+use uri::Uri;
 
 /// SPARQL parser to generate a `SparqlQuery` from SPARQL syntax.
 pub struct SparqlParser<R: Read> {
@@ -23,7 +22,7 @@ impl SparqlParser<Cursor<Vec<u8>>> {
     /// # Examples
     ///
     /// ```
-    /// use rdf_rs::reader::sparql_parser::SparqlParser;
+    /// use rdf::reader::sparql_parser::SparqlParser;
     ///
     /// let input = "SELECT ?test";
     ///
@@ -43,7 +42,7 @@ impl<R: Read> SparqlParser<R> {
     /// # Examples
     ///
     /// ```
-    /// use rdf_rs::reader::sparql_parser::SparqlParser;
+    /// use rdf::reader::sparql_parser::SparqlParser;
     ///
     /// let input = "SELECT ?test";
     ///
@@ -86,11 +85,6 @@ impl<R: Read> SparqlParser<R> {
                 }
             }
         }
-
-        Err(Error::new(
-            ErrorType::InvalidToken,
-            "Unexpected end while parsing SPARQL syntax.",
-        ))
     }
 
     /// Parses SELECT queries.
@@ -365,7 +359,6 @@ impl<R: Read> SparqlParser<R> {
 mod tests {
     use reader::sparql_parser::SparqlParser;
     use sparql::query::*;
-    use uri::Uri;
 
     #[test]
     fn sparql_query_type_from_string() {
