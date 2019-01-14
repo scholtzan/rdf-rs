@@ -1,4 +1,4 @@
-use node::Node;
+use crate::node::Node;
 
 /// Represents a pattern in the `WHERE` clauses
 pub trait Pattern {}

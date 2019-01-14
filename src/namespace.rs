@@ -1,7 +1,7 @@
-use error::{Error, ErrorType};
+use crate::error::{Error, ErrorType};
 use std::collections::HashMap;
-use uri::Uri;
-use Result;
+use crate::uri::Uri;
+use crate::Result;
 
 /// Representation of a specific namespace.
 #[derive(Debug)]

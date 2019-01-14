@@ -1,13 +1,13 @@
-use error::{Error, ErrorType};
-use reader::input_reader::{InputReader, InputReaderHelper};
-use reader::lexer::n_triples_lexer::TokensFromNTriples;
-use reader::lexer::rdf_lexer::RdfLexer;
-use reader::lexer::rdf_lexer::TokensFromRdf;
-use reader::lexer::token::Token;
-use specs::turtle_specs::TurtleSpecs;
-use specs::xml_specs::XmlDataTypes;
+use crate::error::{Error, ErrorType};
+use crate::reader::input_reader::{InputReader, InputReaderHelper};
+use crate::reader::lexer::n_triples_lexer::TokensFromNTriples;
+use crate::reader::lexer::rdf_lexer::RdfLexer;
+use crate::reader::lexer::rdf_lexer::TokensFromRdf;
+use crate::reader::lexer::token::Token;
+use crate::specs::turtle_specs::TurtleSpecs;
+use crate::specs::xml_specs::XmlDataTypes;
 use std::io::Read;
-use Result;
+use crate::Result;
 
 /// Produces tokens from Turtle syntax input.
 pub struct TurtleLexer<R: Read> {
@@ -435,10 +435,10 @@ impl<R: Read> RdfLexer<R> for TurtleLexer<R> {
 
 #[cfg(test)]
 mod tests {
-    use reader::lexer::rdf_lexer::RdfLexer;
-    use reader::lexer::token::Token;
-    use reader::lexer::turtle_lexer::TurtleLexer;
-    use specs::xml_specs::XmlDataTypes;
+    use crate::reader::lexer::rdf_lexer::RdfLexer;
+    use crate::reader::lexer::token::Token;
+    use crate::reader::lexer::turtle_lexer::TurtleLexer;
+    use crate::specs::xml_specs::XmlDataTypes;
 
     #[test]
     fn parse_base_directive() {

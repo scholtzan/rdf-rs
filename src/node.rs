@@ -1,4 +1,4 @@
-use uri::Uri;
+use crate::uri::Uri;
 
 /// Node representation.
 #[derive(Clone, PartialEq, PartialOrd, Eq, Ord, Debug)]
@@ -19,7 +19,7 @@ pub enum Node {
 
 #[cfg(test)]
 mod tests {
-    use node::*;
+    use crate::node::*;
 
     #[test]
     fn access_literal_node() {

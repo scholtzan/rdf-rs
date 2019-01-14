@@ -1,4 +1,4 @@
-use node::Node;
+use crate::node::Node;
 use std::cmp::PartialEq;
 use std::slice::Iter;
 use std::vec::IntoIter;
@@ -216,8 +216,8 @@ impl IntoIterator for TripleStore {
 
 #[cfg(test)]
 mod tests {
-    use node::*;
-    use triple::*;
+    use crate::node::*;
+    use crate::triple::*;
 
     #[test]
     fn empty_triple_store() {

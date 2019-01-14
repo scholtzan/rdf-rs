@@ -1,7 +1,7 @@
-use namespace::*;
-use sparql::pattern::Pattern;
-use uri::Uri;
-use Result;
+use crate::namespace::*;
+use crate::sparql::pattern::Pattern;
+use crate::uri::Uri;
+use crate::Result;
 
 /// Query type.
 #[derive(Clone, Debug)]

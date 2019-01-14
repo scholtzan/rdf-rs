@@ -1,4 +1,4 @@
-use reader::input_reader::InputChars;
+use crate::reader::input_reader::InputChars;
 use std::error::Error as StdError;
 use std::fmt;
 

@@ -1,15 +1,15 @@
-use error::{Error, ErrorType};
-use graph::Graph;
-use node::Node;
-use reader::lexer::n_triples_lexer::NTriplesLexer;
-use reader::lexer::rdf_lexer::RdfLexer;
-use reader::lexer::token::Token;
-use reader::rdf_parser::RdfParser;
+use crate::error::{Error, ErrorType};
+use crate::graph::Graph;
+use crate::node::Node;
+use crate::reader::lexer::n_triples_lexer::NTriplesLexer;
+use crate::reader::lexer::rdf_lexer::RdfLexer;
+use crate::reader::lexer::token::Token;
+use crate::reader::rdf_parser::RdfParser;
 use std::io::Cursor;
 use std::io::Read;
-use triple::Triple;
-use uri::Uri;
-use Result;
+use crate::triple::Triple;
+use crate::uri::Uri;
+use crate::Result;
 
 /// RDF parser to generate an RDF graph from N-Triples syntax.
 pub struct NTriplesParser<R: Read> {
@@ -188,8 +188,8 @@ impl<R: Read> NTriplesParser<R> {
 
 #[cfg(test)]
 mod tests {
-    use reader::n_triples_parser::NTriplesParser;
-    use reader::rdf_parser::RdfParser;
+    use crate::reader::n_triples_parser::NTriplesParser;
+    use crate::reader::rdf_parser::RdfParser;
 
     #[test]
     fn test_read_n_triples_from_string() {

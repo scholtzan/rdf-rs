@@ -1,15 +1,15 @@
-use error::{Error, ErrorType};
-use graph::Graph;
-use node::Node;
+use crate::error::{Error, ErrorType};
+use crate::graph::Graph;
+use crate::node::Node;
 use std::collections::HashMap;
 use std::iter::repeat;
-use triple::Triple;
-use triple::TripleSegment;
-use uri::Uri;
-use writer::formatter::rdf_formatter::*;
-use writer::formatter::turtle_formatter::TurtleFormatter;
-use writer::rdf_writer::RdfWriter;
-use Result;
+use crate::triple::Triple;
+use crate::triple::TripleSegment;
+use crate::uri::Uri;
+use crate::writer::formatter::rdf_formatter::*;
+use crate::writer::formatter::turtle_formatter::TurtleFormatter;
+use crate::writer::rdf_writer::RdfWriter;
+use crate::Result;
 
 /// RDF writer to generate Turtle syntax.
 pub struct TurtleWriter<'a> {
@@ -217,12 +217,12 @@ impl<'a> TurtleWriter<'a> {
 
 #[cfg(test)]
 mod tests {
-    use graph::Graph;
-    use namespace::Namespace;
-    use triple::*;
-    use uri::Uri;
-    use writer::rdf_writer::RdfWriter;
-    use writer::turtle_writer::TurtleWriter;
+    use crate::graph::Graph;
+    use crate::namespace::Namespace;
+    use crate::triple::*;
+    use crate::uri::Uri;
+    use crate::writer::rdf_writer::RdfWriter;
+    use crate::writer::turtle_writer::TurtleWriter;
 
     #[test]
     fn test_turtle_writer() {

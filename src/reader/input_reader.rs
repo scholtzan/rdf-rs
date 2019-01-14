@@ -1,8 +1,8 @@
-use error::{Error, ErrorType};
+use crate::error::{Error, ErrorType};
 use std::io::Read;
 use std::ops::Index;
 use std::str;
-use Result;
+use crate::Result;
 
 /// Collection of several helper methods that can be used when reading input.
 pub struct InputReaderHelper {}

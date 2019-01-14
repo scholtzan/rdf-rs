@@ -1,4 +1,4 @@
-use uri::Uri;
+use crate::uri::Uri;
 
 /// XML schema data types.
 pub enum XmlDataTypes {

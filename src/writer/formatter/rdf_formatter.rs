@@ -1,5 +1,5 @@
-use node::Node;
-use uri::Uri;
+use crate::node::Node;
+use crate::uri::Uri;
 
 /// Trait implemented by RDF formatters for formatting nodes.
 pub trait RdfFormatter {

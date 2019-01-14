@@ -1,11 +1,11 @@
-use error::*;
-use graph::Graph;
-use node::Node;
-use triple::*;
-use writer::formatter::n_triples_formatter::NTriplesFormatter;
-use writer::formatter::rdf_formatter::*;
-use writer::rdf_writer::RdfWriter;
-use Result;
+use crate::error::*;
+use crate::graph::Graph;
+use crate::node::Node;
+use crate::triple::*;
+use crate::writer::formatter::n_triples_formatter::NTriplesFormatter;
+use crate::writer::formatter::rdf_formatter::*;
+use crate::writer::rdf_writer::RdfWriter;
+use crate::Result;
 
 /// RDF writer to generate N-Triples syntax.
 #[derive(Default)]

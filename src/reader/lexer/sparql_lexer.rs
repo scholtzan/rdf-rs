@@ -1,12 +1,12 @@
-use error::{Error, ErrorType};
-use reader::input_reader::{InputReader, InputReaderHelper};
-use reader::lexer::n_triples_lexer::TokensFromNTriples;
-use reader::lexer::rdf_lexer::{RdfLexer, TokensFromRdf};
-use reader::lexer::token::Token;
-use reader::lexer::turtle_lexer::TokensFromTurtle;
-use specs::sparql_specs::SparqlKeyword;
+use crate::error::{Error, ErrorType};
+use crate::reader::input_reader::{InputReader, InputReaderHelper};
+use crate::reader::lexer::n_triples_lexer::TokensFromNTriples;
+use crate::reader::lexer::rdf_lexer::{RdfLexer, TokensFromRdf};
+use crate::reader::lexer::token::Token;
+use crate::reader::lexer::turtle_lexer::TokensFromTurtle;
+use crate::specs::sparql_specs::SparqlKeyword;
 use std::io::Read;
-use Result;
+use crate::Result;
 
 /// Produces tokens from SPARQL input.
 pub struct SparqlLexer<R: Read> {
@@ -220,9 +220,9 @@ impl<R: Read> TokensFromSparql<R> for SparqlLexer<R> {}
 
 #[cfg(test)]
 mod tests {
-    use reader::lexer::rdf_lexer::RdfLexer;
-    use reader::lexer::sparql_lexer::SparqlLexer;
-    use reader::lexer::token::Token;
+    use crate::reader::lexer::rdf_lexer::RdfLexer;
+    use crate::reader::lexer::sparql_lexer::SparqlLexer;
+    use crate::reader::lexer::token::Token;
 
     #[test]
     fn parse_variable() {

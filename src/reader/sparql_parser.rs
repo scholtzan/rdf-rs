@@ -1,15 +1,15 @@
-use error::{Error, ErrorType};
-use node::Node;
-use reader::lexer::rdf_lexer::RdfLexer;
-use reader::lexer::sparql_lexer::SparqlLexer;
-use reader::lexer::token::Token;
-use sparql::pattern::{GroupPattern, NodePattern, TriplePattern};
-use sparql::query::{SparqlQuery, SparqlQueryType};
-use specs::rdf_syntax_specs::RdfSyntaxDataTypes;
+use crate::error::{Error, ErrorType};
+use crate::node::Node;
+use crate::reader::lexer::rdf_lexer::RdfLexer;
+use crate::reader::lexer::sparql_lexer::SparqlLexer;
+use crate::reader::lexer::token::Token;
+use crate::sparql::pattern::{GroupPattern, NodePattern, TriplePattern};
+use crate::sparql::query::{SparqlQuery, SparqlQueryType};
+use crate::specs::rdf_syntax_specs::RdfSyntaxDataTypes;
 use std::io::Cursor;
 use std::io::Read;
-use uri::Uri;
-use Result;
+use crate::uri::Uri;
+use crate::Result;
 
 /// SPARQL parser to generate a `SparqlQuery` from SPARQL syntax.
 pub struct SparqlParser<R: Read> {
@@ -357,8 +357,8 @@ impl<R: Read> SparqlParser<R> {
 
 #[cfg(test)]
 mod tests {
-    use reader::sparql_parser::SparqlParser;
-    use sparql::query::*;
+    use crate::reader::sparql_parser::SparqlParser;
+    use crate::sparql::query::*;
 
     #[test]
     fn sparql_query_type_from_string() {

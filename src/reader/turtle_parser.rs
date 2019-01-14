@@ -1,17 +1,17 @@
-use error::{Error, ErrorType};
-use graph::Graph;
-use namespace::Namespace;
-use node::Node;
-use reader::lexer::rdf_lexer::RdfLexer;
-use reader::lexer::token::Token;
-use reader::lexer::turtle_lexer::TurtleLexer;
-use reader::rdf_parser::RdfParser;
-use specs::rdf_syntax_specs::RdfSyntaxDataTypes;
+use crate::error::{Error, ErrorType};
+use crate::graph::Graph;
+use crate::namespace::Namespace;
+use crate::node::Node;
+use crate::reader::lexer::rdf_lexer::RdfLexer;
+use crate::reader::lexer::token::Token;
+use crate::reader::lexer::turtle_lexer::TurtleLexer;
+use crate::reader::rdf_parser::RdfParser;
+use crate::specs::rdf_syntax_specs::RdfSyntaxDataTypes;
 use std::io::Cursor;
 use std::io::Read;
-use triple::Triple;
-use uri::Uri;
-use Result;
+use crate::triple::Triple;
+use crate::uri::Uri;
+use crate::Result;
 
 /// RDF parser to generate an RDF graph from Turtle syntax.
 pub struct TurtleParser<R: Read> {
@@ -371,9 +371,9 @@ impl<R: Read> TurtleParser<R> {
 
 #[cfg(test)]
 mod tests {
-    use reader::rdf_parser::RdfParser;
-    use reader::turtle_parser::TurtleParser;
-    use uri::Uri;
+    use crate::reader::rdf_parser::RdfParser;
+    use crate::reader::turtle_parser::TurtleParser;
+    use crate::uri::Uri;
 
     #[test]
     fn test_read_n_triples_as_turtle_from_string() {

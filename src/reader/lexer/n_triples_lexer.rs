@@ -1,9 +1,9 @@
-use error::{Error, ErrorType};
-use reader::input_reader::{InputReader, InputReaderHelper};
-use reader::lexer::rdf_lexer::{RdfLexer, TokensFromRdf};
-use reader::lexer::token::Token;
+use crate::error::{Error, ErrorType};
+use crate::reader::input_reader::{InputReader, InputReaderHelper};
+use crate::reader::lexer::rdf_lexer::{RdfLexer, TokensFromRdf};
+use crate::reader::lexer::token::Token;
 use std::io::Read;
-use Result;
+use crate::Result;
 
 /// Produces tokens from NTriples input.
 pub struct NTriplesLexer<R: Read> {
@@ -375,9 +375,9 @@ impl<R: Read> NTriplesLexer<R> {
 
 #[cfg(test)]
 mod tests {
-    use reader::lexer::n_triples_lexer::NTriplesLexer;
-    use reader::lexer::rdf_lexer::RdfLexer;
-    use reader::lexer::token::Token;
+    use crate::reader::lexer::n_triples_lexer::NTriplesLexer;
+    use crate::reader::lexer::rdf_lexer::RdfLexer;
+    use crate::reader::lexer::token::Token;
 
     #[test]
     fn test_n_triples_parse_comment() {

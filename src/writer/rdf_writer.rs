@@ -1,5 +1,5 @@
-use graph::Graph;
-use Result;
+use crate::graph::Graph;
+use crate::Result;
 
 /// Trait implemented by RDF writers to generate a specific syntax.
 pub trait RdfWriter {

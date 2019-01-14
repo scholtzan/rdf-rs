@@ -1,9 +1,9 @@
-use node::Node;
-use specs::rdf_syntax_specs::RdfSyntaxSpecs;
-use specs::turtle_specs::TurtleSpecs;
+use crate::node::Node;
+use crate::specs::rdf_syntax_specs::RdfSyntaxSpecs;
+use crate::specs::turtle_specs::TurtleSpecs;
 use std::collections::HashMap;
-use uri::Uri;
-use writer::formatter::rdf_formatter::RdfFormatter;
+use crate::uri::Uri;
+use crate::writer::formatter::rdf_formatter::RdfFormatter;
 
 /// Formatter for formatting nodes to Turtle syntax.
 /// This formatter is used by `TurtleWriter`.
@@ -104,12 +104,12 @@ impl<'a> RdfFormatter for TurtleFormatter<'a> {
 
 #[cfg(test)]
 mod tests {
-    use node::*;
-    use specs::xml_specs::XmlDataTypes;
+    use crate::node::*;
+    use crate::specs::xml_specs::XmlDataTypes;
     use std::collections::HashMap;
-    use uri::Uri;
-    use writer::formatter::rdf_formatter::RdfFormatter;
-    use writer::formatter::turtle_formatter::TurtleFormatter;
+    use crate::uri::Uri;
+    use crate::writer::formatter::rdf_formatter::RdfFormatter;
+    use crate::writer::formatter::turtle_formatter::TurtleFormatter;
 
     #[test]
     fn test_turtle_blank_node_formatting() {

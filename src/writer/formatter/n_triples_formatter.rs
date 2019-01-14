@@ -1,7 +1,7 @@
-use node::Node;
-use specs::rdf_syntax_specs::RdfSyntaxSpecs;
-use uri::Uri;
-use writer::formatter::rdf_formatter::RdfFormatter;
+use crate::node::Node;
+use crate::specs::rdf_syntax_specs::RdfSyntaxSpecs;
+use crate::uri::Uri;
+use crate::writer::formatter::rdf_formatter::RdfFormatter;
 
 /// Formatter for formatting nodes to N-Triple syntax.
 /// This formatter is used by `NTriplesWriter`.
@@ -76,10 +76,10 @@ impl RdfFormatter for NTriplesFormatter {
 
 #[cfg(test)]
 mod tests {
-    use node::*;
-    use uri::Uri;
-    use writer::formatter::n_triples_formatter::NTriplesFormatter;
-    use writer::formatter::rdf_formatter::RdfFormatter;
+    use crate::node::*;
+    use crate::uri::Uri;
+    use crate::writer::formatter::n_triples_formatter::NTriplesFormatter;
+    use crate::writer::formatter::rdf_formatter::RdfFormatter;
 
     #[test]
     fn test_n_triples_blank_node_formatting() {

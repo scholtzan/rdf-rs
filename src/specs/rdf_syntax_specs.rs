@@ -1,4 +1,4 @@
-use uri::Uri;
+use crate::uri::Uri;
 
 /// RDF Schema data types and vocabulary.
 pub enum RdfSyntaxDataTypes {

@@ -1,6 +1,6 @@
-use error::{Error, ErrorType};
+use crate::error::{Error, ErrorType};
 use std::str::FromStr;
-use Result;
+use crate::Result;
 
 /// SPARQL 1.0 keywords.
 pub enum SparqlKeyword {

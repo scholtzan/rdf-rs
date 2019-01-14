@@ -1,10 +1,10 @@
-use namespace::*;
-use node::*;
+use crate::namespace::*;
+use crate::node::*;
 use std::collections::HashMap;
 use std::slice::Iter;
-use triple::*;
-use uri::Uri;
-use Result;
+use crate::triple::*;
+use crate::uri::Uri;
+use crate::Result;
 
 /// Representation of an RDF graph.
 #[derive(Debug)]
@@ -566,8 +566,8 @@ impl Graph {
 
 #[cfg(test)]
 mod tests {
-    use graph::Graph;
-    use node::*;
+    use crate::graph::Graph;
+    use crate::node::*;
 
     #[test]
     fn empty_graph() {
