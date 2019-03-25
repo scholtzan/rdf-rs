@@ -6,6 +6,14 @@
 
 This project is a way for me to learn Rust and combine it with my interests in semantic web technologies.
 
+### Usage
+Add this to your Cargo.toml:
+
+```toml
+[dependencies]
+rand = "0.6"
+```
+
 
 ### Basic Examples
 
