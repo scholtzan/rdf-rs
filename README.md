@@ -11,7 +11,7 @@ Add this to your Cargo.toml:
 
 ```toml
 [dependencies]
-rand = "0.6"
+rdf = "0.1.4"
 ```
 
 
