@@ -305,6 +305,41 @@ impl Graph {
         Node::UriNode { uri: uri.clone() }
     }
 
+    /// Creates a new URI node from a string slice.
+    /// 
+    /// # Examples
+    ///
+    /// ```
+    /// use rdf::graph::Graph;
+    /// use rdf::node::Node;
+    /// use rdf::uri::Uri;
+    ///
+    /// let graph = Graph::new(None);
+    /// let uri_node = graph.create_uri_node_str("http://example.org/show/localName");
+    ///
+    /// assert_eq!(uri_node, Node::UriNode {
+    ///   uri: Uri::new("http://example.org/show/localName".to_string())
+    /// });
+    /// 
+    /// let graph = Graph::new(Some(&Uri::new("http://www.w3.org/2006/vcard/ns".to_string())));
+    /// let uri_node = graph.create_uri_node_str("#fn");
+    /// assert_eq!(uri_node, Node::UriNode {
+    ///   uri: Uri::new("http://www.w3.org/2006/vcard/ns#fn".to_string())
+    /// });
+    /// ```
+    pub fn create_uri_node_str(&self, uri: &str) -> Node {
+        let uri = match (uri.starts_with("#"),self.base_uri()){
+            (true, Some(base))=> {
+                let mut s = base.to_string().clone();
+                s.push_str(uri);
+                Uri::new(s)
+            },
+            (_,_) =>  Uri::new(uri.to_string())
+        };
+
+        Node::UriNode { uri: uri }
+    }
+
     /// Adds a triple to the graph.
     ///
     /// # Examples
