@@ -183,7 +183,7 @@ impl<R: Read> TurtleParser<R> {
                 uri.append_resource_path(&path.replace(":", "/")); // adjust the QName path to URI path
                 Ok(Node::UriNode { uri })
             }
-            Token::Uri(uri) => Ok(Node::UriNode { uri: Uri::new(uri) }),
+            Token::Uri(uri) => Ok(graph.create_uri_node_str(&uri)),
             Token::CollectionStart => self.read_collection(graph),
             Token::UnlabeledBlankNodeStart => self.read_unlabeled_blank_node(graph),
             _ => Err(Error::new(
@@ -232,7 +232,7 @@ impl<R: Read> TurtleParser<R> {
     fn read_predicate_with_object(&mut self, graph: &mut Graph) -> Result<(Node, Node)> {
         // read the predicate
         let predicate = match self.lexer.get_next_token()? {
-            Token::Uri(uri) => Node::UriNode { uri: Uri::new(uri) },
+            Token::Uri(uri) => graph.create_uri_node_str(&uri),
             Token::KeywordA => Node::UriNode {
                 uri: RdfSyntaxDataTypes::A.to_uri(),
             },
@@ -260,7 +260,7 @@ impl<R: Read> TurtleParser<R> {
     fn read_object(&mut self, graph: &mut Graph) -> Result<Node> {
         match self.lexer.get_next_token()? {
             Token::BlankNode(id) => Ok(Node::BlankNode { id }),
-            Token::Uri(uri) => Ok(Node::UriNode { uri: Uri::new(uri) }),
+            Token::Uri(uri) => Ok(graph.create_uri_node_str(&uri)),
             Token::QName(prefix, path) => {
                 let mut uri = graph.get_namespace_uri_by_prefix(&prefix)?.to_owned();
                 uri.append_resource_path(&path.replace(":", "/")); // adjust the QName path to URI path
@@ -608,6 +608,30 @@ mod tests {
                 println!("Err {}", e.to_string());
                 assert!(false)
             }
+        }
+    }
+    #[test]
+    fn read_fragment(){
+        let input="@base <https://example.com/alice/card> .
+            <#this>  a  <#Example> .";
+        let mut reader = TurtleParser::from_string(input.to_string());
+
+        match reader.decode() {
+            Ok(graph) => {
+                assert_eq!(graph.count(), 1);
+                assert_eq!(
+                    graph.base_uri(),
+                    &Some(Uri::new("https://example.com/alice/card".to_string()))
+                );
+                match graph.triples_iter().next(){
+                    Some(t) => assert_eq!(
+                        &graph.create_uri_node(&Uri::new("https://example.com/alice/card#this".to_string()))
+                        ,t.subject()),
+                    None => assert!(false)
+                }
+
+                }    ,
+            Err(e) => panic!("Err {}", e.to_string())
         }
     }
 }
