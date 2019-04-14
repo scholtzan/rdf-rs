@@ -145,12 +145,10 @@ pub trait TokensFromTurtle<R: Read>: TokensFromNTriples<R> {
 
     /// Parses the 'a' keyword.
     fn get_a_keyword(input_reader: &mut InputReader<R>) -> Result<Token> {
-        let a = 
+        let a =
             input_reader.peek_until_discard_leading_spaces(InputReaderHelper::node_delimiter)?;
 
         if a.len() == 1 && a[0] == Some('a') {
-            // ok, don't forget to consume the 'a' character
-            let _ =  input_reader.get_next_char();
             return Ok(Token::KeywordA);
         } else {
             return Err(Error::new(
@@ -382,7 +380,10 @@ impl<R: Read> RdfLexer<R> for TurtleLexer<R> {
             Some('a') => {
                 // try parsing the 'a' keyword
                 match TurtleLexer::get_a_keyword(&mut self.input_reader) {
-                    Ok(token) => return Ok(token),
+                    Ok(token) => {
+                        TurtleLexer::consume_next_char(&mut self.input_reader);
+                        return Ok(token)
+                    },
                     _ => {} // continue, because it could still be a QName
                 }
             }
