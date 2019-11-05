@@ -26,26 +26,3 @@ impl RdfSyntaxDataTypes {
         }
     }
 }
-
-/// Contains general RDF specification rules and helpers.
-pub struct RdfSyntaxSpecs {}
-
-impl RdfSyntaxSpecs {
-    /// Contains characters that need to be escaped when written.
-    fn characters_to_be_escaped() -> Vec<char> {
-        vec!['\'', '"', '\\']
-    }
-
-    /// Replaces all characters with their escaped counterparts.
-    pub fn escape_literal(literal: &str) -> String {
-        let escaped_literal = literal.to_string();
-
-        for c in RdfSyntaxSpecs::characters_to_be_escaped() {
-            let mut escaped_char = "\\".to_string();
-            escaped_char.push(c);
-            let _ = escaped_literal.replace(c, &escaped_char);
-        }
-
-        escaped_literal
-    }
-}

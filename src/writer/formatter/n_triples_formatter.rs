@@ -1,5 +1,4 @@
 use crate::node::Node;
-use crate::specs::rdf_syntax_specs::RdfSyntaxSpecs;
 use crate::uri::Uri;
 use crate::writer::formatter::rdf_formatter::RdfFormatter;
 
@@ -43,7 +42,7 @@ impl RdfFormatter for NTriplesFormatter {
         language: &Option<String>,
     ) -> String {
         let mut output_string = "\"".to_string();
-        output_string.push_str(&RdfSyntaxSpecs::escape_literal(literal));
+        output_string.push_str(format!("{}", literal.escape_debug()).as_ref());
         output_string.push_str("\"");
 
         if let Some(ref lang) = *language {
@@ -135,14 +134,14 @@ mod tests {
     fn test_n_triples_escaped_literal_node_formatting() {
         let formatter = NTriplesFormatter::new();
         let node = Node::LiteralNode {
-            literal: "literal ' \" ".to_string(),
+            literal: "literal ' \\ \" ".to_string(),
             data_type: None,
             language: None,
         };
 
         assert_eq!(
             formatter.format_node(&node),
-            "\"literal \' \" \"".to_string()
+            "\"literal \\' \\\\ \\\" \"".to_string()
         );
     }
 
