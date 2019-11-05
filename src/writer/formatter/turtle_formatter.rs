@@ -1,5 +1,4 @@
 use crate::node::Node;
-use crate::specs::rdf_syntax_specs::RdfSyntaxSpecs;
 use crate::specs::turtle_specs::TurtleSpecs;
 use std::collections::HashMap;
 use crate::uri::Uri;
@@ -51,7 +50,7 @@ impl<'a> RdfFormatter for TurtleFormatter<'a> {
             output_string.push_str(literal);
         } else {
             output_string.push_str("\"");
-            output_string.push_str(&RdfSyntaxSpecs::escape_literal(literal));
+            output_string.push_str(format!("{}", literal.escape_debug()).as_ref());
             output_string.push_str("\"");
         }
 
@@ -173,14 +172,14 @@ mod tests {
         let hashmap = HashMap::new();
         let formatter = TurtleFormatter::new(&hashmap);
         let node = Node::LiteralNode {
-            literal: "literal ' \" ".to_string(),
+            literal: "literal ' \\ \" ".to_string(),
             data_type: None,
             language: None,
         };
 
         assert_eq!(
             formatter.format_node(&node),
-            "\"literal \' \" \"".to_string()
+            "\"literal \\' \\\\ \\\" \"".to_string()
         );
     }
 
