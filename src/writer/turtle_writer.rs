@@ -336,4 +336,26 @@ _:auto2 <http://example.org/show/localName> _:auto1 ,
             Err(_) => assert!(false),
         }
     }
+
+    #[test]
+    fn test_turtle_writer_integer_literal() {
+        let mut graph = Graph::new(None);
+
+        graph.add_namespace(&Namespace::new(
+            "example".to_string(),
+            Uri::new("http://example.org/".to_string()),
+        ));
+        
+        let result = "@prefix example: <http://example.org/> .\n _:auto0 example.localName 1".to_string();
+        let subject1 = graph.create_blank_node();
+        let predicate1 = graph.create_uri_node(&Uri::new("http://example.org/show/localName".to_string()));
+        let object1 = graph.create_integer_node(1);
+        graph.add_triple(&Triple::new(&subject1, &predicate1, &object1));
+        
+        let writer = TurtleWriter::new(graph.namespaces());
+        match writer.write_to_string(&graph) {
+            Ok(str) => assert_eq!(result, str),
+            Err(_) => assert!(false),
+        }
+    }
 }
