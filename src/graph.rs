@@ -5,6 +5,7 @@ use std::slice::Iter;
 use crate::triple::*;
 use crate::uri::Uri;
 use crate::Result;
+use crate::specs::xml_specs::XmlDataTypes;
 
 /// Representation of an RDF graph.
 #[derive(Debug)]
@@ -181,6 +182,14 @@ impl Graph {
         Node::LiteralNode {
             literal,
             data_type: None,
+            language: None,
+        }
+    }
+
+    pub fn create_integer_node(&self, literal: i32) -> Node {
+        Node::LiteralNode {
+            literal: literal.to_string(),
+            data_type: Some(XmlDataTypes::Integer.to_uri()),
             language: None,
         }
     }

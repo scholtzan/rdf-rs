@@ -46,23 +46,27 @@ impl<'a> RdfFormatter for TurtleFormatter<'a> {
         let mut output_string = "".to_string();
 
         if TurtleSpecs::is_boolean_literal(literal) && *language == None && *data_type == None {
-            // some number or boolean
+            // some boolean
+            output_string.push_str(literal);
+        } else if TurtleSpecs::is_integer_literal(literal) && *language == None {
+            // some number
             output_string.push_str(literal);
         } else {
             output_string.push_str("\"");
             output_string.push_str(format!("{}", literal.escape_debug()).as_ref());
             output_string.push_str("\"");
+            if let Some(ref lang) = *language {
+                output_string.push_str("@");
+                output_string.push_str(lang);
+            }
+    
+            if let Some(ref dt) = *data_type {
+                output_string.push_str("^^");
+                output_string.push_str(&self.format_uri(dt));
+            }
         }
 
-        if let Some(ref lang) = *language {
-            output_string.push_str("@");
-            output_string.push_str(lang);
-        }
-
-        if let Some(ref dt) = *data_type {
-            output_string.push_str("^^");
-            output_string.push_str(&self.format_uri(dt));
-        }
+        
 
         output_string
     }
